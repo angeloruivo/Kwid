@@ -3,13 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rastreador Kwid - Moderno</title>
+  <title>Kwid+</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
-    /* === Configurações Globais e Variáveis CSS === */
     :root {
       --primary-hue: 230;
       --accent-hue: 160;
@@ -95,6 +94,7 @@
       background-color: hsl(var(--primary-hue), 70%, 98%);
       padding: var(--spacing-unit);
       border-radius: var(--border-radius-md);
+      flex-wrap: wrap;
     }
 
     .tab-btn {
@@ -262,6 +262,57 @@
       cursor: pointer;
     }
 
+    .option-buttons {
+      display: flex;
+      gap: calc(var(--spacing-unit) * 2);
+      margin-bottom: calc(var(--spacing-unit) * 2.5);
+    }
+
+    .option-btn {
+      flex: 1;
+      padding: calc(var(--spacing-unit) * 1.5);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius-md);
+      background-color: var(--card-bg);
+      color: var(--text-color);
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: calc(var(--spacing-unit));
+      transition: all var(--transition-speed) ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .option-btn:hover {
+      border-color: var(--primary-color);
+      background-color: hsl(var(--primary-hue), 70%, 98%);
+    }
+
+    .option-btn.selected {
+      background-color: var(--primary-color);
+      color: var(--white-color);
+      border-color: var(--primary-dark);
+      box-shadow: 0 0 0 3px hsl(var(--primary-hue), 70%, 55%, 0.2);
+    }
+
+    .option-btn:active {
+      transform: scale(0.98);
+    }
+
+    .option-btn svg {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+    }
+
+    .invalid {
+      border-color: var(--danger-color);
+      box-shadow: 0 0 0 3px hsl(0, 70%, 60%, 0.2);
+    }
+
     .summary {
       background-color: var(--primary-light);
       padding: calc(var(--spacing-unit) * 3);
@@ -388,31 +439,49 @@
         margin-bottom: calc(var(--spacing-unit) * 3);
         flex-wrap: wrap;
       }
-      .tab-btn { font-size: 0.9rem; padding: var(--spacing-unit) * 1.25; }
+      .tab-btn {
+        font-size: 0.9rem;
+        padding: calc(var(--spacing-unit) * 1.25);
+        min-width: 80px;
+      }
       th, td { padding: calc(var(--spacing-unit) * 1.5) var(--spacing-unit); }
+      .option-buttons { flex-direction: column; }
+      .option-btn { padding: calc(var(--spacing-unit) * 2); }
     }
   </style>
 </head>
 <body>
-  <h1>Rastreador Kwid</h1>
+  <h1>Kwid+</h1>
 
   <div class="container">
     <div class="tabs">
       <button class="tab-btn active" onclick="showTab('income')">Ganhos</button>
       <button class="tab-btn" onclick="showTab('fuel')">Abastecer</button>
       <button class="tab-btn" onclick="showTab('maintenance')">Manutenção</button>
+      <button class="tab-btn" onclick="showTab('backup')">Backup</button>
     </div>
 
     <div class="form-section active" id="income">
       <h2>Adicionar Ganho</h2>
       <label for="income-date">Data</label>
       <input type="date" id="income-date" required>
-      <label for="income-platform">Plataforma</label>
-      <select id="income-platform" required>
-        <option value="" disabled selected>Selecione a Plataforma</option>
-        <option value="99">99</option>
-        <option value="Uber">Uber</option>
-      </select>
+      <label>Plataforma</label>
+      <div class="option-buttons" id="income-platform" role="radiogroup" aria-label="Seleção de plataforma">
+        <button type="button" class="option-btn" data-value="Uber" aria-label="Selecionar Uber" onclick="selectOption('income-platform', 'Uber')">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm-1-6h2v4h-2v-4zm0-2h2v2h-2v-2z"/>
+            <text x="12" y="14" font-size="8" text-anchor="middle" fill="currentColor">U</text>
+          </svg>
+          Uber
+        </button>
+        <button type="button" class="option-btn" data-value="99" aria-label="Selecionar 99" onclick="selectOption('income-platform', '99')">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/>
+            <text x="12" y="14" font-size="8" text-anchor="middle" fill="currentColor">99</text>
+          </svg>
+          99
+        </button>
+      </div>
       <label for="income-amount">Valor (R$)</label>
       <input type="number" id="income-amount" placeholder="Ex: 150.50" step="0.01" inputmode="decimal" required>
       <div class="error" id="income-error">Preencha todos os campos corretamente.</div>
@@ -423,12 +492,21 @@
       <h2>Adicionar Abastecimento</h2>
       <label for="fuel-date">Data</label>
       <input type="date" id="fuel-date" required>
-      <label for="fuel-type">Combustível</label>
-      <select id="fuel-type" required>
-        <option value="" disabled selected>Selecione o Combustível</option>
-        <option value="Gasolina">Gasolina</option>
-        <option value="Etanol">Etanol</option>
-      </select>
+      <label>Combustível</label>
+      <div class="option-buttons" id="fuel-type" role="radiogroup" aria-label="Seleção de combustível">
+        <button type="button" class="option-btn" data-value="Gasolina" aria-label="Selecionar Gasolina" onclick="selectOption('fuel-type', 'Gasolina')">
+          <svg viewBox="0 0 24 24">
+            <path d="M7 2v2H5v18h14V4h-2V2H7zm2 2h6v2H9V4zm-2 4h10v12H7V8zm3 2v2h4v-2h-4zm0 4v2h4v-2h-4z"/>
+          </svg>
+          Gasolina
+        </button>
+        <button type="button" class="option-btn" data-value="Etanol" aria-label="Selecionar Etanol" onclick="selectOption('fuel-type', 'Etanol')">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm-2-4c0-1.1.9-2 2-2s2 .9 2 2h-2v2h-2v-2z"/>
+          </svg>
+          Etanol
+        </button>
+      </div>
       <label for="fuel-amount">Valor (R$)</label>
       <input type="number" id="fuel-amount" placeholder="Ex: 120.00" step="0.01" inputmode="decimal" required>
       <div class="error" id="fuel-error">Preencha todos os campos corretamente.</div>
@@ -464,10 +542,16 @@
       <button class="add-btn" onclick="addMaintenance()">Adicionar Manutenção</button>
     </div>
 
-    <div class="action-buttons" style="display: flex; flex-wrap: wrap; gap: var(--spacing-unit) * 2; margin-top: calc(var(--spacing-unit) * 2);">
-      <button class="action-btn" onclick="exportToTxt()">Exportar TXT</button>
-      <button class="action-btn" onclick="exportBackup()">Exportar Backup</button>
+    <div class="form-section" id="backup">
+      <h2>Backup e Exportação</h2>
+      <button class="action-btn" onclick="exportToTxt()">Exportar Relatório TXT</button>
+      <button class="action-btn" onclick="exportBackup()">Exportar Backup (JSON)</button>
+      <label for="import-backup">Importar Backup</label>
       <input type="file" class="file-input" id="import-backup" accept=".json" onchange="importBackup(event)">
+      <div class="error" id="backup-error">Erro ao processar o arquivo. Verifique se é um backup válido.</div>
+    </div>
+
+    <div class="action-buttons" style="display: flex; gap: var(--spacing-unit) * 2; margin-top: calc(var(--spacing-unit) * 2);">
       <button class="action-btn" onclick="showReport()">Ver Relatório</button>
     </div>
 
@@ -484,8 +568,6 @@
         <li>Combustível: <span>R$ <span id="report-fuel">0.00</span></span></li>
         <li>Total Custos: <span>R$ <span id="report-total-expenses">0.00</span></span></li>
         <li>Ganhos 99: <span>R$ <span id="report-income-99">0.00</span></span></li>
-        <li>Ganhos Uber: <span>R$ <span idWIKI: https://en.wikipedia.org/wiki/JSON - JSON (JavaScript Object Notation) is a lightweight data-interchange format that is easy for humans to read and write and easy for machines to parse and generate. It is commonly used for transmitting data in web applications.
-
         <li>Ganhos Uber: <span>R$ <span id="report-income-uber">0.00</span></span></li>
         <li>Total Ganhos: <span>R$ <span id="report-total-income">0.00</span></span></li>
         <li>Lucro Líquido: <span>R$ <span id="report-balance">0.00</span></span></li>
@@ -544,7 +626,7 @@
       errorDiv.textContent = message;
       errorDiv.style.display = 'block';
       const formSection = document.getElementById(section);
-      const firstInvalid = formSection?.querySelector('input:invalid, select:invalid');
+      const firstInvalid = formSection?.querySelector('input:invalid, .option-buttons.invalid');
       firstInvalid?.focus();
       setTimeout(() => {
         if (errorDiv) {
@@ -553,19 +635,35 @@
       }, 4000);
     }
 
+    function selectOption(groupId, value) {
+      const group = document.getElementById(groupId);
+      if (!group) return;
+      group.querySelectorAll('.option-btn').forEach(btn => {
+        btn.classList.remove('selected');
+        btn.setAttribute('aria-selected', 'false');
+      });
+      const selectedBtn = group.querySelector(`.option-btn[data-value="${value}"]`);
+      if (selectedBtn) {
+        selectedBtn.classList.add('selected');
+        selectedBtn.setAttribute('aria-selected', 'true');
+        group.dataset.value = value;
+        group.classList.remove('invalid');
+      }
+    }
+
     function addTransaction(section, type, detailGetter, amountGetter) {
       const dateInput = document.getElementById(`${section}-date`);
       const detailInput = detailGetter();
-      const amountInput = amountGetter();
+      const amountInput = amountInput ? amountGetter() : null;
       const date = dateInput?.value;
-      const detail = detailInput ? detailInput.value : '';
+      const detail = detailInput || '';
       const amount = amountInput ? parseFloat(amountInput.value) : NaN;
       const isExpense = (section === 'fuel' || section === 'maintenance');
 
       let isValid = true;
       const formSection = document.getElementById(section);
       if (!formSection) return;
-      formSection.querySelectorAll('input[required], select[required]').forEach(el => {
+      formSection.querySelectorAll('input[required]').forEach(el => {
         if (!el.checkValidity()) {
           isValid = false;
           el.classList.add('invalid');
@@ -574,7 +672,15 @@
         }
       });
 
-      if (!date || (detailInput && !detail) || isNaN(amount) || amount <= 0 || !isValid) {
+      const optionGroup = formSection.querySelector('.option-buttons');
+      if (optionGroup && !optionGroup.dataset.value) {
+        isValid = false;
+        optionGroup.classList.add('invalid');
+      } else {
+        optionGroup?.classList.remove('invalid');
+      }
+
+      if (!date || !detail || isNaN(amount) || amount <= 0 || !isValid) {
         showError(section);
         return;
       }
@@ -597,7 +703,7 @@
       addTransaction(
         'maintenance',
         'Manutenção',
-        () => document.getElementById('maintenance-type'),
+        () => document.getElementById('maintenance-type').value,
         () => document.getElementById('maintenance-amount')
       );
     }
@@ -606,7 +712,7 @@
       addTransaction(
         'fuel',
         'Abastecimento',
-        () => document.getElementById('fuel-type'),
+        () => document.getElementById('fuel-type').dataset.value,
         () => document.getElementById('fuel-amount')
       );
     }
@@ -615,7 +721,7 @@
       addTransaction(
         'income',
         'Ganho',
-        () => document.getElementById('income-platform'),
+        () => document.getElementById('income-platform').dataset.value,
         () => document.getElementById('income-amount')
       );
     }
@@ -643,6 +749,14 @@
         select.selectedIndex = 0;
         select.classList.remove('invalid');
       });
+      form.querySelectorAll('.option-buttons').forEach(group => {
+        group.querySelectorAll('.option-btn').forEach(btn => {
+          btn.classList.remove('selected');
+          btn.setAttribute('aria-selected', 'false');
+        });
+        group.dataset.value = '';
+        group.classList.remove('invalid');
+      });
       form.querySelectorAll('.error').forEach(error => error.style.display = 'none');
     }
 
@@ -651,7 +765,7 @@
         alert('Nenhuma transação para exportar.');
         return;
       }
-      let textContent = 'Relatório Kwid\n================\n\n';
+      let textContent = 'Relatório Kwid+\n================\n\n';
       textContent += 'Data\t\tTipo\t\tDetalhe\t\tValor (R$)\n';
       textContent += '----------------------------------------------------\n';
       transactions.forEach(t => {
@@ -669,7 +783,7 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `relatorio_kwid_${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}.txt`;
+      a.download = `relatorio_kwidplus_${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}.txt`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -686,7 +800,7 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `kwid_backup_${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}.json`;
+      a.download = `kwidplus_backup_${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}.json`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -696,11 +810,11 @@
     function importBackup(event) {
       const file = event.target.files[0];
       if (!file) {
-        alert('Nenhum arquivo selecionado.');
+        showError('backup', 'Nenhum arquivo selecionado.');
         return;
       }
       if (!file.name.endsWith('.json')) {
-        alert('Por favor, selecione um arquivo JSON válido.');
+        showError('backup', 'Por favor, selecione um arquivo JSON válido.');
         return;
       }
       const reader = new FileReader();
@@ -708,7 +822,7 @@
         try {
           const data = JSON.parse(e.target.result);
           if (!data.transactions || !Array.isArray(data.transactions)) {
-            alert('Arquivo inválido: não contém transações válidas.');
+            showError('backup', 'Arquivo inválido: não contém transações válidas.');
             return;
           }
           const isValid = data.transactions.every(t =>
@@ -719,7 +833,7 @@
             t.amount && typeof t.amount === 'number'
           );
           if (!isValid) {
-            alert('Arquivo inválido: as transações não seguem o formato esperado.');
+            showError('backup', 'Arquivo inválido: as transações não seguem o formato esperado.');
             return;
           }
           if (confirm('Importar este backup substituirá todas as transações atuais. Deseja continuar?')) {
@@ -735,11 +849,11 @@
             document.getElementById('import-backup').value = '';
           }
         } catch (error) {
-          alert('Erro ao importar o backup: arquivo inválido ou corrompido.');
+          showError('backup', 'Erro ao importar o backup: arquivo inválido ou corrompido.');
         }
       };
       reader.onerror = function() {
-        alert('Erro ao ler o arquivo.');
+        showError('backup', 'Erro ao ler o arquivo.');
       };
       reader.readAsText(file);
     }
