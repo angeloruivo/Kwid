@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rastreador Kwid - Moderno</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* === Configurações Globais e Variáveis CSS === */
+    :root {
+      /* Paleta de Cores Moderna (Ex: Tons de Índigo e Teal) */
+      --primary-hue: 230; /* Azul/Índigo */
+      --accent-hue: 160; /* Verde/Teal */
+      --primary-color: hsl(var(--primary-hue), 70%, 55%); /* Azul principal */
+      --primary-dark: hsl(var(--primary-hue), 70%, 45%);
+      --primary-light: hsl(var(--primary-hue), 70%, 95%);
+      --accent-color: hsl(var(--accent-hue), 65%, 45%); /* Teal para sucesso/adição */
+      --accent-dark: hsl(var(--accent-hue), 65%, 35%);
+      --danger-color: hsl(0, 70%, 60%); /* Vermelho */
+      --danger-dark: hsl(0, 70%, 50%);
+      --bg-color: #f8fafc; /* Fundo quase branco (Cool Gray 50) */
+      --card-bg: #ffffff; /* Fundo do cartão */
+      --text-color: #1e293b; /* Texto principal (Cool Gray 800) */
+      --text-muted: #64748b; /* Texto secundário (Cool Gray 500) */
+      --border-color: #e2e8f0; /* Borda sutil (Cool Gray 200) */
+      --white-color: #ffffff;
+
+      /* Gradientes */
+      --primary-gradient: linear-gradient(to right, hsl(var(--primary-hue), 70%, 60%), hsl(var(--primary-hue), 75%, 50%));
+      --accent-gradient: linear-gradient(to right, hsl(var(--accent-hue), 65%, 50%), hsl(var(--accent-hue), 70%, 40%));
+
+      /* Outras Variáveis */
+      --border-radius-sm: 6px;
+      --border-radius-md: 8px;
+      --border-radius-lg: 12px;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+      --spacing-unit: 0.5rem; /* 8px */
+      --font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --transition-speed: 0.2s;
+    }
+
+    /* Reset básico e Font Family */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-family-base);
+      line-height: 1.6;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      padding: calc(var(--spacing-unit) * 2); /* 16px */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    /* === Container Principal (Card) === */
+    .container {
+      background-color: var(--card-bg);
+      padding: calc(var(--spacing-unit) * 4); /* 32px */
+      border-radius: var(--border-radius-lg); /* Mais arredondado */
+      box-shadow: var(--shadow-lg); /* Sombra mais pronunciada */
+      width: 100%;
+      max-width: 550px; /* Um pouco mais largo */
+      margin-top: calc(var(--spacing-unit) * 2);
+      transition: all var(--transition-speed) ease-out;
+    }
+
+    /* === Títulos === */
+    h1 {
+      color: var(--primary-color);
+      font-size: 2rem; /* Maior */
+      margin-bottom: calc(var(--spacing-unit) * 4); /* 32px */
+      text-align: center;
+      font-weight: 700; /* Mais peso */
+    }
+
+    h2 {
+      font-size: 1.25rem;
+      color: var(--text-color);
+      font-weight: 600;
+      margin-top: calc(var(--spacing-unit) * 4); /* 32px */
+      margin-bottom: calc(var(--spacing-unit) * 3); /* 24px */
+      padding-bottom: calc(var(--spacing-unit) * 1.5); /* 12px */
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    /* === Abas (Tabs) === */
+    .tabs {
+      display: flex;
+      gap: calc(var(--spacing-unit) * 2); /* 16px */
+      margin-bottom: calc(var(--spacing-unit) * 4); /* 32px */
+      background-color: hsl(var(--primary-hue), 70%, 98%); /* Fundo muito leve */
+      padding: var(--spacing-unit); /* 8px */
+      border-radius: var(--border-radius-md);
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: calc(var(--spacing-unit) * 1.5) var(--spacing-unit); /* 12px 8px */
+      font-size: 0.95rem;
+      font-weight: 600; /* Mais peso */
+      background-color: transparent; /* Sem fundo por padrão */
+      color: var(--text-muted);
+      border: none;
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      text-align: center;
+      transition: all var(--transition-speed) ease-out;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .tab-btn:hover {
+      color: var(--primary-dark);
+      background-color: hsl(var(--primary-hue), 70%, 92%); /* Fundo leve no hover */
+    }
+
+    .tab-btn.active {
+      background-color: var(--primary-color);
+      color: var(--white-color);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px); /* Efeito sutil de elevação */
+    }
+
+    .tab-btn:active {
+       transform: scale(0.97) translateY(0); /* Achata um pouco */
+    }
+
+    /* === Seções de Formulário === */
+    .form-section {
+      display: none;
+      animation: slideUpFadeIn 0.4s ease-out; /* Animação de entrada */
+    }
+    .form-section.active {
+      display: block;
+    }
+
+    @keyframes slideUpFadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* === Inputs e Select === */
+    label { /* Adicionando labels para acessibilidade */
+        display: block;
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin-bottom: var(--spacing-unit);
+        color: var(--text-muted);
+    }
+
+    input[type="date"],
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: calc(var(--spacing-unit) * 1.75); /* 14px */
+      margin-bottom: calc(var(--spacing-unit) * 2.5); /* 20px */
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius-md); /* Consistente com container */
+      font-size: 1rem;
+      background-color: var(--card-bg);
+      color: var(--text-color);
+      transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+      font-family: inherit; /* Garante a mesma fonte */
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px hsl(var(--primary-hue), 70%, 55%, 0.2); /* Sombra de foco */
+    }
+    input::placeholder { color: #94a3b8; opacity: 1; } /* Cool Gray 400 */
+    select option[disabled] { color: #94a3b8; }
+
+    /* Customização da seta do select (opcional, pode variar entre browsers) */
+    select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%2364748b'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd' /%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right calc(var(--spacing-unit) * 1.5) center;
+        background-size: 1.5em 1.5em;
+        padding-right: calc(var(--spacing-unit) * 5); /* Espaço para a seta */
+    }
+
+
+    /* === Botões === */
+    button {
+        width: 100%;
+        padding: calc(var(--spacing-unit) * 2); /* 16px - Mais alto */
+        margin-top: var(--spacing-unit);
+        margin-bottom: calc(var(--spacing-unit) * 3); /* 24px */
+        border: none;
+        border-radius: var(--border-radius-md);
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all var(--transition-speed) ease-out;
+        -webkit-tap-highlight-color: transparent;
+        text-shadow: 0 1px 1px rgba(0,0,0,0.1); /* Sombra sutil no texto */
+    }
+    button:active {
+        transform: scale(0.98) translateY(1px); /* Feedback tátil */
+        box-shadow: none; /* Remove sombra no clique */
+    }
+    button:hover {
+        transform: translateY(-2px); /* Levanta um pouco */
+        box-shadow: var(--shadow-md);
+    }
+
+    .add-btn {
+      background-image: var(--accent-gradient);
+      color: var(--white-color);
+    }
+    .add-btn:hover {
+       filter: brightness(1.1); /* Deixa o gradiente mais vivo */
+       box-shadow: 0 6px 12px -2px hsl(var(--accent-hue), 65%, 45%, 0.3);
+    }
+
+    .action-btn {
+      background-image: var(--primary-gradient);
+      color: var(--white-color);
+    }
+     .action-btn:hover {
+       filter: brightness(1.1);
+       box-shadow: 0 6px 12px -2px hsl(var(--primary-hue), 70%, 55%, 0.3);
+    }
+
+    /* Botão de Excluir (Ícone seria ideal) */
+    .delete-btn {
+        background-color: transparent;
+        color: var(--danger-color);
+        padding: calc(var(--spacing-unit) * 1) calc(var(--spacing-unit) * 1.5); /* 8px 12px */
+        font-size: 1rem; /* Tamanho maior para o X ficar visível */
+        font-weight: bold;
+        border-radius: 50%; /* Circular */
+        width: auto;
+        line-height: 1;
+        margin: 0;
+        box-shadow: none;
+        text-shadow: none;
+        border: 1px solid transparent; /* Para manter o tamanho no hover */
+    }
+    .delete-btn:hover {
+        background-color: hsl(0, 70%, 60%, 0.1); /* Fundo vermelho bem leve */
+        color: var(--danger-dark);
+        transform: scale(1.1); /* Aumenta um pouco */
+        border-color: hsl(0, 70%, 60%, 0.2);
+    }
+    .delete-btn:active {
+         transform: scale(0.95);
+         background-color: hsl(0, 70%, 60%, 0.2);
+    }
+
+    /* === Resumo (Summary Card) === */
+    .summary {
+        background-color: var(--primary-light); /* Fundo levemente azulado */
+        padding: calc(var(--spacing-unit) * 3); /* 24px */
+        margin: calc(var(--spacing-unit) * 4) 0; /* 32px */
+        border-radius: var(--border-radius-md);
+        border: 1px solid hsl(var(--primary-hue), 70%, 90%);
+        box-shadow: var(--shadow-sm);
+    }
+    .summary p {
+        margin-bottom: calc(var(--spacing-unit) * 1.5); /* 12px */
+        font-size: 1.05rem; /* Um pouco maior */
+        font-weight: 500;
+        display: flex; /* Para alinhar span à direita */
+        justify-content: space-between;
+        align-items: center;
+    }
+    .summary p:last-child { margin-bottom: 0; }
+    .summary span {
+        font-weight: 700;
+        font-size: 1.1rem;
+        padding: calc(var(--spacing-unit) * 0.5) calc(var(--spacing-unit) * 1.5); /* 4px 12px */
+        border-radius: var(--border-radius-sm);
+        background-color: rgba(255, 255, 255, 0.5); /* Fundo branco semi-transparente */
+    }
+    #total-expenses { color: var(--danger-color); }
+    #total-income { color: var(--accent-color); }
+    #balance { color: var(--primary-color); }
+
+    /* === Relatório (Report Card) === */
+    #report {
+      display: none;
+      margin: calc(var(--spacing-unit) * 4) 0; /* 32px */
+      padding: calc(var(--spacing-unit) * 3); /* 24px */
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius-md);
+      box-shadow: var(--shadow-md);
+      animation: slideUpFadeIn 0.4s ease-out;
+    }
+    #report h3 {
+      margin-bottom: calc(var(--spacing-unit) * 3); /* 24px */
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text-color);
+    }
+    #report ul { list-style: none; padding: 0; margin: 0; }
+    #report li {
+      margin-bottom: calc(var(--spacing-unit) * 1.5); /* 12px */
+      font-size: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: calc(var(--spacing-unit) * 1.5);
+      border-bottom: 1px dashed var(--border-color); /* Linha pontilhada */
+    }
+     #report li:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0;}
+    #report li span { font-weight: 600; }
+    /* Cores no relatório */
+    #report-maintenance, #report-fuel, #report-total-expenses { color: var(--danger-color); }
+    #report-income-99, #report-income-uber, #report-total-income { color: var(--accent-color); }
+    #report-balance { color: var(--primary-color); }
+
+    /* === Tabela de Histórico === */
+    .table-container {
+        overflow-x: auto;
+        margin-top: var(--spacing-unit);
+        border: 1px solid var(--border-color); /* Borda ao redor da tabela */
+        border-radius: var(--border-radius-md);
+        box-shadow: var(--shadow-sm);
+        background-color: var(--card-bg); /* Fundo branco para o container */
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    th, td {
+      padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 2.5); /* 16px 20px - Mais espaçado */
+      text-align: left;
+      border-bottom: 1px solid var(--border-color); /* Apenas linhas horizontais */
+      white-space: nowrap;
+    }
+    th {
+      background-color: var(--bg-color); /* Fundo sutil no cabeçalho */
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: none; /* Sem uppercase */
+      font-size: 0.85rem;
+      letter-spacing: 0.5px; /* Espaçamento leve */
+      border-bottom-width: 2px; /* Linha mais grossa abaixo do header */
+       border-top-left-radius: var(--border-radius-md); /* Arredondar cantos do TH */
+       border-top-right-radius: var(--border-radius-md);
+    }
+     th:first-child { border-top-left-radius: var(--border-radius-md); } /* Arredonda o primeiro */
+     th:last-child { border-top-right-radius: var(--border-radius-md); } /* Arredonda o último */
+
+    tbody tr:last-child td { border-bottom: none; } /* Remove borda da última linha */
+    tbody tr:hover { background-color: hsl(var(--primary-hue), 70%, 98%); } /* Hover sutil na linha */
+
+    td:nth-child(3) { /* Valor */ text-align: right; font-weight: 600; }
+    td:nth-child(4) { /* Ação */ text-align: center; }
+
+    /* Cores na tabela */
+    .cost { color: var(--danger-color); }
+    .income { color: var(--accent-color); }
+
+    /* === Mensagem de Erro === */
+    .error {
+      color: var(--danger-dark);
+      background-color: hsl(0, 70%, 95%); /* Fundo rosa bem claro */
+      border: 1px solid hsl(0, 70%, 85%); /* Borda rosa */
+      border-left: 4px solid var(--danger-color); /* Barra lateral */
+      border-radius: var(--border-radius-sm);
+      padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 2); /* 12px 16px */
+      margin-top: var(--spacing-unit);
+      margin-bottom: calc(var(--spacing-unit) * 2.5); /* 20px */
+      font-size: 0.9rem;
+      font-weight: 500;
+      display: none;
+    }
+
+    /* === Media Queries (Ajustes Finos) === */
+    @media (max-width: 600px) {
+      html { font-size: 15px; }
+      body { padding: var(--spacing-unit); } /* Menos padding no body */
+      .container {
+        padding: calc(var(--spacing-unit) * 3); /* 24px */
+        margin-top: var(--spacing-unit);
+        border-radius: var(--border-radius-md); /* Menos arredondado */
+        box-shadow: var(--shadow-md); /* Sombra menor */
+      }
+      h1 { font-size: 1.75rem; margin-bottom: calc(var(--spacing-unit) * 3); }
+      .tabs {
+          gap: var(--spacing-unit);
+          padding: calc(var(--spacing-unit) * 0.5);
+          margin-bottom: calc(var(--spacing-unit) * 3);
+          flex-wrap: wrap; /* Permite quebrar linha se necessário */
+      }
+      .tab-btn { font-size: 0.9rem; padding: var(--spacing-unit) * 1.25; }
+      th, td { padding: calc(var(--spacing-unit) * 1.5) var(--spacing-unit); } /* Menos padding na tabela */
+    }
+
+  </style>
+</head>
+<body>
+
+  <h1>Rastreador Kwid</h1>
+
+  <div class="container">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab('income')">Ganhos</button>
+      <button class="tab-btn" onclick="showTab('fuel')">Abastecer</button>
+      <button class="tab-btn" onclick="showTab('maintenance')">Manutenção</button>
+    </div>
+
+    <div class="form-section active" id="income">
+      <h2>Adicionar Ganho</h2>
+      <label for="income-date">Data</label>
+      <input type="date" id="income-date" required>
+
+      <label for="income-platform">Plataforma</label>
+      <select id="income-platform" required>
+        <option value="" disabled selected>Selecione a Plataforma</option>
+        <option value="99">99</option>
+        <option value="Uber">Uber</option>
+      </select>
+
+      <label for="income-amount">Valor (R$)</label>
+      <input type="number" id="income-amount" placeholder="Ex: 150.50" step="0.01" inputmode="decimal" required>
+
+      <div class="error" id="income-error">Preencha todos os campos corretamente.</div>
+      <button class="add-btn" onclick="addIncome()">Adicionar Ganho</button>
+    </div>
+
+    <div class="form-section" id="fuel">
+       <h2>Adicionar Abastecimento</h2>
+       <label for="fuel-date">Data</label>
+       <input type="date" id="fuel-date" required>
+
+       <label for="fuel-type">Combustível</label>
+       <select id="fuel-type" required>
+         <option value="" disabled selected>Selecione o Combustível</option>
+         <option value="Gasolina">Gasolina</option>
+         <option value="Etanol">Etanol</option>
+       </select>
+
+       <label for="fuel-amount">Valor (R$)</label>
+       <input type="number" id="fuel-amount" placeholder="Ex: 120.00" step="0.01" inputmode="decimal" required>
+
+       <div class="error" id="fuel-error">Preencha todos os campos corretamente.</div>
+       <button class="add-btn" onclick="addFuel()">Adicionar Abastecimento</button>
+    </div>
+
+    <div class="form-section" id="maintenance">
+      <h2>Adicionar Manutenção</h2>
+      <label for="maintenance-date">Data</label>
+      <input type="date" id="maintenance-date" required>
+
+      <label for="maintenance-type">Tipo de Manutenção</label>
+      <select id="maintenance-type" required>
+        <option value="" disabled selected>Selecione o Tipo</option>
+        <option value="Óleo do motor">Óleo do motor</option>
+        <option value="Filtro de óleo">Filtro de óleo</option>
+        <option value="Filtro de ar">Filtro de ar</option>
+        <option value="Filtro de combustível">Filtro de combustível</option>
+        <option value="Filtro de ar-condicionado">Filtro de ar-condicionado</option>
+        <option value="Velas de ignição">Velas de ignição</option>
+        <option value="Correia de acessórios">Correia de acessórios</option>
+        <option value="Fluido de freio">Fluido de freio</option>
+        <option value="Pastilhas de freio">Pastilhas de freio</option>
+        <option value="Pneus">Pneus</option>
+        <option value="Amortecedores">Amortecedores</option>
+        <option value="Bateria">Bateria</option>
+        <option value="Palhetas do limpador">Palhetas do limpador</option>
+        <option value="Lâmpadas dos faróis">Lâmpadas dos faróis</option>
+        <option value="Outros">Outros</option>
+      </select>
+
+      <label for="maintenance-amount">Valor (R$)</label>
+      <input type="number" id="maintenance-amount" placeholder="Ex: 350.00" step="0.01" inputmode="decimal" required>
+
+      <div class="error" id="maintenance-error">Preencha todos os campos corretamente.</div>
+      <button class="add-btn" onclick="addMaintenance()">Adicionar Manutenção</button>
+    </div>
+
+    <div class="action-buttons" style="display: flex; gap: var(--spacing-unit) * 2; margin-top: calc(var(--spacing-unit) * 2);"> <button class="action-btn" onclick="exportToTxt()">Exportar TXT</button>
+      <button class="action-btn" onclick="showReport()">Ver Relatório</button> </div>
+
+    <div class="summary">
+      <p>Total de Custos: <span id="total-expenses">R$ 0.00</span></p>
+      <p>Total de Ganhos: <span id="total-income">R$ 0.00</span></p>
+      <p>Lucro Líquido: <span id="balance">R$ 0.00</span></p>
+    </div>
+
+    <div id="report">
+      <h3>Relatório Detalhado</h3>
+      <ul>
+        <li>Manutenção: <span>R$ <span id="report-maintenance">0.00</span></span></li>
+        <li>Combustível: <span>R$ <span id="report-fuel">0.00</span></span></li>
+        <li>Total Custos: <span>R$ <span id="report-total-expenses">0.00</span></span></li>
+        <li>Ganhos 99: <span>R$ <span id="report-income-99">0.00</span></span></li>
+        <li>Ganhos Uber: <span>R$ <span id="report-income-uber">0.00</span></span></li>
+        <li>Total Ganhos: <span>R$ <span id="report-total-income">0.00</span></span></li>
+        <li>Lucro Líquido: <span>R$ <span id="report-balance">0.00</span></span></li>
+      </ul>
+    </div>
+
+    <h2>Histórico de Transações</h2>
+    <div class="table-container">
+        <table id="transaction-table">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Detalhe</th>
+              <th>Valor (R$)</th>
+              <th>Ação</th>
+            </tr>
+          </thead>
+          <tbody id="transaction-body">
+            </tbody>
+        </table>
+    </div>
+  </div>
+
+  <script>
+     let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+
+    // Função para formatar data como DD/MM/YYYY
+    function formatDate(dateString) {
+        // Adiciona T00:00:00 para evitar problemas de fuso horário que podem diminuir um dia
+        const date = new Date(dateString + 'T00:00:00');
+        // Verifica se a data é válida antes de formatar
+        if (isNaN(date.getTime())) {
+            return 'Data inválida';
+        }
+        return date.toLocaleDateString('pt-BR');
+    }
+
+
+     function saveTransactions() {
+       localStorage.setItem('transactions', JSON.stringify(transactions));
+     }
+
+     function showTab(tabId) {
+       document.querySelectorAll('.form-section').forEach(section => {
+         section.classList.remove('active');
+       });
+       document.querySelectorAll('.tab-btn').forEach(btn => {
+         btn.classList.remove('active');
+       });
+       document.getElementById(tabId)?.classList.add('active'); // Adicionado '?' para segurança
+       // Adiciona a classe 'active' ao botão correspondente
+       document.querySelector(`.tab-btn[onclick="showTab('${tabId}')"]`)?.classList.add('active'); // Adicionado '?' para segurança
+
+        // Oculta o relatório ao trocar de aba
+        const reportDiv = document.getElementById('report');
+        if (reportDiv) {
+            reportDiv.style.display = 'none';
+        }
+     }
+
+    function showError(section, message = 'Preencha todos os campos corretamente.') {
+        const errorDiv = document.getElementById(`${section}-error`);
+        if (!errorDiv) return; // Sai se o elemento de erro não existir
+
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+
+        // Foca no primeiro campo inválido da seção ativa
+        const formSection = document.getElementById(section);
+        const firstInvalid = formSection?.querySelector('input:invalid, select:invalid');
+        firstInvalid?.focus();
+
+        // Adiciona um timeout para esconder o erro
+        setTimeout(() => {
+            if (errorDiv) { // Verifica se ainda existe
+                 errorDiv.style.display = 'none';
+            }
+        }, 4000);
+    }
+
+
+     // Função genérica para adicionar transação
+     function addTransaction(section, type, detailGetter, amountGetter) {
+         const dateInput = document.getElementById(`${section}-date`);
+         const detailInput = detailGetter(); // Função para pegar o detalhe (select ou input)
+         const amountInput = amountGetter(); // Função para pegar o valor
+
+         const date = dateInput?.value;
+         const detail = detailInput ? detailInput.value : ''; // Valor do select/input de detalhe
+         const amount = amountInput ? parseFloat(amountInput.value) : NaN; // Verifica se amountInput existe
+         const isExpense = (section === 'fuel' || section === 'maintenance');
+
+         // Validação usando a API de validação do HTML5 + verificação JS
+         let isValid = true;
+         const formSection = document.getElementById(section);
+         if (!formSection) return; // Sai se a seção não for encontrada
+
+         formSection.querySelectorAll('input[required], select[required]').forEach(el => {
+             if (!el.checkValidity()) {
+                 isValid = false;
+                 // Adiciona classe de erro visual ao campo inválido (opcional)
+                 el.classList.add('invalid');
+             } else {
+                 el.classList.remove('invalid'); // Remove classe se válido
+             }
+         });
+
+         // Verifica se data, detalhe (se houver) e amount são válidos
+         if (!date || (detailInput && !detail) || isNaN(amount) || amount <= 0 || !isValid) {
+           showError(section);
+           return;
+         }
+
+         transactions.push({
+           id: Date.now(),
+           date,
+           type: type, // 'Ganho', 'Abastecimento', 'Manutenção'
+           detail: detail,
+           amount: isExpense ? -amount : amount
+         });
+
+         // Ordena as transações pela data mais recente primeiro
+         transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+         saveTransactions();
+         updateUI();
+         clearForm(section);
+     }
+
+     // Funções específicas chamando a genérica
+     function addMaintenance() {
+         addTransaction(
+             'maintenance',
+             'Manutenção',
+             () => document.getElementById('maintenance-type'),
+             () => document.getElementById('maintenance-amount')
+         );
+     }
+
+     function addFuel() {
+         addTransaction(
+             'fuel',
+             'Abastecimento',
+             () => document.getElementById('fuel-type'),
+             () => document.getElementById('fuel-amount')
+         );
+     }
+
+     function addIncome() {
+         addTransaction(
+             'income',
+             'Ganho',
+             () => document.getElementById('income-platform'),
+             () => document.getElementById('income-amount')
+         );
+     }
+
+     function deleteTransaction(id) {
+       // Confirmação antes de excluir
+       if (confirm('Tem certeza que deseja excluir esta transação?')) {
+           transactions = transactions.filter(t => t.id !== id);
+           saveTransactions();
+           updateUI();
+           // Se o relatório estiver visível, atualiza-o também
+            const reportDiv = document.getElementById('report');
+           if (reportDiv && reportDiv.style.display === 'block') {
+               calculateAndDisplayReport();
+           }
+       }
+     }
+
+    function clearForm(section) {
+        const form = document.getElementById(section);
+        if (!form) return; // Segurança
+
+        form.querySelectorAll('input[type="date"], input[type="number"]').forEach(input => {
+            input.value = '';
+            input.classList.remove('invalid'); // Limpa classe de erro visual
+        });
+        form.querySelectorAll('select').forEach(select => {
+            select.selectedIndex = 0; // Reseta para a opção "Selecione..."
+             select.classList.remove('invalid'); // Limpa classe de erro visual
+        });
+        form.querySelectorAll('.error').forEach(error => error.style.display = 'none'); // Esconde erros
+    }
+
+
+     function exportToTxt() {
+         if (transactions.length === 0) {
+             alert('Nenhuma transação para exportar.');
+             return;
+         }
+
+         let textContent = 'Relatório Kwid\n================\n\n';
+         textContent += 'Data\t\tTipo\t\tDetalhe\t\tValor (R$)\n'; // Ajuste na tabulação
+         textContent += '----------------------------------------------------\n'; // Linha separadora
+
+         transactions.forEach(t => {
+            // Usar um valor padrão ou tratar erro se formatDate falhar
+             const formattedDate = t.date ? formatDate(t.date) : 'Inválida';
+             const value = t.amount.toFixed(2);
+             // Adiciona sinal de + ou - para clareza
+             const signalValue = t.amount > 0 ? `+${value}` : value;
+             textContent += `${formattedDate}\t${t.type || 'N/A'}\t\t${t.detail || 'N/A'}\t\t${signalValue}\n`;
+         });
+
+         const { totalExpenses, totalIncome, balance } = calculateTotals();
+
+         textContent += '\n================\nResumo:\n';
+         textContent += `Total de Custos: R$ ${totalExpenses.toFixed(2)}\n`;
+         textContent += `Total de Ganhos: R$ ${totalIncome.toFixed(2)}\n`;
+         textContent += `Lucro Líquido:   R$ ${balance.toFixed(2)}\n`;
+
+         const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' }); // Especifica charset
+         const url = URL.createObjectURL(blob);
+         const a = document.createElement('a');
+         a.href = url;
+         // Nome do arquivo mais descritivo
+         a.download = `relatorio_kwid_${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}.txt`;
+         document.body.appendChild(a); // Necessário para Firefox
+         a.click();
+         document.body.removeChild(a); // Limpa o elemento
+         URL.revokeObjectURL(url);
+     }
+
+     // Separa o cálculo dos totais em uma função
+     function calculateTotals() {
+         const totalExpenses = transactions
+             .filter(t => t.amount < 0)
+             .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+         const totalIncome = transactions
+             .filter(t => t.amount > 0)
+             .reduce((sum, t) => sum + t.amount, 0);
+         const balance = totalIncome - totalExpenses;
+         return { totalExpenses, totalIncome, balance };
+     }
+
+      // Separa o cálculo e exibição do relatório
+      function calculateAndDisplayReport() {
+         const maintenanceCost = transactions
+             .filter(t => t.type === 'Manutenção')
+             .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+         const fuelCost = transactions
+             .filter(t => t.type === 'Abastecimento')
+             .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+         const income99 = transactions
+             .filter(t => t.type === 'Ganho' && t.detail === '99')
+             .reduce((sum, t) => sum + t.amount, 0);
+         const incomeUber = transactions
+             .filter(t => t.type === 'Ganho' && t.detail === 'Uber')
+             .reduce((sum, t) => sum + t.amount, 0);
+
+         const { totalExpenses, totalIncome, balance } = calculateTotals(); // Reutiliza o cálculo
+
+         // Atualiza os spans corretos dentro dos LIs do relatório
+         document.getElementById('report-maintenance').textContent = maintenanceCost.toFixed(2);
+         document.getElementById('report-fuel').textContent = fuelCost.toFixed(2);
+         document.getElementById('report-total-expenses').textContent = totalExpenses.toFixed(2);
+         document.getElementById('report-income-99').textContent = income99.toFixed(2);
+         document.getElementById('report-income-uber').textContent = incomeUber.toFixed(2);
+         document.getElementById('report-total-income').textContent = totalIncome.toFixed(2);
+         document.getElementById('report-balance').textContent = balance.toFixed(2);
+
+         return { maintenanceCost, fuelCost, totalExpenses, income99, incomeUber, totalIncome, balance };
+      }
+
+
+     function showReport() {
+       const reportDiv = document.getElementById('report');
+       if (!reportDiv) return; // Segurança
+
+       const isVisible = reportDiv.style.display === 'block';
+
+       if (isVisible) {
+         reportDiv.style.display = 'none';
+       } else {
+         if (transactions.length === 0) {
+             alert('Não há transações para gerar o relatório.');
+             return;
+         }
+         calculateAndDisplayReport(); // Calcula e exibe os dados
+         reportDiv.style.display = 'block'; // Mostra o relatório
+         reportDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); // Rola para o relatório
+       }
+     }
+
+    function updateUI() {
+        const { totalExpenses, totalIncome, balance } = calculateTotals();
+        const tbody = document.getElementById('transaction-body');
+
+        // Atualiza o resumo
+        document.getElementById('total-expenses').textContent = `R$ ${totalExpenses.toFixed(2)}`;
+        document.getElementById('total-income').textContent = `R$ ${totalIncome.toFixed(2)}`;
+        document.getElementById('balance').textContent = `R$ ${balance.toFixed(2)}`;
+
+
+        if (!tbody) return; // Segurança
+        tbody.innerHTML = ''; // Limpa a tabela
+
+        if (transactions.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 20px;">Nenhuma transação registrada.</td></tr>';
+            return; // Sai se não houver transações
+        }
+
+        transactions.forEach(t => {
+            const row = document.createElement('tr');
+            const className = t.amount < 0 ? 'cost' : 'income';
+            // Usar um valor padrão ou tratar erro se formatDate falhar
+            const formattedDate = t.date ? formatDate(t.date) : 'Inválida';
+
+            row.innerHTML = `
+                <td>${formattedDate}</td>
+                <td>${t.detail || 'N/A'} (${t.type || 'N/A'})</td>
+                <td class="${className}" style="text-align: right;">${Math.abs(t.amount).toFixed(2)}</td>
+                <td style="text-align: center;"><button class="delete-btn" title="Excluir transação" onclick="deleteTransaction(${t.id})">X</button></td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+
+     // Inicializar a interface na carga da página
+     document.addEventListener('DOMContentLoaded', () => {
+         updateUI(); // Atualiza totais e tabela
+         showTab('income'); // Garante que a aba inicial seja exibida corretamente
+     });
+
+   </script>
+</body>
+</html>
