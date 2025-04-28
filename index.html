@@ -1,945 +1,735 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kwid+</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      --primary-hue: 230;
-      --accent-hue: 160;
-      --primary-color: hsl(var(--primary-hue), 70%, 55%);
-      --primary-dark: hsl(var(--primary-hue), 70%, 45%);
-      --primary-light: hsl(var(--primary-hue), 70%, 95%);
-      --accent-color: hsl(var(--accent-hue), 65%, 45%);
-      --accent-dark: hsl(var(--accent-hue), 65%, 35%);
-      --danger-color: hsl(0, 70%, 60%);
-      --danger-dark: hsl(0, 70%, 50%);
-      --bg-color: #f8fafc;
-      --card-bg: #ffffff;
-      --text-color: #1e293b;
-      --text-muted: #64748b;
-      --border-color: #e2e8f0;
-      --white-color: #ffffff;
-      --primary-gradient: linear-gradient(to right, hsl(var(--primary-hue), 70%, 60%), hsl(var(--primary-hue), 75%, 50%));
-      --accent-gradient: linear-gradient(to right, hsl(var(--accent-hue), 65%, 50%), hsl(var(--accent-hue), 70%, 40%));
-      --border-radius-sm: 6px;
-      --border-radius-md: 8px;
-      --border-radius-lg: 12px;
-      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
-      --spacing-unit: 0.5rem;
-      --font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      --transition-speed: 0.2s;
-    }
-
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html { font-size: 16px; scroll-behavior: smooth; }
-
-    body {
-      font-family: var(--font-family-base);
-      line-height: 1.6;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      padding: calc(var(--spacing-unit) * 2);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-    }
-
-    .container {
-      background-color: var(--card-bg);
-      padding: calc(var(--spacing-unit) * 4);
-      border-radius: var(--border-radius-lg);
-      box-shadow: var(--shadow-lg);
-      width: 100%;
-      max-width: 550px;
-      margin-top: calc(var(--spacing-unit) * 2);
-      transition: all var(--transition-speed) ease-out;
-    }
-
-    h1 {
-      color: var(--primary-color);
-      font-size: 2rem;
-      margin-bottom: calc(var(--spacing-unit) * 4);
-      text-align: center;
-      font-weight: 700;
-    }
-
-    h2 {
-      font-size: 1.25rem;
-      color: var(--text-color);
-      font-weight: 600;
-      margin-top: calc(var(--spacing-unit) * 4);
-      margin-bottom: calc(var(--spacing-unit) * 3);
-      padding-bottom: calc(var(--spacing-unit) * 1.5);
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    .tabs {
-      display: flex;
-      gap: calc(var(--spacing-unit) * 2);
-      margin-bottom: calc(var(--spacing-unit) * 4);
-      background-color: hsl(var(--primary-hue), 70%, 98%);
-      padding: var(--spacing-unit);
-      border-radius: var(--border-radius-md);
-      flex-wrap: wrap;
-    }
-
-    .tab-btn {
-      flex: 1;
-      padding: calc(var(--spacing-unit) * 1.5) var(--spacing-unit);
-      font-size: 0.95rem;
-      font-weight: 600;
-      background-color: transparent;
-      color: var(--text-muted);
-      border: none;
-      border-radius: var(--border-radius-sm);
-      cursor: pointer;
-      text-align: center;
-      transition: all var(--transition-speed) ease-out;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .tab-btn:hover {
-      color: var(--primary-dark);
-      background-color: hsl(var(--primary-hue), 70%, 92%);
-    }
-
-    .tab-btn.active {
-      background-color: var(--primary-color);
-      color: var(--white-color);
-      box-shadow: var(--shadow-md);
-      transform: translateY(-2px);
-    }
-
-    .tab-btn:active {
-      transform: scale(0.97) translateY(0);
-    }
-
-    .form-section {
-      display: none;
-      animation: slideUpFadeIn 0.4s ease-out;
-    }
-    .form-section.active { display: block; }
-
-    @keyframes slideUpFadeIn {
-      from { opacity: 0; transform: translateY(15px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    label {
-      display: block;
-      font-size: 0.9rem;
-      font-weight: 500;
-      margin-bottom: var(--spacing-unit);
-      color: var(--text-muted);
-    }
-
-    input[type="date"],
-    input[type="number"],
-    select {
-      width: 100%;
-      padding: calc(var(--spacing-unit) * 1.75);
-      margin-bottom: calc(var(--spacing-unit) * 2.5);
-      border: 1px solid var(--border-color);
-      border-radius: var(--border-radius-md);
-      font-size: 1rem;
-      background-color: var(--card-bg);
-      color: var(--text-color);
-      transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
-      font-family: inherit;
-    }
-    input:focus, select:focus {
-      outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px hsl(var(--primary-hue), 70%, 55%, 0.2);
-    }
-    input::placeholder { color: #94a3b8; opacity: 1; }
-    select option[disabled] { color: #94a3b8; }
-
-    select {
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%2364748b'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd' /%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right calc(var(--spacing-unit) * 1.5) center;
-      background-size: 1.5em 1.5em;
-      padding-right: calc(var(--spacing-unit) * 5);
-    }
-
-    button {
-      width: 100%;
-      padding: calc(var(--spacing-unit) * 2);
-      margin-top: var(--spacing-unit);
-      margin-bottom: calc(var(--spacing-unit) * 3);
-      border: none;
-      border-radius: var(--border-radius-md);
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all var(--transition-speed) ease-out;
-      -webkit-tap-highlight-color: transparent;
-      text-shadow: 0 1px 1px rgba(0,0,0,0.1);
-    }
-    button:active {
-      transform: scale(0.98) translateY(1px);
-      box-shadow: none;
-    }
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
-    }
-
-    .add-btn {
-      background-image: var(--accent-gradient);
-      color: var(--white-color);
-    }
-    .action-btn {
-      background-image: var(--primary-gradient);
-      color: var(--white-color);
-    }
-    .add-btn:hover, .action-btn:hover {
-      filter: brightness(1.1);
-      box-shadow: 0 6px 12px -2px hsl(var(--accent-hue), 65%, 45%, 0.3);
-    }
-
-    .delete-btn {
-      background-color: transparent;
-      color: var(--danger-color);
-      padding: calc(var(--spacing-unit) * 1) calc(var(--spacing-unit) * 1.5);
-      font-size: 1rem;
-      font-weight: bold;
-      border-radius: 50%;
-      width: auto;
-      line-height: 1;
-      margin: 0;
-      box-shadow: none;
-      text-shadow: none;
-      border: 1px solid transparent;
-    }
-    .delete-btn:hover {
-      background-color: hsl(0, 70%, 60%, 0.1);
-      color: var(--danger-dark);
-      transform: scale(1.1);
-      border-color: hsl(0, 70%, 60%, 0.2);
-    }
-    .delete-btn:active {
-      transform: scale(0.95);
-      background-color: hsl(0, 70%, 60%, 0.2);
-    }
-
-    .file-input {
-      display: block;
-      width: 100%;
-      padding: calc(var(--spacing-unit) * 1.5);
-      margin-top: var(--spacing-unit);
-      margin-bottom: calc(var(--spacing-unit) * 3);
-      border: 1px solid var(--border-color);
-      border-radius: var(--border-radius-md);
-      font-size: 0.95rem;
-      color: var(--text-color);
-      background-color: var(--card-bg);
-      cursor: pointer;
-    }
-    .file-input::-webkit-file-upload-button {
-      background: var(--primary-gradient);
-      color: var(--white-color);
-      border: none;
-      padding: calc(var(--spacing-unit) * 1.5);
-      border-radius: var(--border-radius-sm);
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .option-buttons {
-      display: flex;
-      gap: calc(var(--spacing-unit) * 2);
-      margin-bottom: calc(var(--spacing-unit) * 2.5);
-    }
-
-    .option-btn {
-      flex: 1;
-      padding: calc(var(--spacing-unit) * 1.5);
-      border: 1px solid var(--border-color);
-      border-radius: var(--border-radius-md);
-      background-color: var(--card-bg);
-      color: var(--text-color);
-      font-size: 1rem;
-      font-weight: 500;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: calc(var(--spacing-unit));
-      transition: all var(--transition-speed) ease;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .option-btn:hover {
-      border-color: var(--primary-color);
-      background-color: hsl(var(--primary-hue), 70%, 98%);
-    }
-
-    .option-btn.selected {
-      background-color: var(--primary-color);
-      color: var(--white-color);
-      border-color: var(--primary-dark);
-      box-shadow: 0 0 0 3px hsl(var(--primary-hue), 70%, 55%, 0.2);
-    }
-
-    .option-btn:active {
-      transform: scale(0.98);
-    }
-
-    .option-btn svg {
-      width: 24px;
-      height: 24px;
-      fill: currentColor;
-    }
-
-    .invalid {
-      border-color: var(--danger-color);
-      box-shadow: 0 0 0 3px hsl(0, 70%, 60%, 0.2);
-    }
-
-    .summary {
-      background-color: var(--primary-light);
-      padding: calc(var(--spacing-unit) * 3);
-      margin: calc(var(--spacing-unit) * 4) 0;
-      border-radius: var(--border-radius-md);
-      border: 1px solid hsl(var(--primary-hue), 70%, 90%);
-      box-shadow: var(--shadow-sm);
-    }
-    .summary p {
-      margin-bottom: calc(var(--spacing-unit) * 1.5);
-      font-size: 1.05rem;
-      font-weight: 500;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .summary p:last-child { margin-bottom: 0; }
-    .summary span {
-      font-weight: 700;
-      font-size: 1.1rem;
-      padding: calc(var(--spacing-unit) * 0.5) calc(var(--spacing-unit) * 1.5);
-      border-radius: var(--border-radius-sm);
-      background-color: rgba(255, 255, 255, 0.5);
-    }
-    #total-expenses { color: var(--danger-color); }
-    #total-income { color: var(--accent-color); }
-    #balance { color: var(--primary-color); }
-
-    #report {
-      display: none;
-      margin: calc(var(--spacing-unit) * 4) 0;
-      padding: calc(var(--spacing-unit) * 3);
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: var(--border-radius-md);
-      box-shadow: var(--shadow-md);
-      animation: slideUpFadeIn 0.4s ease-out;
-    }
-    #report h3 {
-      margin-bottom: calc(var(--spacing-unit) * 3);
-      font-size: 1.15rem;
-      font-weight: 600;
-      color: var(--text-color);
-    }
-    #report ul { list-style: none; padding: 0; margin: 0; }
-    #report li {
-      margin-bottom: calc(var(--spacing-unit) * 1.5);
-      font-size: 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: calc(var(--spacing-unit) * 1.5);
-      border-bottom: 1px dashed var(--border-color);
-    }
-    #report li:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-    #report li span { font-weight: 600; }
-    #report-maintenance, #report-fuel, #report-total-expenses { color: var(--danger-color); }
-    #report-income-99, #report-income-uber, #report-total-income { color: var(--accent-color); }
-    #report-balance { color: var(--primary-color); }
-
-    .table-container {
-      overflow-x: auto;
-      margin-top: var(--spacing-unit);
-      border: 1px solid var(--border-color);
-      border-radius: var(--border-radius-md);
-      box-shadow: var(--shadow-sm);
-      background-color: var(--card-bg);
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.95rem;
-    }
-    th, td {
-      padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 2.5);
-      text-align: left;
-      border-bottom: 1px solid var(--border-color);
-      white-space: nowrap;
-    }
-    th {
-      background-color: var(--bg-color);
-      font-weight: 600;
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      letter-spacing: 0.5px;
-      border-bottom-width: 2px;
-    }
-    th:first-child { border-top-left-radius: var(--border-radius-md); }
-    th:last-child { border-top-right-radius: var(--border-radius-md); }
-    tbody tr:last-child td { border-bottom: none; }
-    tbody tr:hover { background-color: hsl(var(--primary-hue), 70%, 98%); }
-    td:nth-child(3) { text-align: right; font-weight: 600; }
-    td:nth-child(4) { text-align: center; }
-    .cost { color: var(--danger-color); }
-    .income { color: var(--accent-color); }
-
-    .error {
-      color: var(--danger-dark);
-      background-color: hsl(0, 70%, 95%);
-      border: 1px solid hsl(0, 70%, 85%);
-      border-left: 4px solid var(--danger-color);
-      border-radius: var(--border-radius-sm);
-      padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 2);
-      margin-top: var(--spacing-unit);
-      margin-bottom: calc(var(--spacing-unit) * 2.5);
-      font-size: 0.9rem;
-      font-weight: 500;
-      display: none;
-    }
-
-    @media (max-width: 600px) {
-      html { font-size: 15px; }
-      body { padding: var(--spacing-unit); }
-      .container {
-        padding: calc(var(--spacing-unit) * 3);
-        margin-top: var(--spacing-unit);
-        border-radius: var(--border-radius-md);
-        box-shadow: var(--shadow-md);
-      }
-      h1 { font-size: 1.75rem; margin-bottom: calc(var(--spacing-unit) * 3); }
-      .tabs {
-        gap: var(--spacing-unit);
-        padding: calc(var(--spacing-unit) * 0.5);
-        margin-bottom: calc(var(--spacing-unit) * 3);
-        flex-wrap: wrap;
-      }
-      .tab-btn {
-        font-size: 0.9rem;
-        padding: calc(var(--spacing-unit) * 1.25);
-        min-width: 80px;
-      }
-      th, td { padding: calc(var(--spacing-unit) * 1.5) var(--spacing-unit); }
-      .option-buttons { flex-direction: column; }
-      .option-btn { padding: calc(var(--spacing-unit) * 2); }
-    }
-  </style>
-</head>
-<body>
-  <h1>Kwid+</h1>
-
-  <div class="container">
-    <div class="tabs">
-      <button class="tab-btn active" onclick="showTab('income')">Ganhos</button>
-      <button class="tab-btn" onclick="showTab('fuel')">Abastecer</button>
-      <button class="tab-btn" onclick="showTab('maintenance')">Manutenção</button>
-      <button class="tab-btn" onclick="showTab('backup')">Backup</button>
-    </div>
-
-    <div class="form-section active" id="income">
-      <h2>Adicionar Ganho</h2>
-      <label for="income-date">Data</label>
-      <input type="date" id="income-date" required>
-      <label>Plataforma</label>
-      <div class="option-buttons" id="income-platform" role="radiogroup" aria-label="Seleção de plataforma">
-        <button type="button" class="option-btn" data-value="Uber" aria-label="Selecionar Uber" onclick="selectOption('income-platform', 'Uber')">
-          <svg viewBox="0 0 24 24">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm-1-6h2v4h-2v-4zm0-2h2v2h-2v-2z"/>
-            <text x="12" y="14" font-size="8" text-anchor="middle" fill="currentColor">U</text>
-          </svg>
-          Uber
-        </button>
-        <button type="button" class="option-btn" data-value="99" aria-label="Selecionar 99" onclick="selectOption('income-platform', '99')">
-          <svg viewBox="0 0 24 24">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/>
-            <text x="12" y="14" font-size="8" text-anchor="middle" fill="currentColor">99</text>
-          </svg>
-          99
-        </button>
-      </div>
-      <label for="income-amount">Valor (R$)</label>
-      <input type="number" id="income-amount" placeholder="Ex: 150.50" step="0.01" inputmode="decimal" required>
-      <div class="error" id="income-error">Preencha todos os campos corretamente.</div>
-      <button class="add-btn" onclick="addIncome()">Adicionar Ganho</button>
-    </div>
-
-    <div class="form-section" id="fuel">
-      <h2>Adicionar Abastecimento</h2>
-      <label for="fuel-date">Data</label>
-      <input type="date" id="fuel-date" required>
-      <label>Combustível</label>
-      <div class="option-buttons" id="fuel-type" role="radiogroup" aria-label="Seleção de combustível">
-        <button type="button" class="option-btn" data-value="Gasolina" aria-label="Selecionar Gasolina" onclick="selectOption('fuel-type', 'Gasolina')">
-          <svg viewBox="0 0 24 24">
-            <path d="M7 2v2H5v18h14V4h-2V2H7zm2 2h6v2H9V4zm-2 4h10v12H7V8zm3 2v2h4v-2h-4zm0 4v2h4v-2h-4z"/>
-          </svg>
-          Gasolina
-        </button>
-        <button type="button" class="option-btn" data-value="Etanol" aria-label="Selecionar Etanol" onclick="selectOption('fuel-type', 'Etanol')">
-          <svg viewBox="0 0 24 24">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm-2-4c0-1.1.9-2 2-2s2 .9 2 2h-2v2h-2v-2z"/>
-          </svg>
-          Etanol
-        </button>
-      </div>
-      <label for="fuel-amount">Valor (R$)</label>
-      <input type="number" id="fuel-amount" placeholder="Ex: 120.00" step="0.01" inputmode="decimal" required>
-      <div class="error" id="fuel-error">Preencha todos os campos corretamente.</div>
-      <button class="add-btn" onclick="addFuel()">Adicionar Abastecimento</button>
-    </div>
-
-    <div class="form-section" id="maintenance">
-      <h2>Adicionar Manutenção</h2>
-      <label for="maintenance-date">Data</label>
-      <input type="date" id="maintenance-date" required>
-      <label for="maintenance-type">Tipo de Manutenção</label>
-      <select id="maintenance-type" required>
-        <option value="" disabled selected>Selecione o Tipo</option>
-        <option value="Óleo do motor">Óleo do motor</option>
-        <option value="Filtro de óleo">Filtro de óleo</option>
-        <option value="Filtro de ar">Filtro de ar</option>
-        <option value="Filtro de combustível">Filtro de combustível</option>
-        <option value="Filtro de ar-condicionado">Filtro de ar-condicionado</option>
-        <option value="Velas de ignição">Velas de ignição</option>
-        <option value="Correia de acessórios">Correia de acessórios</option>
-        <option value="Fluido de freio">Fluido de freio</option>
-        <option value="Pastilhas de freio">Pastilhas de freio</option>
-        <option value="Pneus">Pneus</option>
-        <option value="Amortecedores">Amortecedores</option>
-        <option value="Bateria">Bateria</option>
-        <option value="Palhetas do limpador">Palhetas do limpador</option>
-        <option value="Lâmpadas dos faróis">Lâmpadas dos faróis</option>
-        <option value="Outros">Outros</option>
-      </select>
-      <label for="maintenance-amount">Valor (R$)</label>
-      <input type="number" id="maintenance-amount" placeholder="Ex: 350.00" step="0.01" inputmode="decimal" required>
-      <div class="error" id="maintenance-error">Preencha todos os campos corretamente.</div>
-      <button class="add-btn" onclick="addMaintenance()">Adicionar Manutenção</button>
-    </div>
-
-    <div class="form-section" id="backup">
-      <h2>Backup e Exportação</h2>
-      <button class="action-btn" onclick="exportToTxt()">Exportar Relatório TXT</button>
-      <button class="action-btn" onclick="exportBackup()">Exportar Backup (JSON)</button>
-      <label for="import-backup">Importar Backup</label>
-      <input type="file" class="file-input" id="import-backup" accept=".json" onchange="importBackup(event)">
-      <div class="error" id="backup-error">Erro ao processar o arquivo. Verifique se é um backup válido.</div>
-    </div>
-
-    <div class="action-buttons" style="display: flex; gap: var(--spacing-unit) * 2; margin-top: calc(var(--spacing-unit) * 2);">
-      <button class="action-btn" onclick="showReport()">Ver Relatório</button>
-    </div>
-
-    <div class="summary">
-      <p>Total de Custos: <span id="total-expenses">R$ 0.00</span></p>
-      <p>Total de Ganhos: <span id="total-income">R$ 0.00</span></p>
-      <p>Lucro Líquido: <span id="balance">R$ 0.00</span></p>
-    </div>
-
-    <div id="report">
-      <h3>Relatório Detalhado</h3>
-      <ul>
-        <li>Manutenção: <span>R$ <span id="report-maintenance">0.00</span></span></li>
-        <li>Combustível: <span>R$ <span id="report-fuel">0.00</span></span></li>
-        <li>Total Custos: <span>R$ <span id="report-total-expenses">0.00</span></span></li>
-        <li>Ganhos 99: <span>R$ <span id="report-income-99">0.00</span></span></li>
-        <li>Ganhos Uber: <span>R$ <span id="report-income-uber">0.00</span></span></li>
-        <li>Total Ganhos: <span>R$ <span id="report-total-income">0.00</span></span></li>
-        <li>Lucro Líquido: <span>R$ <span id="report-balance">0.00</span></span></li>
-      </ul>
-    </div>
-
-    <h2>Histórico de Transações</h2>
-    <div class="table-container">
-      <table id="transaction-table">
-        <thead>
-          <tr>
-            <th>Data</th>
-            <th>Detalhe</th>
-            <th>Valor (R$)</th>
-            <th>Ação</th>
-          </tr>
-        </thead>
-        <tbody id="transaction-body"></tbody>
-      </table>
-    </div>
-  </div>
-
-  <script>
-    let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
-
-    function formatDate(dateString) {
-      const date = new Date(dateString + 'T00:00:00');
-      if (isNaN(date.getTime())) {
-        return 'Data inválida';
-      }
-      return date.toLocaleDateString('pt-BR');
-    }
-
-    function saveTransactions() {
-      localStorage.setItem('transactions', JSON.stringify(transactions));
-    }
-
-    function showTab(tabId) {
-      document.querySelectorAll('.form-section').forEach(section => {
-        section.classList.remove('active');
-      });
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-      });
-      document.getElementById(tabId)?.classList.add('active');
-      document.querySelector(`.tab-btn[onclick="showTab('${tabId}')"]`)?.classList.add('active');
-      const reportDiv = document.getElementById('report');
-      if (reportDiv) {
-        reportDiv.style.display = 'none';
-      }
-    }
-
-    function showError(section, message = 'Preencha todos os campos corretamente.') {
-      const errorDiv = document.getElementById(`${section}-error`);
-      if (!errorDiv) return;
-      errorDiv.textContent = message;
-      errorDiv.style.display = 'block';
-      const formSection = document.getElementById(section);
-      const firstInvalid = formSection?.querySelector('input:invalid, .option-buttons.invalid');
-      firstInvalid?.focus();
-      setTimeout(() => {
-        if (errorDiv) {
-          errorDiv.style.display = 'none';
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kwid+ - Controle Financeiro</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
         }
-      }, 4000);
-    }
-
-    function selectOption(groupId, value) {
-      const group = document.getElementById(groupId);
-      if (!group) return;
-      group.querySelectorAll('.option-btn').forEach(btn => {
-        btn.classList.remove('selected');
-        btn.setAttribute('aria-selected', 'false');
-      });
-      const selectedBtn = group.querySelector(`.option-btn[data-value="${value}"]`);
-      if (selectedBtn) {
-        selectedBtn.classList.add('selected');
-        selectedBtn.setAttribute('aria-selected', 'true');
-        group.dataset.value = value;
-        group.classList.remove('invalid');
-      }
-    }
-
-    function addTransaction(section, type, detailGetter, amountGetter) {
-      const dateInput = document.getElementById(`${section}-date`);
-      const detailInput = detailGetter();
-      const amountInput = amountInput ? amountGetter() : null;
-      const date = dateInput?.value;
-      const detail = detailInput || '';
-      const amount = amountInput ? parseFloat(amountInput.value) : NaN;
-      const isExpense = (section === 'fuel' || section === 'maintenance');
-
-      let isValid = true;
-      const formSection = document.getElementById(section);
-      if (!formSection) return;
-      formSection.querySelectorAll('input[required]').forEach(el => {
-        if (!el.checkValidity()) {
-          isValid = false;
-          el.classList.add('invalid');
-        } else {
-          el.classList.remove('invalid');
+        .tab-content {
+            display: none;
         }
-      });
-
-      const optionGroup = formSection.querySelector('.option-buttons');
-      if (optionGroup && !optionGroup.dataset.value) {
-        isValid = false;
-        optionGroup.classList.add('invalid');
-      } else {
-        optionGroup?.classList.remove('invalid');
-      }
-
-      if (!date || !detail || isNaN(amount) || amount <= 0 || !isValid) {
-        showError(section);
-        return;
-      }
-
-      transactions.push({
-        id: Date.now(),
-        date,
-        type: type,
-        detail: detail,
-        amount: isExpense ? -amount : amount
-      });
-
-      transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
-      saveTransactions();
-      updateUI();
-      clearForm(section);
-    }
-
-    function addMaintenance() {
-      addTransaction(
-        'maintenance',
-        'Manutenção',
-        () => document.getElementById('maintenance-type').value,
-        () => document.getElementById('maintenance-amount')
-      );
-    }
-
-    function addFuel() {
-      addTransaction(
-        'fuel',
-        'Abastecimento',
-        () => document.getElementById('fuel-type').dataset.value,
-        () => document.getElementById('fuel-amount')
-      );
-    }
-
-    function addIncome() {
-      addTransaction(
-        'income',
-        'Ganho',
-        () => document.getElementById('income-platform').dataset.value,
-        () => document.getElementById('income-amount')
-      );
-    }
-
-    function deleteTransaction(id) {
-      if (confirm('Tem certeza que deseja excluir esta transação?')) {
-        transactions = transactions.filter(t => t.id !== id);
-        saveTransactions();
-        updateUI();
-        const reportDiv = document.getElementById('report');
-        if (reportDiv && reportDiv.style.display === 'block') {
-          calculateAndDisplayReport();
+        .tab-content.active {
+            display: block;
         }
-      }
-    }
-
-    function clearForm(section) {
-      const form = document.getElementById(section);
-      if (!form) return;
-      form.querySelectorAll('input[type="date"], input[type="number"]').forEach(input => {
-        input.value = '';
-        input.classList.remove('invalid');
-      });
-      form.querySelectorAll('select').forEach(select => {
-        select.selectedIndex = 0;
-        select.classList.remove('invalid');
-      });
-      form.querySelectorAll('.option-buttons').forEach(group => {
-        group.querySelectorAll('.option-btn').forEach(btn => {
-          btn.classList.remove('selected');
-          btn.setAttribute('aria-selected', 'false');
-        });
-        group.dataset.value = '';
-        group.classList.remove('invalid');
-      });
-      form.querySelectorAll('.error').forEach(error => error.style.display = 'none');
-    }
-
-    function exportToTxt() {
-      if (transactions.length === 0) {
-        alert('Nenhuma transação para exportar.');
-        return;
-      }
-      let textContent = 'Relatório Kwid+\n================\n\n';
-      textContent += 'Data\t\tTipo\t\tDetalhe\t\tValor (R$)\n';
-      textContent += '----------------------------------------------------\n';
-      transactions.forEach(t => {
-        const formattedDate = t.date ? formatDate(t.date) : 'Inválida';
-        const value = t.amount.toFixed(2);
-        const signalValue = t.amount > 0 ? `+${value}` : value;
-        textContent += `${formattedDate}\t${t.type || 'N/A'}\t\t${t.detail || 'N/A'}\t\t${signalValue}\n`;
-      });
-      const { totalExpenses, totalIncome, balance } = calculateTotals();
-      textContent += '\n================\nResumo:\n';
-      textContent += `Total de Custos: R$ ${totalExpenses.toFixed(2)}\n`;
-      textContent += `Total de Ganhos: R$ ${totalIncome.toFixed(2)}\n`;
-      textContent += `Lucro Líquido:   R$ ${balance.toFixed(2)}\n`;
-      const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `relatorio_kwidplus_${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}.txt`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
-
-    function exportBackup() {
-      if (transactions.length === 0) {
-        alert('Nenhuma transação para exportar como backup.');
-        return;
-      }
-      const backupData = { transactions };
-      const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `kwidplus_backup_${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}.json`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
-
-    function importBackup(event) {
-      const file = event.target.files[0];
-      if (!file) {
-        showError('backup', 'Nenhum arquivo selecionado.');
-        return;
-      }
-      if (!file.name.endsWith('.json')) {
-        showError('backup', 'Por favor, selecione um arquivo JSON válido.');
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          const data = JSON.parse(e.target.result);
-          if (!data.transactions || !Array.isArray(data.transactions)) {
-            showError('backup', 'Arquivo inválido: não contém transações válidas.');
-            return;
-          }
-          const isValid = data.transactions.every(t =>
-            t.id && typeof t.id === 'number' &&
-            t.date && typeof t.date === 'string' &&
-            t.type && typeof t.type === 'string' &&
-            t.detail && typeof t.detail === 'string' &&
-            t.amount && typeof t.amount === 'number'
-          );
-          if (!isValid) {
-            showError('backup', 'Arquivo inválido: as transações não seguem o formato esperado.');
-            return;
-          }
-          if (confirm('Importar este backup substituirá todas as transações atuais. Deseja continuar?')) {
-            transactions = data.transactions;
-            transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
-            saveTransactions();
-            updateUI();
-            const reportDiv = document.getElementById('report');
-            if (reportDiv && reportDiv.style.display === 'block') {
-              calculateAndDisplayReport();
+        .advanced-section {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+        .advanced-section.show {
+            max-height: 500px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .filter-btn.active {
+            background-color: #4f46e5;
+            color: white;
+        }
+        .custom-button {
+            transition: transform 0.1s;
+        }
+        .custom-button:active {
+            transform: scale(0.95);
+        }
+        .selected {
+            border: 2px solid #4f46e5;
+            background-color: #e0e7ff;
+        }
+        @media print {
+            .no-print {
+                display: none;
             }
-            alert('Backup importado com sucesso!');
-            document.getElementById('import-backup').value = '';
-          }
-        } catch (error) {
-          showError('backup', 'Erro ao importar o backup: arquivo inválido ou corrompido.');
+            body {
+                background-color: white;
+            }
         }
-      };
-      reader.onerror = function() {
-        showError('backup', 'Erro ao ler o arquivo.');
-      };
-      reader.readAsText(file);
-    }
+    </style>
+</head>
+<body class="px-4 py-6 max-w-6xl mx-auto">
+    <header class="mb-6">
+        <h1 class="text-3xl font-bold text-gray-800 mb-4">Kwid+</h1>
+        <div class="bg-white rounded-lg shadow-md p-4">
+            <div class="flex flex-wrap gap-3">
+                <button id="btn-ganho" class="custom-button px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none">
+                    <i class="fas fa-plus-circle mr-2"></i>Ganho
+                </button>
+                <button id="btn-abastecimento" class="custom-button px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none">
+                    <i class="fas fa-gas-pump mr-2"></i>Abastecimento
+                </button>
+                <button id="btn-manutencao" class="custom-button px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none">
+                    <i class="fas fa-wrench mr-2"></i>Manutenção
+                </button>
+                <button id="btn-avancado" class="custom-button px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none ml-auto">
+                    <i class="fas fa-cog mr-2"></i>Avançado
+                </button>
+            </div>
+        </div>
+    </header>
 
-    function calculateTotals() {
-      const totalExpenses = transactions
-        .filter(t => t.amount < 0)
-        .reduce((sum, t) => sum + Math.abs(t.amount), 0);
-      const totalIncome = transactions
-        .filter(t => t.amount > 0)
-        .reduce((sum, t) => sum + t.amount, 0);
-      const balance = totalIncome - totalExpenses;
-      return { totalExpenses, totalIncome, balance };
-    }
+    <!-- Formulários -->
+    <div id="form-ganho" class="tab-content bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-xl font-semibold mb-4">Adicionar Ganho</h2>
+        <form id="ganho-form" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label for="ganho-data" class="block text-sm font-medium text-gray-700 mb-1">Data</label>
+                    <input type="date" id="ganho-data" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Plataforma</label>
+                    <div class="flex space-x-4">
+                        <button type="button" id="btn-ganho-uber" class="flex items-center justify-center p-2 bg-black text-white rounded-md" onclick="selectPlatform('Uber')">
+                            Uber
+                        </button>
+                        <button type="button" id="btn-ganho-99" class="flex items-center justify-center p-2 bg-yellow-500 text-black rounded-md" onclick="selectPlatform('99')">
+                            99
+                        </button>
+                        <button type="button" id="btn-ganho-outro" class="flex items-center justify-center p-2 bg-gray-300 text-black rounded-md" onclick="selectPlatform('Outro')">
+                            Outro
+                        </button>
+                    </div>
+                    <p id="selected-platform" class="mt-2 text-gray-600">Plataforma selecionada: <span id="platform-name">Nenhuma</span></p>
+                </div>
+                <div>
+                    <label for="ganho-valor" class="block text-sm font-medium text-gray-700 mb-1">Valor (R$)</label>
+                    <input type="number" id="ganho-valor" step="0.01" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                </div>
+            </div>
+            <div class="pt-2">
+                <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none">
+                    <i class="fas fa-save mr-2"></i>Salvar
+                </button>
+                <p id="ganho-error" class="text-red-600 mt-2 hidden">Preencha todos os campos corretamente.</p>
+            </div>
+        </form>
+    </div>
 
-    function calculateAndDisplayReport() {
-      const maintenanceCost = transactions
-        .filter(t => t.type === 'Manutenção')
-        .reduce((sum, t) => sum + Math.abs(t.amount), 0);
-      const fuelCost = transactions
-        .filter(t => t.type === 'Abastecimento')
-        .reduce((sum, t) => sum + Math.abs(t.amount), 0);
-      const income99 = transactions
-        .filter(t => t.type === 'Ganho' && t.detail === '99')
-        .reduce((sum, t) => sum + t.amount, 0);
-      const incomeUber = transactions
-        .filter(t => t.type === 'Ganho' && t.detail === 'Uber')
-        .reduce((sum, t) => sum + t.amount, 0);
-      const { totalExpenses, totalIncome, balance } = calculateTotals();
-      document.getElementById('report-maintenance').textContent = maintenanceCost.toFixed(2);
-      document.getElementById('report-fuel').textContent = fuelCost.toFixed(2);
-      document.getElementById('report-total-expenses').textContent = totalExpenses.toFixed(2);
-      document.getElementById('report-income-99').textContent = income99.toFixed(2);
-      document.getElementById('report-income-uber').textContent = incomeUber.toFixed(2);
-      document.getElementById('report-total-income').textContent = totalIncome.toFixed(2);
-      document.getElementById('report-balance').textContent = balance.toFixed(2);
-      return { maintenanceCost, fuelCost, totalExpenses, income99, incomeUber, totalIncome, balance };
-    }
+    <div id="form-abastecimento" class="tab-content bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-xl font-semibold mb-4">Adicionar Abastecimento</h2>
+        <form id="abastecimento-form" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label for="abastecimento-data" class="block text-sm font-medium text-gray-700 mb-1">Data</label>
+                    <input type="date" id="abastecimento-data" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Combustível</label>
+                    <div class="flex space-x-4">
+                        <button type="button" id="btn-gasolina" class="flex items-center justify-center p-2 bg-red-500 text-white rounded-md" onclick="selectFuel('Gasolina')">
+                            Gasolina
+                        </button>
+                        <button type="button" id="btn-etanol" class="flex items-center justify-center p-2 bg-green-500 text-white rounded-md" onclick="selectFuel('Etanol')">
+                            Etanol
+                        </button>
+                        <button type="button" id="btn-eletrico" class="flex items-center justify-center p-2 bg-yellow-500 text-white rounded-md" onclick="selectFuel('Elétrico')">
+                            Elétrico
+                        </button>
+                    </div>
+                    <p id="selected-fuel" class="mt-2 text-gray-600">Combustível selecionado: <span id="fuel-name">Nenhum</span></p>
+                </div>
+                <div>
+                    <label for="abastecimento-valor" class="block text-sm font-medium text-gray-700 mb-1">Valor (R$)</label>
+                    <input type="number" id="abastecimento-valor" step="0.01" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                </div>
+            </div>
+            <div class="pt-2">
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none">
+                    <i class="fas fa-save mr-2"></i>Salvar
+                </button>
+                <p id="abastecimento-error" class="text-red-600 mt-2 hidden">Preencha todos os campos corretamente.</p>
+            </div>
+        </form>
+    </div>
 
-    function showReport() {
-      const reportDiv = document.getElementById('report');
-      if (!reportDiv) return;
-      const isVisible = reportDiv.style.display === 'block';
-      if (isVisible) {
-        reportDiv.style.display = 'none';
-      } else {
-        if (transactions.length === 0) {
-          alert('Não há transações para gerar o relatório.');
-          return;
-        }
-        calculateAndDisplayReport();
-        reportDiv.style.display = 'block';
-        reportDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
-    }
+    <div id="form-manutencao" class="tab-content bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-xl font-semibold mb-4">Adicionar Manutenção</h2>
+        <form id="manutencao-form" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label for="manutencao-data" class="block text-sm font-medium text-gray-700 mb-1">Data</label>
+                    <input type="date" id="manutencao-data" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                </div>
+                <div>
+                    <label for="manutencao-tipo" class="block text-sm font-medium text-gray-700 mb-1">Tipo de Manutenção</label>
+                    <input type="text" id="manutencao-tipo" class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Ex: Troca de óleo">
+                </div>
+                <div>
+                    <label for="manutencao-valor" class="block text-sm font-medium text-gray-700 mb-1">Valor (R$)</label>
+                    <input type="number" id="manutencao-valor" step="0.01" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                </div>
+            </div>
+            <div class="pt-2">
+                <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none">
+                    <i class="fas fa-save mr-2"></i>Salvar
+                </button>
+                <p id="manutencao-error" class="text-red-600 mt-2 hidden">Preencha todos os campos corretamente.</p>
+            </div>
+        </form>
+    </div>
 
-    function updateUI() {
-      const { totalExpenses, totalIncome, balance } = calculateTotals();
-      const tbody = document.getElementById('transaction-body');
-      document.getElementById('total-expenses').textContent = `R$ ${totalExpenses.toFixed(2)}`;
-      document.getElementById('total-income').textContent = `R$ ${totalIncome.toFixed(2)}`;
-      document.getElementById('balance').textContent = `R$ ${balance.toFixed(2)}`;
-      if (!tbody) return;
-      tbody.innerHTML = '';
-      if (transactions.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 20px;">Nenhuma transação registrada.</td></tr>';
-        return;
-      }
-      transactions.forEach(t => {
-        const row = document.createElement('tr');
-        const className = t.amount < 0 ? 'cost' : 'income';
-        const formattedDate = t.date ? formatDate(t.date) : 'Inválida';
-        row.innerHTML = `
-          <td>${formattedDate}</td>
-          <td>${t.detail || 'N/A'} (${t.type || 'N/A'})</td>
-          <td class="${className}" style="text-align: right;">${Math.abs(t.amount).toFixed(2)}</td>
-          <td style="text-align: center;"><button class="delete-btn" title="Excluir transação" onclick="deleteTransaction(${t.id})">X</button></td>
-        `;
-        tbody.appendChild(row);
-      });
-    }
+    <!-- Seção Avançada -->
+    <div id="advanced-section" class="advanced-section mb-6">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4">Backup e Exportação</h2>
+            <div class="flex flex-wrap gap-4">
+                <button id="btn-backup" class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none">
+                    <i class="fas fa-download mr-2"></i>Exportar Backup
+                </button>
+                <div class="flex-1">
+                    <label for="import-backup" class="block text-sm font-medium text-gray-700 mb-1">Importar Backup</label>
+                    <input type="file" id="import-backup" class="w-full" accept=".json">
+                </div>
+                <button id="btn-limpar" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none">
+                    <i class="fas fa-trash-alt mr-2"></i>Limpar Dados
+                </button>
+            </div>
+            <p id="backup-error" class="text-red-600 mt-2 hidden">Erro ao processar o arquivo. Verifique se é um backup válido.</p>
+        </div>
+    </div>
 
-    document.addEventListener('DOMContentLoaded', () => {
-      updateUI();
-      showTab('income');
-    });
-  </script>
+    <!-- Resumo Financeiro -->
+    <section class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-semibold">Resumo Financeiro</h2>
+            <div class="flex gap-2">
+                <button data-filter="all" class="filter-btn active px-3 py-1 text-sm bg-gray-200 rounded-md hover:bg-gray-300">Todos</button>
+                <button data-filter="day" class="filter-btn px-3 py-1 text-sm bg-gray-200 rounded-md hover:bg-gray-300">Dia</button>
+                <button data-filter="week" class="filter-btn px-3 py-1 text-sm bg-gray-200 rounded-md hover:bg-gray-300">Semana</button>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-red-50 p-4 rounded-lg border border-red-200">
+                <h3 class="text-lg font-medium text-red-700">Total de Custos</h3>
+                <p class="text-2xl font-bold text-red-800" id="total-custos">R$ 0.00</p>
+            </div>
+            <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                <h3 class="text-lg font-medium text-green-700">Total de Ganhos</h3>
+                <p class="text-2xl font-bold text-green-800" id="total-ganhos">R$ 0.00</p>
+            </div>
+            <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                <h3 class="text-lg font-medium text-blue-700">Lucro Líquido</h3>
+                <p class="text-2xl font-bold text-blue-800" id="lucro-liquido">R$ 0.00</p>
+            </div>
+        </div>
+        <div class="mt-4 flex justify-end">
+            <button id="btn-ver-relatorio" class="px-4 py-2 bg-amber-600 text-white rounded-md hover:bg-amber-700 focus:outline-none">
+                <i class="fas fa-chart-bar mr-2"></i>Ver Relatório Detalhado
+            </button>
+        </div>
+    </section>
+    
+    <!-- Relatório Detalhado (inicialmente oculto) -->
+    <section id="relatorio-detalhado" class="bg-white rounded-lg shadow-md p-6 mb-6 hidden">
+        <h2 class="text-xl font-semibold mb-4">Relatório Detalhado</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <h3 class="text-lg font-medium mb-2">Custos</h3>
+                <ul class="space-y-2">
+                    <li class="flex justify-between">
+                        <span>Manutenção:</span>
+                        <span id="custo-manutencao">R$ 0.00</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>Combustível:</span>
+                        <span id="custo-combustivel">R$ 0.00</span>
+                    </li>
+                    <li class="flex justify-between font-semibold">
+                        <span>Total Custos:</span>
+                        <span id="relatorio-total-custos">R$ 0.00</span>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-lg font-medium mb-2">Ganhos</h3>
+                <ul class="space-y-2">
+                    <li class="flex justify-between">
+                        <span>Ganhos 99:</span>
+                        <span id="ganho-99">R$ 0.00</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>Ganhos Uber:</span>
+                        <span id="ganho-uber">R$ 0.00</span>
+                    </li>
+                    <li class="flex justify-between font-semibold">
+                        <span>Total Ganhos:</span>
+                        <span id="relatorio-total-ganhos">R$ 0.00</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="mt-4 pt-4 border-t border-gray-200">
+            <div class="flex justify-between text-lg font-semibold">
+                <span>Lucro Líquido:</span>
+                <span id="relatorio-lucro-liquido">R$ 0.00</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Histórico de Transações -->
+    <section class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-xl font-semibold mb-4">Histórico de Transações</h2>
+        <div class="overflow-x-auto">
+            <table class="min-w-full">
+                <thead>
+                    <tr class="bg-gray-100">
+                        <th class="py-2">Data</th>
+                        <th>Detalhe</th>
+                        <th>Valor (R$)</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody id="transaction-history">
+                    <!-- Histórico de transações será preenchido via JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        <div id="no-transactions" class="py-4 text-center text-gray-500">
+            Nenhuma transação encontrada.
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Estado da aplicação
+            let transactions = JSON.parse(localStorage.getItem('kwidPlus_transactions')) || [];
+            let currentFilter = 'all';
+            let tipoCombustivel = ''; // Variável para armazenar o tipo de combustível
+            let plataformaSelecionada = 'Nenhuma'; // Variável para armazenar a plataforma selecionada
+            
+            // Elementos DOM
+            const formGanho = document.getElementById('form-ganho');
+            const formAbastecimento = document.getElementById('form-abastecimento');
+            const formManutencao = document.getElementById('form-manutencao');
+            const advancedSection = document.getElementById('advanced-section');
+            const relatorioDetalhado = document.getElementById('relatorio-detalhado');
+            
+            // Erros
+            const ganhoError = document.getElementById('ganho-error');
+            const abastecimentoError = document.getElementById('abastecimento-error');
+            const manutencaoError = document.getElementById('manutencao-error');
+            const backupError = document.getElementById('backup-error');
+            
+            // Controle de abas
+            document.getElementById('btn-ganho').addEventListener('click', () => showTab('form-ganho'));
+            document.getElementById('btn-abastecimento').addEventListener('click', () => showTab('form-abastecimento'));
+            document.getElementById('btn-manutencao').addEventListener('click', () => showTab('form-manutencao'));
+            
+            // Botão avançado
+            document.getElementById('btn-avancado').addEventListener('click', toggleAdvancedSection);
+            
+            // Botões de filtro
+            document.querySelectorAll('.filter-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const filter = this.getAttribute('data-filter');
+                    setFilter(filter);
+                });
+            });
+            
+            // Ver relatório detalhado
+            document.getElementById('btn-ver-relatorio').addEventListener('click', toggleRelatorioDetalhado);
+            
+            // Backup e exportação
+            document.getElementById('btn-backup').addEventListener('click', exportBackup);
+            document.getElementById('import-backup').addEventListener('change', importBackup);
+            document.getElementById('btn-limpar').addEventListener('click', confirmClearData);
+            
+            // Formulários
+            document.getElementById('ganho-form').addEventListener('submit', addGanho);
+            document.getElementById('abastecimento-form').addEventListener('submit', addAbastecimento);
+            document.getElementById('manutencao-form').addEventListener('submit', addManutencao);
+            
+            // Inicializar data atual nos formulários
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('ganho-data').value = today;
+            document.getElementById('abastecimento-data').value = today;
+            document.getElementById('manutencao-data').value = today;
+            
+            // Funções de seleção de plataforma
+            window.selectPlatform = function(platform) {
+                plataformaSelecionada = platform;
+                document.getElementById('platform-name').textContent = plataformaSelecionada;
+
+                // Remover a classe 'selected' de todos os botões
+                document.querySelectorAll('#form-ganho button').forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+
+                // Adicionar a classe 'selected' ao botão clicado
+                document.getElementById(`btn-ganho-${platform.toLowerCase()}`).classList.add('selected');
+            };
+
+            // Funções de seleção de combustível
+            window.selectFuel = function(fuel) {
+                tipoCombustivel = fuel;
+                document.getElementById('fuel-name').textContent = tipoCombustivel;
+
+                // Remover a classe 'selected' de todos os botões
+                document.querySelectorAll('#form-abastecimento button').forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+
+                // Adicionar a classe 'selected' ao botão clicado
+                document.getElementById(`btn-${fuel.toLowerCase()}`).classList.add('selected');
+            };
+            
+            // Carregar dados iniciais
+            renderTransactions();
+            updateSummary();
+            
+            // Funções
+            function showTab(tabId) {
+                document.querySelectorAll('.tab-content').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                document.getElementById(tabId).classList.add('active');
+            }
+            
+            function toggleAdvancedSection() {
+                advancedSection.classList.toggle('show');
+            }
+            
+            function toggleRelatorioDetalhado() {
+                relatorioDetalhado.classList.toggle('hidden');
+                const btnText = relatorioDetalhado.classList.contains('hidden') ? 
+                    '<i class="fas fa-chart-bar mr-2"></i>Ver Relatório Detalhado' : 
+                    '<i class="fas fa-times mr-2"></i>Fechar Relatório';
+                document.getElementById('btn-ver-relatorio').innerHTML = btnText;
+            }
+            
+            function setFilter(filter) {
+                currentFilter = filter;
+                
+                // Atualizar classe ativa do botão
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    if (btn.getAttribute('data-filter') === filter) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+                
+                // Atualizar os dados com base no filtro
+                renderTransactions();
+                updateSummary();
+            }
+            
+            function addGanho(e) {
+                e.preventDefault();
+                
+                const data = document.getElementById('ganho-data').value;
+                const valor = parseFloat(document.getElementById('ganho-valor').value);
+                
+                if (!data || plataformaSelecionada === 'Nenhuma' || isNaN(valor) || valor <= 0) {
+                    ganhoError.classList.remove('hidden');
+                    return;
+                }
+                
+                ganhoError.classList.add('hidden');
+                
+                const transaction = {
+                    id: Date.now(),
+                    date: data,
+                    type: 'ganho',
+                    platform: plataformaSelecionada,
+                    details: `Ganho (${plataformaSelecionada})`,
+                    amount: valor
+                };
+                
+                transactions.push(transaction);
+                saveTransactions();
+                renderTransactions();
+                updateSummary();
+                
+                document.getElementById('ganho-valor').value = '';
+                plataformaSelecionada = 'Nenhuma'; // Resetar a plataforma após o envio
+                document.getElementById('platform-name').textContent = plataformaSelecionada;
+            }
+            
+            function addAbastecimento(e) {
+                e.preventDefault();
+                
+                const data = document.getElementById('abastecimento-data').value;
+                const valor = parseFloat(document.getElementById('abastecimento-valor').value);
+                
+                if (!data || !tipoCombustivel || isNaN(valor) || valor <= 0) {
+                    abastecimentoError.classList.remove('hidden');
+                    return;
+                }
+                
+                abastecimentoError.classList.add('hidden');
+                
+                const transaction = {
+                    id: Date.now(),
+                    date: data,
+                    type: 'abastecimento',
+                    fuelType: tipoCombustivel,
+                    details: `Abastecimento (${tipoCombustivel})`,
+                    amount: -valor
+                };
+                
+                transactions.push(transaction);
+                saveTransactions();
+                renderTransactions();
+                updateSummary();
+                
+                document.getElementById('abastecimento-valor').value = '';
+                tipoCombustivel = ''; // Resetar o tipo de combustível após o envio
+                document.getElementById('fuel-name').textContent = 'Nenhum';
+            }
+            
+            function addManutencao(e) {
+                e.preventDefault();
+                
+                const data = document.getElementById('manutencao-data').value;
+                const tipo = document.getElementById('manutencao-tipo').value;
+                const valor = parseFloat(document.getElementById('manutencao-valor').value);
+                
+                if (!data || !tipo || isNaN(valor) || valor <= 0) {
+                    manutencaoError.classList.remove('hidden');
+                    return;
+                }
+                
+                manutencaoError.classList.add('hidden');
+                
+                const transaction = {
+                    id: Date.now(),
+                    date: data,
+                    type: 'manutencao',
+                    maintenanceType: tipo,
+                    details: `Manutenção: ${tipo}`,
+                    amount: -valor
+                };
+                
+                transactions.push(transaction);
+                saveTransactions();
+                renderTransactions();
+                updateSummary();
+                
+                document.getElementById('manutencao-tipo').value = '';
+                document.getElementById('manutencao-valor').value = '';
+            }
+            
+            function renderTransactions() {
+                const filteredTransactions = filterTransactions();
+                const tbody = document.getElementById('transaction-history');
+                const noTransactions = document.getElementById('no-transactions');
+                
+                tbody.innerHTML = '';
+                
+                if (filteredTransactions.length === 0) {
+                    noTransactions.style.display = 'block';
+                    return;
+                }
+                
+                noTransactions.style.display = 'none';
+                
+                filteredTransactions.sort((a, b) => new Date(b.date) - new Date(a.date))
+                    .forEach(transaction => {
+                        const tr = document.createElement('tr');
+                        
+                        const formattedDate = formatDate(transaction.date);
+                        const formattedAmount = formatCurrency(Math.abs(transaction.amount));
+                        const isExpense = transaction.amount < 0;
+                        
+                        tr.innerHTML = `
+                            <td>${formattedDate}</td>
+                            <td>${transaction.details}</td>
+                            <td class="${isExpense ? 'text-red-600' : 'text-green-600'}">${isExpense ? '-' : ''}${formattedAmount}</td>
+                            <td>
+                                <button class="delete-btn p-1 text-red-600 hover:text-red-800" data-id="${transaction.id}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        `;
+                        
+                        tbody.appendChild(tr);
+                    });
+                
+                // Adicionar listeners aos botões de exclusão
+                document.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = parseInt(this.getAttribute('data-id'));
+                        deleteTransaction(id);
+                    });
+                });
+            }
+            
+            function filterTransactions() {
+                if (currentFilter === 'all') {
+                    return [...transactions];
+                }
+                
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                
+                if (currentFilter === 'day') {
+                    return transactions.filter(transaction => {
+                        const transactionDate = new Date(transaction.date);
+                        return transactionDate.getTime() === today.getTime();
+                    });
+                }
+                
+                if (currentFilter === 'week') {
+                    const firstDayOfWeek = new Date(today);
+                    const day = today.getDay() || 7; // Convertendo domingo (0) para 7
+                    firstDayOfWeek.setDate(today.getDate() - day + 1); // Segunda-feira
+                    
+                    return transactions.filter(transaction => {
+                        const transactionDate = new Date(transaction.date);
+                        return transactionDate >= firstDayOfWeek && transactionDate <= today;
+                    });
+                }
+                
+                return [...transactions];
+            }
+            
+            function updateSummary() {
+                const filteredTransactions = filterTransactions();
+                
+                let totalGanhos = 0;
+                let totalCustos = 0;
+                let ganho99 = 0;
+                let ganhoUber = 0;
+                let custoManutencao = 0;
+                let custoCombustivel = 0;
+                
+                filteredTransactions.forEach(transaction => {
+                    if (transaction.amount > 0) {
+                        totalGanhos += transaction.amount;
+                        
+                        if (transaction.platform === '99') {
+                            ganho99 += transaction.amount;
+                        } else if (transaction.platform === 'Uber') {
+                            ganhoUber += transaction.amount;
+                        }
+                    } else {
+                        totalCustos += Math.abs(transaction.amount);
+                        
+                        if (transaction.type === 'manutencao') {
+                            custoManutencao += Math.abs(transaction.amount);
+                        } else if (transaction.type === 'abastecimento') {
+                            custoCombustivel += Math.abs(transaction.amount);
+                        }
+                    }
+                });
+                
+                const lucroLiquido = totalGanhos - totalCustos;
+                
+                // Atualizar resumo principal
+                document.getElementById('total-ganhos').textContent = formatCurrency(totalGanhos);
+                document.getElementById('total-custos').textContent = formatCurrency(totalCustos);
+                document.getElementById('lucro-liquido').textContent = formatCurrency(lucroLiquido);
+                
+                // Atualizar relatório detalhado
+                document.getElementById('custo-manutencao').textContent = formatCurrency(custoManutencao);
+                document.getElementById('custo-combustivel').textContent = formatCurrency(custoCombustivel);
+                document.getElementById('relatorio-total-custos').textContent = formatCurrency(totalCustos);
+                document.getElementById('ganho-99').textContent = formatCurrency(ganho99);
+                document.getElementById('ganho-uber').textContent = formatCurrency(ganhoUber);
+                document.getElementById('relatorio-total-ganhos').textContent = formatCurrency(totalGanhos);
+                document.getElementById('relatorio-lucro-liquido').textContent = formatCurrency(lucroLiquido);
+                
+                // Definir cores do lucro líquido
+                const lucroLiquidoElement = document.getElementById('lucro-liquido');
+                if (lucroLiquido > 0) {
+                    lucroLiquidoElement.classList.add('text-green-800');
+                    lucroLiquidoElement.classList.remove('text-red-800');
+                } else if (lucroLiquido < 0) {
+                    lucroLiquidoElement.classList.add('text-red-800');
+                    lucroLiquidoElement.classList.remove('text-green-800');
+                }
+            }
+            
+            function deleteTransaction(id) {
+                if (confirm('Tem certeza que deseja excluir esta transação?')) {
+                    transactions = transactions.filter(t => t.id !== id);
+                    saveTransactions();
+                    renderTransactions();
+                    updateSummary();
+                }
+            }
+            
+            function saveTransactions() {
+                localStorage.setItem('kwidPlus_transactions', JSON.stringify(transactions));
+            }
+            
+            function exportBackup() {
+                const data = JSON.stringify(transactions);
+                const blob = new Blob([data], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                
+                a.href = url;
+                a.download = `kwid_plus_backup_${formatDate(new Date().toISOString().split('T')[0], true)}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+            
+            function importBackup(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        
+                        if (Array.isArray(data)) {
+                            transactions = data;
+                            saveTransactions();
+                            renderTransactions();
+                            updateSummary();
+                            backupError.classList.add('hidden');
+                            alert('Backup importado com sucesso!');
+                        } else {
+                            throw new Error('Formato inválido');
+                        }
+                    } catch (error) {
+                        backupError.classList.remove('hidden');
+                    }
+                };
+                reader.readAsText(file);
+            }
+            
+            function confirmClearData() {
+                if (confirm('Tem certeza que deseja limpar todos os dados? Esta ação não pode ser desfeita.')) {
+                    transactions = [];
+                    saveTransactions();
+                    renderTransactions();
+                    updateSummary();
+                    alert('Todos os dados foram excluídos com sucesso!');
+                }
+            }
+            
+            function formatDate(dateString, forFilename = false) {
+                const date = new Date(dateString);
+                
+                if (forFilename) {
+                    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+                }
+                
+                return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
+            }
+            
+            function formatCurrency(value) {
+                return `R$ ${value.toFixed(2)}`;
+            }
+        });
+    </script>
 </body>
 </html>
