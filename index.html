@@ -44,9 +44,23 @@
         .custom-button:active {
             transform: scale(0.95);
         }
-        .selected {
+        .fuel-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem; /* text-sm */
+            border-radius: 0.5rem; /* rounded-lg */
+            transition: background-color 0.2s ease, transform 0.1s;
+        }
+        .fuel-btn:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+        .fuel-btn.selected {
             border: 2px solid #4f46e5;
-            background-color: #e0e7ff;
+            background-color: rgba(79, 70, 229, 0.1);
+        }
+        .fuel-btn i {
+            font-size: 1rem;
         }
         #month-filter {
             padding: 0.25rem 0.5rem;
@@ -145,15 +159,15 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Combustível</label>
-                    <div class="flex space-x-4">
-                        <button type="button" id="btn-gasolina" class="flex items-center justify-center p-2 bg-red-500 text-white rounded-md" onclick="selectFuel('Gasolina')">
-                            Gasolina
+                    <div class="flex space-x-3">
+                        <button type="button" id="btn-gasolina" class="fuel-btn px-2 py-1 bg-red-500 text-white rounded-lg" onclick="selectFuel('Gasolina')">
+                            <i class="fas fa-gas-pump"></i> Gasolina
                         </button>
-                        <button type="button" id="btn-etanol" class="flex items-center justify-center p-2 bg-green-500 text-white rounded-md" onclick="selectFuel('Etanol')">
-                            Etanol
+                        <button type="button" id="btn-etanol" class="fuel-btn px-2 py-1 bg-green-500 text-white rounded-lg" onclick="selectFuel('Etanol')">
+                            <i class="fas fa-leaf"></i> Etanol
                         </button>
-                        <button type="button" id="btn-eletrico" class="flex items-center justify-center p-2 bg-yellow-500 text-white rounded-md" onclick="selectFuel('Elétrico')">
-                            Elétrico
+                        <button type="button" id="btn-eletrico" class="fuel-btn px-2 py-1 bg-yellow-500 text-black rounded-lg" onclick="selectFuel('Elétrico')">
+                            <i class="fas fa-bolt"></i> Elétrico
                         </button>
                     </div>
                     <p id="selected-fuel" class="mt-2 text-gray-600">Combustível selecionado: <span id="fuel-name">Nenhum</span></p>
@@ -788,7 +802,7 @@
             }
             
             function confirmClearData() {
-                if (confirm('Tem certeza que deseja limpar todos os dados? Esta ação não pode be desfeita.')) {
+                if (confirm('Tem certeza que deseja limpar todos os dados? Esta ação não pode ser desfeita.')) {
                     transactions = [];
                     saveTransactions();
                     renderTransactions();
