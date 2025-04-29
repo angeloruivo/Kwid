@@ -44,7 +44,7 @@
         .custom-button:active {
             transform: scale(0.95);
         }
-        .fuel-btn {
+        .fuel-btn, .platform-btn {
             display: flex;
             align-items: center;
             gap: 0.5rem;
@@ -52,14 +52,14 @@
             border-radius: 0.5rem; /* rounded-lg */
             transition: background-color 0.2s ease, transform 0.1s;
         }
-        .fuel-btn:hover {
+        .fuel-btn:hover, .platform-btn:hover {
             background-color: rgba(0, 0, 0, 0.1);
         }
-        .fuel-btn.selected {
+        .fuel-btn.selected, .platform-btn.selected {
             border: 2px solid #4f46e5;
             background-color: rgba(79, 70, 229, 0.1);
         }
-        .fuel-btn i {
+        .fuel-btn i, .platform-btn i {
             font-size: 1rem;
         }
         #month-filter {
@@ -122,15 +122,15 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Plataforma</label>
-                    <div class="flex space-x-4">
-                        <button type="button" id="btn-ganho-uber" class="flex items-center justify-center p-2 bg-black text-white rounded-md" onclick="selectPlatform('Uber')">
-                            Uber
+                    <div class="flex space-x-3">
+                        <button type="button" id="btn-ganho-uber" class="platform-btn px-2 py-1 bg-black text-white rounded-lg" onclick="selectPlatform('Uber')">
+                            <i class="fas fa-car"></i> Uber
                         </button>
-                        <button type="button" id="btn-ganho-99" class="flex items-center justify-center p-2 bg-yellow-500 text-black rounded-md" onclick="selectPlatform('99')">
-                            99
+                        <button type="button" id="btn-ganho-99" class="platform-btn px-2 py-1 bg-yellow-500 text-black rounded-lg" onclick="selectPlatform('99')">
+                            <i class="fas fa-taxi"></i> 99
                         </button>
-                        <button type="button" id="btn-ganho-outro" class="flex items-center justify-center p-2 bg-gray-300 text-black rounded-md" onclick="selectPlatform('Outro')">
-                            Outro
+                        <button type="button" id="btn-ganho-outro" class="platform-btn px-2 py-1 bg-gray-300 text-black rounded-lg" onclick="selectPlatform('Outro')">
+                            <i class="fas fa-ellipsis-h"></i> Outro
                         </button>
                     </div>
                     <p id="selected-platform" class="mt-2 text-gray-600">Plataforma selecionada: <span id="platform-name">Nenhuma</span></p>
