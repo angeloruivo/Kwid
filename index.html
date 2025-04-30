@@ -41,12 +41,12 @@
         .modern-button {
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: center; /* Centraliza ícone no botão Avançado */
             gap: 0.5rem;
-            padding: 0.375rem 0.75rem;
-            font-size: 0.875rem;
-            font-weight: 600;
-            border-radius: 0.75rem;
+            padding: 0.375rem 0.75rem; /* px-3 py-1.5 */
+            font-size: 0.875rem; /* text-sm */
+            font-weight: 600; /* font-semibold */
+            border-radius: 0.75rem; /* rounded-xl */
             color: white;
             transition: filter 0.2s ease, transform 0.2s ease;
         }
@@ -62,6 +62,9 @@
         .modern-button.bg-gray-600 {
             background: linear-gradient(to right, #4b5563, #374151);
         }
+         .modern-button.bg-teal-600 {
+            background: linear-gradient(to right, #047857, #0f766e);
+        }
         .modern-button:hover {
             filter: brightness(115%);
             transform: scale(1.02);
@@ -76,8 +79,8 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            font-size: 0.875rem;
-            border-radius: 0.5rem;
+            font-size: 0.875rem; /* text-sm */
+            border-radius: 0.5rem; /* rounded-lg */
             transition: background-color 0.2s ease, transform 0.1s;
         }
         .fuel-btn:hover, .platform-btn:hover {
@@ -116,54 +119,61 @@
                 background-color: white;
             }
         }
+        /* Estilos para modernizar e reduzir tamanho dos campos de data e valor */
         .form-field {
-            margin-bottom: 1rem;
+            margin-bottom: 1rem; /* Adiciona espaço abaixo do campo */
         }
+
         .form-field label {
             display: block;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #4b5563;
-            margin-bottom: 0.25rem;
+            text-sm font-medium text-gray-700 mb-1;
+            margin-bottom: 0.25rem; /* Reduz espaço abaixo do label */
         }
+
         .form-field input[type="date"],
         .form-field input[type="number"],
         .form-field input[type="text"] {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.875rem;
-            border-radius: 0.375rem;
-            border: 1px solid #d1d5db;
-            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+            padding: 0.5rem 0.75rem; /* Reduz padding */
+            font-size: 0.875rem; /* text-sm */
+            border-radius: 0.375rem; /* slightly rounded */
+            border: 1px solid #d1d5db; /* cor de borda mais suave */
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05); /* sombra interna sutil */
             transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
+
         .form-field input[type="date"]:focus,
         .form-field input[type="number"]:focus,
         .form-field input[type="text"]:focus {
             outline: none;
-            border-color: #6366f1;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+            border-color: #6366f1; /* cor de foco indigo */
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); /* anel de foco */
         }
+
         .form-field input[type="number"]::-webkit-outer-spin-button,
         .form-field input[type="number"]::-webkit-inner-spin-button {
             -webkit-appearance: none;
             margin: 0;
         }
+
         .form-field input[type="number"] {
             -moz-appearance: textfield;
         }
+
+        /* Estilo para o Saldo em Destaque */
         .saldo-destaque {
-            flex-grow: 1;
-            text-align: right;
-            font-size: 1.25rem;
+            flex-grow: 1; /* Permite que o elemento ocupe o espaço disponível */
+            text-align: right; /* Alinha o texto à direita */
+            font-size: 1.25rem; /* text-xl */
             font-weight: bold;
-            color: #1f2937;
+            color: #1f2937; /* gray-800 */
         }
-        .saldo-destaque span {
+         .saldo-destaque span {
             display: block;
-            font-size: 0.875rem;
-            font-weight: bold;
-            color: #4b5563;
-        }
+            font-size: 0.875rem; /* text-sm */
+            font-weight: normal;
+            color: #4b5563; /* gray-600 */
+         }
+
     </style>
 </head>
 <body class="px-4 py-6 max-w-6xl mx-auto">
@@ -184,7 +194,7 @@
                     <i class="fas fa-cog"></i>
                 </button>
                 <div class="saldo-destaque">
-                    <span>Saldo do Mês Corrente</span>
+                    <span>Lucro Líquido (Mês Atual)</span>
                     <span id="saldo-atual">R$ 0.00</span>
                 </div>
             </div>
@@ -295,8 +305,11 @@
         <div class="bg-white rounded-lg shadow-md p-6">
             <h2 class="text-xl font-semibold mb-4">Backup e Exportação</h2>
             <div class="flex flex-wrap gap-4">
-                <button id="btn-backup" class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none">
+                <button id="btn-backup" class="modern-button bg-purple-600">
                     <i class="fas fa-download mr-2"></i>Exportar Backup
+                </button>
+                 <button id="btn-export-excel" class="modern-button bg-teal-600">
+                    <i class="fas fa-file-excel mr-2"></i>Exportar para Excel
                 </button>
                 <div class="flex-1">
                     <label for="import-backup" class="block text-sm font-medium text-gray-700 mb-1">Importar Backup</label>
@@ -320,6 +333,7 @@
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-xl font-semibold">Resumo Financeiro</h2>
             <div class="flex gap-2">
+
                 <button data-filter="day" class="filter-btn px-3 py-1 text-sm bg-gray-200 rounded-md hover:bg-gray-300">Dia</button>
                 <button data-filter="week" class="filter-btn px-3 py-1 text-sm bg-gray-200 rounded-md hover:bg-gray-300">Semana</button>
                 <select id="month-filter" class="filter-btn">
@@ -420,7 +434,7 @@
                     </tr>
                 </thead>
                 <tbody id="transaction-history">
-                </tbody>
+                    </tbody>
             </table>
         </div>
         <div id="no-transactions" class="py-4 text-center text-gray-500">
@@ -433,9 +447,9 @@
             // Estado da aplicação
             let transactions = JSON.parse(localStorage.getItem('kwidPlus_transactions')) || [];
             let currentFilter = 'all';
-            let selectedMonth = null;
-            let tipoCombustivel = '';
-            let plataformaSelecionada = 'Nenhuma';
+            let selectedMonth = null; // Armazena o mês selecionado (1 a 12 ou null)
+            let tipoCombustivel = ''; // Variável para armazenar o tipo de combustível
+            let plataformaSelecionada = 'Nenhuma'; // Variável para armazenar a plataforma selecionada
 
             // Elementos DOM
             const formGanho = document.getElementById('form-ganho');
@@ -444,7 +458,9 @@
             const advancedSection = document.getElementById('advanced-section');
             const relatorioDetalhado = document.getElementById('relatorio-detalhado');
             const monthFilter = document.getElementById('month-filter');
-            const saldoAtualElement = document.getElementById('saldo-atual');
+            const saldoAtualElement = document.getElementById('saldo-atual'); // Elemento para o lucro líquido do mês atual
+            const exportExcelButton = document.getElementById('btn-export-excel'); // Novo botão de exportar para Excel
+
 
             // Erros
             const ganhoError = document.getElementById('ganho-error');
@@ -483,6 +499,8 @@
             document.getElementById('btn-backup').addEventListener('click', exportBackup);
             document.getElementById('import-backup').addEventListener('change', importBackup);
             document.getElementById('btn-limpar').addEventListener('click', confirmClearData);
+            exportExcelButton.addEventListener('click', exportToExcel); // Listener para o novo botão
+
 
             // Formulários
             document.getElementById('ganho-form').addEventListener('submit', addGanho);
@@ -501,10 +519,12 @@
                 plataformaSelecionada = platform;
                 document.getElementById('platform-name').textContent = plataformaSelecionada;
 
+                // Remover a classe 'selected' de todos os botões
                 document.querySelectorAll('#form-ganho button').forEach(btn => {
                     btn.classList.remove('selected');
                 });
 
+                // Adicionar a classe 'selected' ao botão clicado
                 document.getElementById(`btn-ganho-${platform.toLowerCase()}`).classList.add('selected');
             };
 
@@ -513,16 +533,18 @@
                 tipoCombustivel = fuel;
                 document.getElementById('fuel-name').textContent = tipoCombustivel;
 
+                // Remover a classe 'selected' de todos os botões
                 document.querySelectorAll('#form-abastecimento button').forEach(btn => {
                     btn.classList.remove('selected');
                 });
 
+                // Adicionar a classe 'selected' ao botão clicado
                 document.getElementById(`btn-${fuel.toLowerCase()}`).classList.add('selected');
             };
 
             // Carregar dados iniciais
             renderTransactions();
-            updateSummary();
+            updateSummary(); // Call updateSummary initially
 
             // Funções
             function showTab(tabId) {
@@ -548,6 +570,7 @@
                 currentFilter = filter;
                 selectedMonth = month;
 
+                // Atualizar classe ativa dos botões e dropdown
                 document.querySelectorAll('.filter-btn').forEach(btn => {
                     if (btn.tagName === 'BUTTON' && btn.getAttribute('data-filter') === filter) {
                         btn.classList.add('active');
@@ -556,12 +579,18 @@
                     }
                 });
 
-                if (filter === 'month' && month !== null) {
-                    monthFilter.classList.add('active');
+                // Atualizar classe ativa do dropdown
+                if (filter === 'month' && selectedMonth !== null) {
+                     monthFilter.classList.add('active');
                 } else {
-                    monthFilter.classList.remove('active');
+                     monthFilter.classList.remove('active');
                 }
+                 if (filter !== 'month') { // Remove active class from month dropdown if another filter is selected
+                      monthFilter.classList.remove('active');
+                 }
 
+
+                // Atualizar os dados com base no filtro
                 renderTransactions();
                 updateSummary();
             }
@@ -594,7 +623,7 @@
                 updateSummary();
 
                 document.getElementById('ganho-valor').value = '';
-                plataformaSelecionada = 'Nenhuma';
+                plataformaSelecionada = 'Nenhuma'; // Resetar a plataforma após o envio
                 document.getElementById('platform-name').textContent = plataformaSelecionada;
             }
 
@@ -626,7 +655,7 @@
                 updateSummary();
 
                 document.getElementById('abastecimento-valor').value = '';
-                tipoCombustivel = '';
+                tipoCombustivel = ''; // Resetar o tipo de combustível após o envio
                 document.getElementById('fuel-name').textContent = 'Nenhum';
             }
 
@@ -698,6 +727,7 @@
                         tbody.appendChild(tr);
                     });
 
+                // Adicionar listeners aos botões de exclusão
                 document.querySelectorAll('.delete-btn').forEach(btn => {
                     btn.addEventListener('click', function() {
                         const id = parseInt(this.getAttribute('data-id'));
@@ -706,88 +736,80 @@
                 });
             }
 
-            function filterTransactions() {
-                if (currentFilter === 'all') {
-                    return [...transactions];
-                }
+             function filterTransactions(filter = currentFilter, month = selectedMonth) {
+                let transactionsToFilter = [...transactions];
 
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-
-                if (currentFilter === 'day') {
-                    return transactions.filter(transaction => {
+                if (filter === 'day') {
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    transactionsToFilter = transactionsToFilter.filter(transaction => {
                         if (!transaction.date || !/^\d{4}-\d{2}-\d{2}$/.test(transaction.date)) return false;
                         const [year, month, day] = transaction.date.split('-').map(Number);
                         const transactionDate = new Date(year, month - 1, day);
                         return transactionDate.getTime() === today.getTime();
                     });
-                }
-
-                if (currentFilter === 'week') {
+                } else if (filter === 'week') {
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
                     const firstDayOfWeek = new Date(today);
                     const day = today.getDay() || 7;
                     firstDayOfWeek.setDate(today.getDate() - day + 1);
                     firstDayOfWeek.setHours(0, 0, 0, 0);
 
-                    return transactions.filter(transaction => {
+                    transactionsToFilter = transactionsToFilter.filter(transaction => {
                         if (!transaction.date || !/^\d{4}-\d{2}-\d{2}$/.test(transaction.date)) return false;
                         const [year, month, day] = transaction.date.split('-').map(Number);
                         const transactionDate = new Date(year, month - 1, day);
                         return transactionDate >= firstDayOfWeek && transactionDate <= today;
                     });
-                }
-
-                if (currentFilter === 'month' && selectedMonth !== null) {
-                    return transactions.filter(transaction => {
+                } else if (filter === 'month' && month !== null) {
+                     const filterYear = new Date().getFullYear(); // Assume current year for month filter
+                    transactionsToFilter = transactionsToFilter.filter(transaction => {
                         if (!transaction.date || !/^\d{4}-\d{2}-\d{2}$/.test(transaction.date)) {
                             return false;
                         }
-                        const [year, month, day] = transaction.date.split('-').map(Number);
-                        return month === selectedMonth;
+                        const [year, transactionMonth, day] = transaction.date.split('-').map(Number);
+                         return transactionMonth === month && year === filterYear;
                     });
+                } else if (filter === 'all') {
+                    transactionsToFilter = [...transactions];
                 }
 
-                return [...transactions];
+
+                return transactionsToFilter;
             }
 
+
             function updateSummary() {
-                const filteredTransactions = filterTransactions();
+                // Calculate net profit for the current month for the dashboard display
+                const currentMonth = new Date().getMonth() + 1;
+                const currentMonthTransactions = filterTransactions('month', currentMonth);
+                 let totalGanhosMonth = 0;
+                 let totalCustosMonth = 0;
 
-                // Calcular saldo do mês corrente para o saldo-destaque
-                const today = new Date();
-                const currentMonth = today.getMonth() + 1;
-                const currentYear = today.getFullYear();
-
-                let totalGanhosMes = 0;
-                let totalCustosMes = 0;
-
-                transactions.forEach(transaction => {
-                    if (!transaction.date || !/^\d{4}-\d{2}-\d{2}$/.test(transaction.date)) return;
-                    const [year, month] = transaction.date.split('-').map(Number);
-                    if (year === currentYear && month === currentMonth) {
-                        if (transaction.amount > 0) {
-                            totalGanhosMes += transaction.amount;
-                        } else {
-                            totalCustosMes += Math.abs(transaction.amount);
-                        }
-                    }
-                });
-
-                const lucroLiquidoMes = totalGanhosMes - totalCustosMes;
-                saldoAtualElement.textContent = formatCurrency(lucroLiquidoMes);
-
-                if (lucroLiquidoMes > 0) {
+                 currentMonthTransactions.forEach(transaction => {
+                     if (transaction.amount > 0) {
+                         totalGanhosMonth += transaction.amount;
+                     } else {
+                         totalCustosMonth += Math.abs(transaction.amount);
+                     }
+                 });
+                 const lucroLiquidoMonth = totalGanhosMonth - totalCustosMonth;
+                saldoAtualElement.textContent = formatCurrency(lucroLiquidoMonth);
+                 if (lucroLiquidoMonth > 0) {
                     saldoAtualElement.classList.add('text-green-600');
                     saldoAtualElement.classList.remove('text-red-600', 'text-gray-800');
-                } else if (lucroLiquidoMes < 0) {
-                    saldoAtualElement.classList.add('text-red-600');
-                    saldoAtualElement.classList.remove('text-green-600', 'text-gray-800');
+                } else if (lucroLiquidoMonth < 0) {
+                     saldoAtualElement.classList.add('text-red-600');
+                     saldoAtualElement.classList.remove('text-green-600', 'text-gray-800');
                 } else {
-                    saldoAtualElement.classList.add('text-gray-800');
-                    saldoAtualElement.classList.remove('text-green-600', 'text-red-600');
+                     saldoAtualElement.classList.add('text-gray-800');
+                     saldoAtualElement.classList.remove('text-green-600', 'text-red-600');
                 }
 
-                // Resumo baseado nas transações filtradas
+
+                // Calculate summary based on the currently active filter for the main summary section
+                const filteredTransactions = filterTransactions();
                 let totalGanhosFiltered = 0;
                 let totalCustosFiltered = 0;
                 let ganho99Filtered = 0;
@@ -817,10 +839,13 @@
 
                 const lucroLiquidoFiltered = totalGanhosFiltered - totalCustosFiltered;
 
+                // Update the main summary section
                 document.getElementById('total-ganhos').textContent = formatCurrency(totalGanhosFiltered);
                 document.getElementById('total-custos').textContent = formatCurrency(totalCustosFiltered);
                 document.getElementById('lucro-liquido').textContent = formatCurrency(lucroLiquidoFiltered);
 
+
+                // Update the detailed report
                 document.getElementById('custo-manutencao').textContent = formatCurrency(custoManutencaoFiltered);
                 document.getElementById('custo-combustivel').textContent = formatCurrency(custoCombustivelFiltered);
                 document.getElementById('relatorio-total-custos').textContent = formatCurrency(totalCustosFiltered);
@@ -829,6 +854,8 @@
                 document.getElementById('relatorio-total-ganhos').textContent = formatCurrency(totalGanhosFiltered);
                 document.getElementById('relatorio-lucro-liquido').textContent = formatCurrency(lucroLiquidoFiltered);
 
+
+                // Definir cores do lucro líquido no resumo principal
                 const lucroLiquidoElement = document.getElementById('lucro-liquido');
                 if (lucroLiquidoFiltered > 0) {
                     lucroLiquidoElement.classList.add('text-green-800');
@@ -837,9 +864,10 @@
                     lucroLiquidoElement.classList.add('text-red-800');
                     lucroLiquidoElement.classList.remove('text-green-800');
                 } else {
-                    lucroLiquidoElement.classList.remove('text-green-800', 'text-red-800');
+                     lucroLiquidoElement.classList.remove('text-green-800', 'text-red-800');
                 }
 
+                 // Definir cores do lucro líquido no relatório detalhado
                 const relatorioLucroLiquidoElement = document.getElementById('relatorio-lucro-liquido');
                 if (lucroLiquidoFiltered > 0) {
                     relatorioLucroLiquidoElement.classList.add('text-green-800');
@@ -889,6 +917,7 @@
                         const data = JSON.parse(event.target.result);
 
                         if (Array.isArray(data)) {
+                            // Validar formato das transações
                             const validTransactions = data.filter(t =>
                                 t.id && t.date && /^\d{4}-\d{2}-\d{2}$/.test(t.date) && t.type && t.amount
                             );
@@ -935,6 +964,82 @@
             function formatCurrency(value) {
                 return `R$ ${value.toFixed(2)}`;
             }
+
+            function escapeCsv(value) {
+                if (value === null || value === undefined) {
+                    return '';
+                }
+                // Convert to string and escape double quotes
+                const stringValue = String(value).replace(/"/g, '""');
+                // Enclose in double quotes if it contains comma, double quote, or newline
+                if (/[",\n]/.test(stringValue)) {
+                    return `"${stringValue}"`;
+                }
+                return stringValue;
+            }
+
+
+            function exportToExcel() {
+                const allTransactions = [...transactions]; // Get all transactions
+
+                if (allTransactions.length === 0) {
+                    alert('Nenhuma transação para exportar.');
+                    return;
+                }
+
+                // Define CSV headers
+                const headers = ["Data", "Tipo", "Detalhe", "Plataforma/Combustível/Manutenção Tipo", "Valor"];
+                let csvContent = headers.map(escapeCsv).join(";") + "\n"; // Use semicolon as separator
+
+                // Add transaction data
+                allTransactions.forEach(transaction => {
+                    const date = formatDate(transaction.date);
+                    const type = transaction.type;
+                    const details = transaction.details;
+                    let specificDetail = '';
+
+                    if (transaction.type === 'ganho') {
+                        specificDetail = transaction.platform || '';
+                    } else if (transaction.type === 'abastecimento') {
+                        specificDetail = transaction.fuelType || '';
+                    } else if (transaction.type === 'manutencao') {
+                        specificDetail = transaction.maintenanceType || '';
+                    }
+
+                    // Format the amount with comma as decimal separator and ensure it's a string
+                    const amount = transaction.amount.toFixed(2).replace('.', ',');
+
+                    csvContent += [
+                        escapeCsv(date),
+                        escapeCsv(type),
+                        escapeCsv(details),
+                        escapeCsv(specificDetail),
+                        escapeCsv(amount) // Escape the formatted amount string
+                    ].join(";") + "\n"; // Use semicolon as separator
+                });
+
+                // Create Blob and download link
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+
+                a.href = url;
+                a.download = `kwid_plus_transacoes_${formatDate(new Date().toISOString().split('T')[0], true)}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+
+
+             // Set the initial filter to the current month and update the summary
+            const currentMonth = new Date().getMonth() + 1;
+            setFilter('month', currentMonth);
+             monthFilter.value = currentMonth.toString(); // Select the current month in the dropdown
+             monthFilter.classList.add('active'); // Add active class to the month filter
+
+             // Ensure "Todos" button is not active initially
+            document.querySelector('.filter-btn[data-filter="all"]').classList.remove('active');
         });
     </script>
 </body>
