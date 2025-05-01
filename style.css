@@ -2,7 +2,6 @@ body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background-color: #fafafa;
   color: #1a1a1a;
-  padding-top: 150px;
 }
 
 body[data-theme="dark"] {
@@ -497,12 +496,4 @@ body[data-theme="dark"] .saldo-destaque {
 
 body[data-theme="dark"] .saldo-destaque span {
   color: #b0b0b0;
-}
-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 10;
-  background-color: #1f2937;
 }
