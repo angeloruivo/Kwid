@@ -13,27 +13,46 @@ document.addEventListener("DOMContentLoaded", function () {
   let deferredPrompt;
   const installButton = document.getElementById("install-button");
 
+  if (localStorage.getItem("pwaInstalled") === "true") {
+    installButton.classList.add("hidden");
+  }
+
+  setTimeout(() => {
+    if (!deferredPrompt && localStorage.getItem("pwaInstalled") !== "true") {
+      installButton.classList.add("hidden");
+    }
+  }, 2000);
+
   window.addEventListener("beforeinstallprompt", (e) => {
+    if (localStorage.getItem("pwaInstalled") === "true") {
+      return;
+    }
     e.preventDefault();
     deferredPrompt = e;
     installButton.classList.remove("hidden");
-    installButton.addEventListener("click", () => {
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then((choiceResult) => {
-        if (choiceResult.outcome === "accepted") {
-          console.log("Usuário aceitou instalar a PWA");
-        } else {
-          console.log("Usuário recusou instalar a PWA");
-        }
-        deferredPrompt = null;
-        installButton.classList.add("hidden");
-      });
-    });
+    installButton.addEventListener(
+      "click",
+      () => {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === "accepted") {
+            console.log("Usuário aceitou instalar a PWA");
+            localStorage.setItem("pwaInstalled", "true");
+          } else {
+            console.log("Usuário recusou instalar a PWA");
+          }
+          deferredPrompt = null;
+          installButton.classList.add("hidden");
+        });
+      },
+      { once: true }
+    );
   });
 
   window.addEventListener("appinstalled", () => {
     console.log("PWA foi instalada");
     installButton.classList.add("hidden");
+    localStorage.setItem("pwaInstalled", "true");
   });
 
   const DEBUG = true;
