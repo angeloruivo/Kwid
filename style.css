@@ -497,3 +497,30 @@ body[data-theme="dark"] .saldo-destaque {
 body[data-theme="dark"] .saldo-destaque span {
   color: #b0b0b0;
 }
+.custom-file-upload {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #ffffff;
+  background: linear-gradient(to right, #4a90e2, #1e88e5);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: filter 0.2s ease, transform 0.2s ease;
+}
+
+.custom-file-upload:hover {
+  filter: brightness(115%);
+  transform: scale(1.02);
+}
+
+.custom-file-upload:active {
+  transform: scale(0.98);
+}
+
+body[data-theme="dark"] .custom-file-upload {
+  background: linear-gradient(to right, #6ab0ff, #42a5f5);
+  color: #f5f5f5;
+}
