@@ -722,8 +722,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function exportToExcel() {
-    if (DEBUG) console.log("Iniciando exportação para Excel");
-
     if (typeof XLSX === "undefined") {
       console.error("Biblioteca SheetJS não carregada");
       alert(
@@ -735,12 +733,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const allTransactions = [...transactions];
 
     if (allTransactions.length === 0) {
-      if (DEBUG) console.log("Nenhuma transação para exportar");
       alert("Nenhuma transação para exportar.");
       return;
     }
 
     try {
+      // Preparar dados para a planilha
       const headers = [
         "Data",
         "Tipo",
@@ -751,7 +749,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const data = [headers];
 
       allTransactions.forEach((transaction) => {
-        const date = formatDate(transaction.date, false, true);
+        const date = formatDate(transaction.date, false, true); // Formato YYYY-MM-DD para Excel
         const type = transaction.type;
         const details = transaction.details;
         let specificDetail = "";
@@ -769,33 +767,45 @@ document.addEventListener("DOMContentLoaded", function () {
         data.push([date, type, details, specificDetail, amount]);
       });
 
+      // Criar planilha
       const ws = XLSX.utils.aoa_to_sheet(data);
 
+      // Definir larguras das colunas
       ws["!cols"] = [
-        { wch: 15 },
-        { wch: 15 },
-        { wch: 30 },
-        { wch: 30 },
-        { wch: 15 },
+        { wch: 15 }, // Data
+        { wch: 15 }, // Tipo
+        { wch: 30 }, // Detalhe
+        { wch: 30 }, // Plataforma/Combustível/Manutenção Tipo
+        { wch: 15 }, // Valor
       ];
 
+      // Aplicar formatação às células
       for (let i = 1; i < data.length; i++) {
-        const cellRef = XLSX.utils.encode_cell({ r: i, c: 4 });
-        ws[cellRef].z = '"R$" #,##0.00';
+        const cellRef = XLSX.utils.encode_cell({ r: i, c: 4 }); // Coluna "Valor" (índice 4)
+        ws[cellRef].z = '"R$" #,##0.00'; // Formato de moeda brasileira
       }
 
+      // Criar workbook e adicionar a planilha
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, "Transações");
 
-      // Exportar o arquivo com opções explícitas
+      // Gerar buffer binário
+      const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+
+      // Criar blob e link de download
+      const blob = new Blob([wbout], { type: "application/octet-stream" });
       const fileName = `kwid_plus_transacoes_${formatDate(
         new Date().toISOString().split("T")[0],
         true
       )}.xlsx`;
-      if (DEBUG) console.log(`Exportando arquivo: ${fileName}`);
-      XLSX.write(wb, { bookType: "xlsx", type: "binary" }, fileName);
-
-      if (DEBUG) console.log("Exportação concluída com sucesso");
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Erro ao exportar para Excel:", error);
       alert(
