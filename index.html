@@ -1,1046 +1,410 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Kwid+ - Controle Financeiro</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f7fa;
-        }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
-        .advanced-section {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease;
-        }
-        .advanced-section.show {
-            max-height: 500px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 8px 12px;
-            text-align: left;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        .filter-btn.active {
-            background-color: #4f46e5;
-            color: white;
-        }
-        .modern-button {
-            display: flex;
-            align-items: center;
-            justify-content: center; /* Centraliza ícone no botão Avançado */
-            gap: 0.5rem;
-            padding: 0.375rem 0.75rem; /* px-3 py-1.5 */
-            font-size: 0.875rem; /* text-sm */
-            font-weight: 600; /* font-semibold */
-            border-radius: 0.75rem; /* rounded-xl */
-            color: white;
-            transition: filter 0.2s ease, transform 0.2s ease;
-        }
-        .modern-button.bg-indigo-600 {
-            background: linear-gradient(to right, #4f46e5, #7e22ce);
-        }
-        .modern-button.bg-blue-600 {
-            background: linear-gradient(to right, #2563eb, #1e40af);
-        }
-        .modern-button.bg-green-600 {
-            background: linear-gradient(to right, #16a34a, #15803d);
-        }
-        .modern-button.bg-gray-600 {
-            background: linear-gradient(to right, #4b5563, #374151);
-        }
-         .modern-button.bg-teal-600 {
-            background: linear-gradient(to right, #047857, #0f766e);
-        }
-        .modern-button:hover {
-            filter: brightness(115%);
-            transform: scale(1.02);
-        }
-        .modern-button:active {
-            transform: scale(0.98);
-        }
-        .modern-button i {
-            font-size: 1rem;
-        }
-        .fuel-btn, .platform-btn {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.875rem; /* text-sm */
-            border-radius: 0.5rem; /* rounded-lg */
-            transition: background-color 0.2s ease, transform 0.1s;
-        }
-        .fuel-btn:hover, .platform-btn:hover {
-            background-color: rgba(0, 0, 0, 0.1);
-        }
-        .fuel-btn.selected, .platform-btn.selected {
-            border: 2px solid #4f46e5;
-            background-color: rgba(79, 70, 229, 0.1);
-        }
-        .fuel-btn i, .platform-btn i {
-            font-size: 1rem;
-        }
-        #month-filter {
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.375rem;
-            border: 1px solid #e2e8f0;
-            background-color: #f7fafc;
-            font-size: 0.875rem;
-            cursor: pointer;
-        }
-        #month-filter.active {
-            background-color: #4f46e5;
-            color: white;
-            border-color: #4f46e5;
-        }
-        #month-filter:focus {
-            outline: none;
-            border-color: #4f46e5;
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
-        }
-        @media print {
-            .no-print {
-                display: none;
-            }
-            body {
-                background-color: white;
-            }
-        }
-        /* Estilos para modernizar e reduzir tamanho dos campos de data e valor */
-        .form-field {
-            margin-bottom: 1rem; /* Adiciona espaço abaixo do campo */
-        }
-
-        .form-field label {
-            display: block;
-            text-sm font-medium text-gray-700 mb-1;
-            margin-bottom: 0.25rem; /* Reduz espaço abaixo do label */
-        }
-
-        .form-field input[type="date"],
-        .form-field input[type="number"],
-        .form-field input[type="text"] {
-            padding: 0.5rem 0.75rem; /* Reduz padding */
-            font-size: 0.875rem; /* text-sm */
-            border-radius: 0.375rem; /* slightly rounded */
-            border: 1px solid #d1d5db; /* cor de borda mais suave */
-            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05); /* sombra interna sutil */
-            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        }
-
-        .form-field input[type="date"]:focus,
-        .form-field input[type="number"]:focus,
-        .form-field input[type="text"]:focus {
-            outline: none;
-            border-color: #6366f1; /* cor de foco indigo */
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); /* anel de foco */
-        }
-
-        .form-field input[type="number"]::-webkit-outer-spin-button,
-        .form-field input[type="number"]::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        .form-field input[type="number"] {
-            -moz-appearance: textfield;
-        }
-
-        /* Estilo para o Saldo em Destaque */
-        .saldo-destaque {
-            flex-grow: 1; /* Permite que o elemento ocupe o espaço disponível */
-            text-align: right; /* Alinha o texto à direita */
-            font-size: 1.25rem; /* text-xl */
-            font-weight: bold;
-            color: #1f2937; /* gray-800 */
-        }
-         .saldo-destaque span {
-            display: block;
-            font-size: 0.875rem; /* text-sm */
-            font-weight: normal;
-            color: #4b5563; /* gray-600 */
-         }
-
-    </style>
-</head>
-<body class="px-4 py-6 max-w-6xl mx-auto">
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link rel="shortcut icon" href="Image.png" type="image/x-icon" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="px-4 py-6 max-w-6xl mx-auto">
     <header class="mb-6">
-        <h1 class="text-3xl font-bold text-gray-800 mb-4">Kwid+</h1>
-        <div class="bg-white rounded-lg shadow-md p-4">
-            <div class="flex flex-wrap items-center gap-3">
-                <button id="btn-ganho" class="modern-button bg-indigo-600">
-                    <i class="fas fa-plus-circle"></i> Ganho
-                </button>
-                <button id="btn-abastecimento" class="modern-button bg-blue-600">
-                    <i class="fas fa-gas-pump"></i> Abastecimento
-                </button>
-                <button id="btn-manutencao" class="modern-button bg-green-600">
-                    <i class="fas fa-wrench"></i> Manutenção
-                </button>
-                <button id="btn-avancado" class="modern-button bg-gray-600">
-                    <i class="fas fa-cog"></i>
-                </button>
-                <div class="saldo-destaque">
-                    <span>Lucro Líquido (Mês Atual)</span>
-                    <span id="saldo-atual">R$ 0.00</span>
-                </div>
-            </div>
+      <h1 class="text-3xl font-bold text-gray-800 mb-4">Kwid+</h1>
+      <div class="bg-white rounded-lg shadow-md p-4">
+        <div class="flex flex-wrap items-center gap-3">
+          <button id="btn-ganho" class="modern-button bg-indigo-600">
+            <i class="fas fa-plus-circle"></i> Ganho
+          </button>
+          <button id="btn-abastecimento" class="modern-button bg-blue-600">
+            <i class="fas fa-gas-pump"></i> Abastecimento
+          </button>
+          <button id="btn-manutencao" class="modern-button bg-green-600">
+            <i class="fas fa-wrench"></i> Manutenção
+          </button>
+          <button id="btn-avancado" class="modern-button bg-gray-600">
+            <i class="fas fa-cog"></i>
+          </button>
+          <div class="saldo-destaque">
+            <span>Lucro Líquido (Mês Atual)</span>
+            <span id="saldo-atual">R$ 0.00</span>
+          </div>
         </div>
+      </div>
     </header>
 
-    <div id="form-ganho" class="tab-content bg-white rounded-lg shadow-md p-6 mb-6">
-        <h2 class="text-xl font-semibold mb-4">Adicionar Ganho</h2>
-        <form id="ganho-form" class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="form-field">
-                    <label for="ganho-data">Data</label>
-                    <input type="date" id="ganho-data" class="w-full">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Plataforma</label>
-                    <div class="flex space-x-3">
-                        <button type="button" id="btn-ganho-uber" class="platform-btn px-2 py-1 bg-black text-white rounded-lg" onclick="selectPlatform('Uber')">
-                            <i class="fas fa-car"></i> Uber
-                        </button>
-                        <button type="button" id="btn-ganho-99" class="platform-btn px-2 py-1 bg-yellow-500 text-black rounded-lg" onclick="selectPlatform('99')">
-                            <i class="fas fa-taxi"></i> 99
-                        </button>
-                        <button type="button" id="btn-ganho-outro" class="platform-btn px-2 py-1 bg-gray-300 text-black rounded-lg" onclick="selectPlatform('Outro')">
-                            <i class="fas fa-ellipsis-h"></i> Outro
-                        </button>
-                    </div>
-                    <p id="selected-platform" class="mt-2 text-gray-600">Plataforma selecionada: <span id="platform-name">Nenhuma</span></p>
-                </div>
-                <div class="form-field">
-                    <label for="ganho-valor">Valor (R$)</label>
-                    <input type="number" id="ganho-valor" step="0.01" min="0" class="w-full">
-                </div>
+    <div
+      id="form-ganho"
+      class="tab-content bg-white rounded-lg shadow-md p-6 mb-6"
+    >
+      <h2 class="text-xl font-semibold mb-4">Adicionar Ganho</h2>
+      <form id="ganho-form" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="form-field">
+            <label for="ganho-data">Data</label>
+            <input type="date" id="ganho-data" class="w-full" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Plataforma</label
+            >
+            <div class="flex space-x-3">
+              <button
+                type="button"
+                id="btn-ganho-uber"
+                class="platform-btn px-2 py-1 bg-black text-white rounded-lg"
+                onclick="selectPlatform('Uber')"
+              >
+                <i class="fas fa-car"></i> Uber
+              </button>
+              <button
+                type="button"
+                id="btn-ganho-99"
+                class="platform-btn px-2 py-1 bg-yellow-500 text-black rounded-lg"
+                onclick="selectPlatform('99')"
+              >
+                <i class="fas fa-taxi"></i> 99
+              </button>
+              <button
+                type="button"
+                id="btn-ganho-outro"
+                class="platform-btn px-2 py-1 bg-gray-300 text-black rounded-lg"
+                onclick="selectPlatform('Outro')"
+              >
+                <i class="fas fa-ellipsis-h"></i> Outro
+              </button>
             </div>
-            <div class="pt-2">
-                <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none">
-                    <i class="fas fa-save mr-2"></i>Salvar
-                </button>
-                <p id="ganho-error" class="text-red-600 mt-2 hidden">Preencha todos os campos corretamente.</p>
-            </div>
-        </form>
+            <p id="selected-platform" class="mt-2 text-gray-600">
+              Plataforma selecionada: <span id="platform-name">Nenhuma</span>
+            </p>
+          </div>
+          <div class="form-field">
+            <label for="ganho-valor">Valor (R$)</label>
+            <input
+              type="number"
+              id="ganho-valor"
+              step="0.01"
+              min="0"
+              class="w-full"
+            />
+          </div>
+        </div>
+        <div class="pt-2">
+          <button
+            type="submit"
+            class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none"
+          >
+            <i class="fas fa-save mr-2"></i>Salvar
+          </button>
+          <p id="ganho-error" class="text-red-600 mt-2 hidden">
+            Preencha todos os campos corretamente.
+          </p>
+        </div>
+      </form>
     </div>
 
-    <div id="form-abastecimento" class="tab-content bg-white rounded-lg shadow-md p-6 mb-6">
-        <h2 class="text-xl font-semibold mb-4">Adicionar Abastecimento</h2>
-        <form id="abastecimento-form" class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="form-field">
-                    <label for="abastecimento-data">Data</label>
-                    <input type="date" id="abastecimento-data" class="w-full">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Combustível</label>
-                    <div class="flex space-x-3">
-                        <button type="button" id="btn-gasolina" class="fuel-btn px-2 py-1 bg-red-500 text-white rounded-lg" onclick="selectFuel('Gasolina')">
-                            <i class="fas fa-gas-pump"></i> Gasolina
-                        </button>
-                        <button type="button" id="btn-etanol" class="fuel-btn px-2 py-1 bg-green-500 text-white rounded-lg" onclick="selectFuel('Etanol')">
-                            <i class="fas fa-leaf"></i> Etanol
-                        </button>
-                        <button type="button" id="btn-eletrico" class="fuel-btn px-2 py-1 bg-yellow-500 text-black rounded-lg" onclick="selectFuel('Elétrico')">
-                            <i class="fas fa-bolt"></i> Elétrico
-                        </button>
-                    </div>
-                    <p id="selected-fuel" class="mt-2 text-gray-600">Combustível selecionado: <span id="fuel-name">Nenhum</span></p>
-                </div>
-                <div class="form-field">
-                    <label for="abastecimento-valor">Valor (R$)</label>
-                    <input type="number" id="abastecimento-valor" step="0.01" min="0" class="w-full">
-                </div>
+    <div
+      id="form-abastecimento"
+      class="tab-content bg-white rounded-lg shadow-md p-6 mb-6"
+    >
+      <h2 class="text-xl font-semibold mb-4">Adicionar Abastecimento</h2>
+      <form id="abastecimento-form" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="form-field">
+            <label for="abastecimento-data">Data</label>
+            <input type="date" id="abastecimento-data" class="w-full" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Combustível</label
+            >
+            <div class="flex space-x-3">
+              <button
+                type="button"
+                id="btn-gasolina"
+                class="fuel-btn px-2 py-1 bg-red-500 text-white rounded-lg"
+                onclick="selectFuel('Gasolina')"
+              >
+                <i class="fas fa-gas-pump"></i> Gasolina
+              </button>
+              <button
+                type="button"
+                id="btn-etanol"
+                class="fuel-btn px-2 py-1 bg-green-500 text-white rounded-lg"
+                onclick="selectFuel('Etanol')"
+              >
+                <i class="fas fa-leaf"></i> Etanol
+              </button>
+              <button
+                type="button"
+                id="btn-eletrico"
+                class="fuel-btn px-2 py-1 bg-yellow-500 text-black rounded-lg"
+                onclick="selectFuel('Elétrico')"
+              >
+                <i class="fas fa-bolt"></i> Elétrico
+              </button>
             </div>
-            <div class="pt-2">
-                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none">
-                    <i class="fas fa-save mr-2"></i>Salvar
-                </button>
-                <p id="abastecimento-error" class="text-red-600 mt-2 hidden">Preencha todos os campos corretamente.</p>
-            </div>
-        </form>
+            <p id="selected-fuel" class="mt-2 text-gray-600">
+              Combustível selecionado: <span id="fuel-name">Nenhum</span>
+            </p>
+          </div>
+          <div class="form-field">
+            <label for="abastecimento-valor">Valor (R$)</label>
+            <input
+              type="number"
+              id="abastecimento-valor"
+              step="0.01"
+              min="0"
+              class="w-full"
+            />
+          </div>
+        </div>
+        <div class="pt-2">
+          <button
+            type="submit"
+            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none"
+          >
+            <i class="fas fa-save mr-2"></i>Salvar
+          </button>
+          <p id="abastecimento-error" class="text-red-600 mt-2 hidden">
+            Preencha todos os campos corretamente.
+          </p>
+        </div>
+      </form>
     </div>
 
-    <div id="form-manutencao" class="tab-content bg-white rounded-lg shadow-md p-6 mb-6">
-        <h2 class="text-xl font-semibold mb-4">Adicionar Manutenção</h2>
-        <form id="manutencao-form" class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="form-field">
-                    <label for="manutencao-data">Data</label>
-                    <input type="date" id="manutencao-data" class="w-full">
-                </div>
-                <div class="form-field">
-                    <label for="manutencao-tipo">Tipo de Manutenção</label>
-                    <input type="text" id="manutencao-tipo" class="w-full" placeholder="Ex: Troca de óleo">
-                </div>
-                <div class="form-field">
-                    <label for="manutencao-valor">Valor (R$)</label>
-                    <input type="number" id="manutencao-valor" step="0.01" min="0" class="w-full">
-                </div>
-            </div>
-            <div class="pt-2">
-                <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none">
-                    <i class="fas fa-save mr-2"></i>Salvar
-                </button>
-                <p id="manutencao-error" class="text-red-600 mt-2 hidden">Preencha todos os campos corretamente.</p>
-            </div>
-        </form>
+    <div
+      id="form-manutencao"
+      class="tab-content bg-white rounded-lg shadow-md p-6 mb-6"
+    >
+      <h2 class="text-xl font-semibold mb-4">Adicionar Manutenção</h2>
+      <form id="manutencao-form" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="form-field">
+            <label for="manutencao-data">Data</label>
+            <input type="date" id="manutencao-data" class="w-full" />
+          </div>
+          <div class="form-field">
+            <label for="manutencao-tipo">Tipo de Manutenção</label>
+            <input
+              type="text"
+              id="manutencao-tipo"
+              class="w-full"
+              placeholder="Ex: Troca de óleo"
+            />
+          </div>
+          <div class="form-field">
+            <label for="manutencao-valor">Valor (R$)</label>
+            <input
+              type="number"
+              id="manutencao-valor"
+              step="0.01"
+              min="0"
+              class="w-full"
+            />
+          </div>
+        </div>
+        <div class="pt-2">
+          <button
+            type="submit"
+            class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none"
+          >
+            <i class="fas fa-save mr-2"></i>Salvar
+          </button>
+          <p id="manutencao-error" class="text-red-600 mt-2 hidden">
+            Preencha todos os campos corretamente.
+          </p>
+        </div>
+      </form>
     </div>
 
     <div id="advanced-section" class="advanced-section mb-6">
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <h2 class="text-xl font-semibold mb-4">Backup e Exportação</h2>
-            <div class="flex flex-wrap gap-4">
-                <button id="btn-backup" class="modern-button bg-purple-600">
-                    <i class="fas fa-download mr-2"></i>Exportar Backup
-                </button>
-                 <button id="btn-export-excel" class="modern-button bg-teal-600">
-                    <i class="fas fa-file-excel mr-2"></i>Exportar para Excel
-                </button>
-                <div class="flex-1">
-                    <label for="import-backup" class="block text-sm font-medium text-gray-700 mb-1">Importar Backup</label>
-                    <input type="file" id="import-backup" class="w-full" accept=".json">
-                </div>
-                <div>
-                    <p class="text-red-600 text-sm font-medium mb-2">
-                        <i class="fas fa-exclamation-triangle mr-1"></i>
-                        Atenção: Limpar os dados excluirá todas as transações permanentemente.
-                    </p>
-                    <button id="btn-limpar" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none">
-                        <i class="fas fa-trash-alt mr-2"></i>Limpar Dados
-                    </button>
-                </div>
-            </div>
-            <p id="backup-error" class="text-red-600 mt-2 hidden">Erro ao processar o arquivo. Verifique se é um backup válido.</p>
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold mb-4">Backup e Exportação</h2>
+        <div class="flex flex-wrap gap-4">
+          <button id="btn-backup" class="modern-button bg-purple-600">
+            <i class="fas fa-download mr-2"></i>Exportar Backup
+          </button>
+          <button id="btn-export-excel" class="modern-button bg-teal-600">
+            <i class="fas fa-file-excel mr-2"></i>Exportar para Excel
+          </button>
+          <div class="flex-1">
+            <label
+              for="import-backup"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Importar Backup</label
+            >
+            <input
+              type="file"
+              id="import-backup"
+              class="w-full"
+              accept=".json"
+            />
+          </div>
+          <div>
+            <p class="text-red-600 text-sm font-medium mb-2">
+              <i class="fas fa-exclamation-triangle mr-1"></i>
+              Atenção: Limpar os dados excluirá todas as transações
+              permanentemente.
+            </p>
+            <button
+              id="btn-limpar"
+              class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none"
+            >
+              <i class="fas fa-trash-alt mr-2"></i>Limpar Dados
+            </button>
+          </div>
         </div>
+        <p id="backup-error" class="text-red-600 mt-2 hidden">
+          Erro ao processar o arquivo. Verifique se é um backup válido.
+        </p>
+      </div>
     </div>
 
     <section class="bg-white rounded-lg shadow-md p-6 mb-6">
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="text-xl font-semibold">Resumo Financeiro</h2>
-            <div class="flex gap-2">
-
-                <button data-filter="day" class="filter-btn px-3 py-1 text-sm bg-gray-200 rounded-md hover:bg-gray-300">Dia</button>
-                <button data-filter="week" class="filter-btn px-3 py-1 text-sm bg-gray-200 rounded-md hover:bg-gray-300">Semana</button>
-                <select id="month-filter" class="filter-btn">
-                    <option value="all">Mês</option>
-                    <option value="1">Janeiro</option>
-                    <option value="2">Fevereiro</option>
-                    <option value="3">Março</option>
-                    <option value="4">Abril</option>
-                    <option value="5">Maio</option>
-                    <option value="6">Junho</option>
-                    <option value="7">Julho</option>
-                    <option value="8">Agosto</option>
-                    <option value="9">Setembro</option>
-                    <option value="10">Outubro</option>
-                    <option value="11">Novembro</option>
-                    <option value="12">Dezembro</option>
-                </select>
-                <button data-filter="all" class="filter-btn active px-3 py-1 text-sm bg-gray-200 rounded-md hover:bg-gray-300">Todos</button>
-            </div>
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-semibold">Resumo Financeiro</h2>
+        <div class="flex gap-2">
+          <button
+            data-filter="day"
+            class="filter-btn px-3 py-1 text-sm bg-gray-200 rounded-md hover:bg-gray-300"
+          >
+            Dia
+          </button>
+          <button
+            data-filter="week"
+            class="filter-btn px-3 py-1 text-sm bg-gray-200 rounded-md hover:bg-gray-300"
+          >
+            Semana
+          </button>
+          <select id="month-filter" class="filter-btn">
+            <option value="all">Mês</option>
+            <option value="1">Janeiro</option>
+            <option value="2">Fevereiro</option>
+            <option value="3">Março</option>
+            <option value="4">Abril</option>
+            <option value="5">Maio</option>
+            <option value="6">Junho</option>
+            <option value="7">Julho</option>
+            <option value="8">Agosto</option>
+            <option value="9">Setembro</option>
+            <option value="10">Outubro</option>
+            <option value="11">Novembro</option>
+            <option value="12">Dezembro</option>
+          </select>
+          <button
+            data-filter="all"
+            class="filter-btn active px-3 py-1 text-sm bg-gray-200 rounded-md hover:bg-gray-300"
+          >
+            Todos
+          </button>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bg-red-50 p-4 rounded-lg border border-red-200">
-                <h3 class="text-lg font-medium text-red-700">Total de Custos</h3>
-                <p class="text-2xl font-bold text-red-800" id="total-custos">R$ 0.00</p>
-            </div>
-            <div class="bg-green-50 p-4 rounded-lg border border-green-200">
-                <h3 class="text-lg font-medium text-green-700">Total de Ganhos</h3>
-                <p class="text-2xl font-bold text-green-800" id="total-ganhos">R$ 0.00</p>
-            </div>
-            <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                <h3 class="text-lg font-medium text-blue-700">Lucro Líquido</h3>
-                <p class="text-2xl font-bold text-blue-800" id="lucro-liquido">R$ 0.00</p>
-            </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-red-50 p-4 rounded-lg border border-red-200">
+          <h3 class="text-lg font-medium text-red-700">Total de Custos</h3>
+          <p class="text-2xl font-bold text-red-800" id="total-custos">
+            R$ 0.00
+          </p>
         </div>
-        <div class="mt-4 flex justify-end">
-            <button id="btn-ver-relatorio" class="px-4 py-2 bg-amber-600 text-white rounded-md hover:bg-amber-700 focus:outline-none">
-                <i class="fas fa-chart-bar mr-2"></i>Ver Relatório Detalhado
-            </button>
+        <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+          <h3 class="text-lg font-medium text-green-700">Total de Ganhos</h3>
+          <p class="text-2xl font-bold text-green-800" id="total-ganhos">
+            R$ 0.00
+          </p>
         </div>
+        <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+          <h3 class="text-lg font-medium text-blue-700">Lucro Líquido</h3>
+          <p class="text-2xl font-bold text-blue-800" id="lucro-liquido">
+            R$ 0.00
+          </p>
+        </div>
+      </div>
+      <div class="mt-4 flex justify-end">
+        <button
+          id="btn-ver-relatorio"
+          class="px-4 py-2 bg-amber-600 text-white rounded-md hover:bg-amber-700 focus:outline-none"
+        >
+          <i class="fas fa-chart-bar mr-2"></i>Ver Relatório Detalhado
+        </button>
+      </div>
     </section>
 
-    <section id="relatorio-detalhado" class="bg-white rounded-lg shadow-md p-6 mb-6 hidden">
-        <h2 class="text-xl font-semibold mb-4">Relatório Detalhado</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-                <h3 class="text-lg font-medium mb-2">Custos</h3>
-                <ul class="space-y-2">
-                    <li class="flex justify-between">
-                        <span>Manutenção:</span>
-                        <span id="custo-manutencao">R$ 0.00</span>
-                    </li>
-                    <li class="flex justify-between">
-                        <span>Combustível:</span>
-                        <span id="custo-combustivel">R$ 0.00</span>
-                    </li>
-                    <li class="flex justify-between font-semibold">
-                        <span>Total Custos:</span>
-                        <span id="relatorio-total-custos">R$ 0.00</span>
-                    </li>
-                </ul>
-            </div>
-            <div>
-                <h3 class="text-lg font-medium mb-2">Ganhos</h3>
-                <ul class="space-y-2">
-                    <li class="flex justify-between">
-                        <span>Ganhos 99:</span>
-                        <span id="ganho-99">R$ 0.00</span>
-                    </li>
-                    <li class="flex justify-between">
-                        <span>Ganhos Uber:</span>
-                        <span id="ganho-uber">R$ 0.00</span>
-                    </li>
-                    <li class="flex justify-between font-semibold">
-                        <span>Total Ganhos:</span>
-                        <span id="relatorio-total-ganhos">R$ 0.00</span>
-                    </li>
-                </ul>
-            </div>
+    <section
+      id="relatorio-detalhado"
+      class="bg-white rounded-lg shadow-md p-6 mb-6 hidden"
+    >
+      <h2 class="text-xl font-semibold mb-4">Relatório Detalhado</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="text-lg font-medium mb-2">Custos</h3>
+          <ul class="space-y-2">
+            <li class="flex justify-between">
+              <span>Manutenção:</span>
+              <span id="custo-manutencao">R$ 0.00</span>
+            </li>
+            <li class="flex justify-between">
+              <span>Combustível:</span>
+              <span id="custo-combustivel">R$ 0.00</span>
+            </li>
+            <li class="flex justify-between font-semibold">
+              <span>Total Custos:</span>
+              <span id="relatorio-total-custos">R$ 0.00</span>
+            </li>
+          </ul>
         </div>
-        <div class="mt-4 pt-4 border-t border-gray-200">
-            <div class="flex justify-between text-lg font-semibold">
-                <span>Lucro Líquido:</span>
-                <span id="relatorio-lucro-liquido">R$ 0.00</span>
-            </div>
+        <div>
+          <h3 class="text-lg font-medium mb-2">Ganhos</h3>
+          <ul class="space-y-2">
+            <li class="flex justify-between">
+              <span>Ganhos 99:</span>
+              <span id="ganho-99">R$ 0.00</span>
+            </li>
+            <li class="flex justify-between">
+              <span>Ganhos Uber:</span>
+              <span id="ganho-uber">R$ 0.00</span>
+            </li>
+            <li class="flex justify-between font-semibold">
+              <span>Total Ganhos:</span>
+              <span id="relatorio-total-ganhos">R$ 0.00</span>
+            </li>
+          </ul>
         </div>
+      </div>
+      <div class="mt-4 pt-4 border-t border-gray-200">
+        <div class="flex justify-between text-lg font-semibold">
+          <span>Lucro Líquido:</span>
+          <span id="relatorio-lucro-liquido">R$ 0.00</span>
+        </div>
+      </div>
     </section>
 
     <section class="bg-white rounded-lg shadow-md p-6 mb-6">
-        <h2 class="text-xl font-semibold mb-4">Histórico de Transações</h2>
-        <div class="overflow-x-auto">
-            <table class="min-w-full">
-                <thead>
-                    <tr class="bg-gray-100">
-                        <th class="py-2">Data</th>
-                        <th>Detalhe</th>
-                        <th>Valor (R$)</th>
-                        <th>Ação</th>
-                    </tr>
-                </thead>
-                <tbody id="transaction-history">
-                    </tbody>
-            </table>
-        </div>
-        <div id="no-transactions" class="py-4 text-center text-gray-500">
-            Nenhuma transação encontrada.
-        </div>
+      <h2 class="text-xl font-semibold mb-4">Histórico de Transações</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full">
+          <thead>
+            <tr class="bg-gray-100">
+              <th class="py-2">Data</th>
+              <th>Detalhe</th>
+              <th>Valor (R$)</th>
+              <th>Ação</th>
+            </tr>
+          </thead>
+          <tbody id="transaction-history"></tbody>
+        </table>
+      </div>
+      <div id="no-transactions" class="py-4 text-center text-gray-500">
+        Nenhuma transação encontrada.
+      </div>
     </section>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Estado da aplicação
-            let transactions = JSON.parse(localStorage.getItem('kwidPlus_transactions')) || [];
-            let currentFilter = 'all';
-            let selectedMonth = null; // Armazena o mês selecionado (1 a 12 ou null)
-            let tipoCombustivel = ''; // Variável para armazenar o tipo de combustível
-            let plataformaSelecionada = 'Nenhuma'; // Variável para armazenar a plataforma selecionada
-
-            // Elementos DOM
-            const formGanho = document.getElementById('form-ganho');
-            const formAbastecimento = document.getElementById('form-abastecimento');
-            const formManutencao = document.getElementById('form-manutencao');
-            const advancedSection = document.getElementById('advanced-section');
-            const relatorioDetalhado = document.getElementById('relatorio-detalhado');
-            const monthFilter = document.getElementById('month-filter');
-            const saldoAtualElement = document.getElementById('saldo-atual'); // Elemento para o lucro líquido do mês atual
-            const exportExcelButton = document.getElementById('btn-export-excel'); // Novo botão de exportar para Excel
-
-
-            // Erros
-            const ganhoError = document.getElementById('ganho-error');
-            const abastecimentoError = document.getElementById('abastecimento-error');
-            const manutencaoError = document.getElementById('manutencao-error');
-            const backupError = document.getElementById('backup-error');
-
-            // Controle de abas
-            document.getElementById('btn-ganho').addEventListener('click', () => showTab('form-ganho'));
-            document.getElementById('btn-abastecimento').addEventListener('click', () => showTab('form-abastecimento'));
-            document.getElementById('btn-manutencao').addEventListener('click', () => showTab('form-manutencao'));
-
-            // Botão avançado
-            document.getElementById('btn-avancado').addEventListener('click', toggleAdvancedSection);
-
-            // Botões de filtro
-            document.querySelectorAll('.filter-btn').forEach(button => {
-                if (button.tagName === 'BUTTON') {
-                    button.addEventListener('click', function() {
-                        const filter = this.getAttribute('data-filter');
-                        setFilter(filter);
-                    });
-                }
-            });
-
-            // Filtro de mês
-            monthFilter.addEventListener('change', function() {
-                const month = this.value;
-                setFilter(month === 'all' ? 'all' : 'month', month === 'all' ? null : parseInt(month));
-            });
-
-            // Ver relatório detalhado
-            document.getElementById('btn-ver-relatorio').addEventListener('click', toggleRelatorioDetalhado);
-
-            // Backup e exportação
-            document.getElementById('btn-backup').addEventListener('click', exportBackup);
-            document.getElementById('import-backup').addEventListener('change', importBackup);
-            document.getElementById('btn-limpar').addEventListener('click', confirmClearData);
-            exportExcelButton.addEventListener('click', exportToExcel); // Listener para o novo botão
-
-
-            // Formulários
-            document.getElementById('ganho-form').addEventListener('submit', addGanho);
-            document.getElementById('abastecimento-form').addEventListener('submit', addAbastecimento);
-            document.getElementById('manutencao-form').addEventListener('submit', addManutencao);
-
-            // Inicializar data atual nos formulários
-            const today = new Date();
-            const formattedToday = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-            document.getElementById('ganho-data').value = formattedToday;
-            document.getElementById('abastecimento-data').value = formattedToday;
-            document.getElementById('manutencao-data').value = formattedToday;
-
-            // Funções de seleção de plataforma
-            window.selectPlatform = function(platform) {
-                plataformaSelecionada = platform;
-                document.getElementById('platform-name').textContent = plataformaSelecionada;
-
-                // Remover a classe 'selected' de todos os botões
-                document.querySelectorAll('#form-ganho button').forEach(btn => {
-                    btn.classList.remove('selected');
-                });
-
-                // Adicionar a classe 'selected' ao botão clicado
-                document.getElementById(`btn-ganho-${platform.toLowerCase()}`).classList.add('selected');
-            };
-
-            // Funções de seleção de combustível
-            window.selectFuel = function(fuel) {
-                tipoCombustivel = fuel;
-                document.getElementById('fuel-name').textContent = tipoCombustivel;
-
-                // Remover a classe 'selected' de todos os botões
-                document.querySelectorAll('#form-abastecimento button').forEach(btn => {
-                    btn.classList.remove('selected');
-                });
-
-                // Adicionar a classe 'selected' ao botão clicado
-                document.getElementById(`btn-${fuel.toLowerCase()}`).classList.add('selected');
-            };
-
-            // Carregar dados iniciais
-            renderTransactions();
-            updateSummary(); // Call updateSummary initially
-
-            // Funções
-            function showTab(tabId) {
-                document.querySelectorAll('.tab-content').forEach(tab => {
-                    tab.classList.remove('active');
-                });
-                document.getElementById(tabId).classList.add('active');
-            }
-
-            function toggleAdvancedSection() {
-                advancedSection.classList.toggle('show');
-            }
-
-            function toggleRelatorioDetalhado() {
-                relatorioDetalhado.classList.toggle('hidden');
-                const btnText = relatorioDetalhado.classList.contains('hidden') ?
-                    '<i class="fas fa-chart-bar mr-2"></i>Ver Relatório Detalhado' :
-                    '<i class="fas fa-times mr-2"></i>Fechar Relatório';
-                document.getElementById('btn-ver-relatorio').innerHTML = btnText;
-            }
-
-            function setFilter(filter, month = null) {
-                currentFilter = filter;
-                selectedMonth = month;
-
-                // Atualizar classe ativa dos botões e dropdown
-                document.querySelectorAll('.filter-btn').forEach(btn => {
-                    if (btn.tagName === 'BUTTON' && btn.getAttribute('data-filter') === filter) {
-                        btn.classList.add('active');
-                    } else if (btn.tagName === 'BUTTON') {
-                        btn.classList.remove('active');
-                    }
-                });
-
-                // Atualizar classe ativa do dropdown
-                if (filter === 'month' && selectedMonth !== null) {
-                     monthFilter.classList.add('active');
-                } else {
-                     monthFilter.classList.remove('active');
-                }
-                 if (filter !== 'month') { // Remove active class from month dropdown if another filter is selected
-                      monthFilter.classList.remove('active');
-                 }
-
-
-                // Atualizar os dados com base no filtro
-                renderTransactions();
-                updateSummary();
-            }
-
-            function addGanho(e) {
-                e.preventDefault();
-
-                const data = document.getElementById('ganho-data').value;
-                const valor = parseFloat(document.getElementById('ganho-valor').value);
-
-                if (!data || plataformaSelecionada === 'Nenhuma' || isNaN(valor) || valor <= 0) {
-                    ganhoError.classList.remove('hidden');
-                    return;
-                }
-
-                ganhoError.classList.add('hidden');
-
-                const transaction = {
-                    id: Date.now(),
-                    date: data,
-                    type: 'ganho',
-                    platform: plataformaSelecionada,
-                    details: `Ganho (${plataformaSelecionada})`,
-                    amount: valor
-                };
-
-                transactions.push(transaction);
-                saveTransactions();
-                renderTransactions();
-                updateSummary();
-
-                document.getElementById('ganho-valor').value = '';
-                plataformaSelecionada = 'Nenhuma'; // Resetar a plataforma após o envio
-                document.getElementById('platform-name').textContent = plataformaSelecionada;
-            }
-
-            function addAbastecimento(e) {
-                e.preventDefault();
-
-                const data = document.getElementById('abastecimento-data').value;
-                const valor = parseFloat(document.getElementById('abastecimento-valor').value);
-
-                if (!data || !tipoCombustivel || isNaN(valor) || valor <= 0) {
-                    abastecimentoError.classList.remove('hidden');
-                    return;
-                }
-
-                abastecimentoError.classList.add('hidden');
-
-                const transaction = {
-                    id: Date.now(),
-                    date: data,
-                    type: 'abastecimento',
-                    fuelType: tipoCombustivel,
-                    details: `Abastecimento (${tipoCombustivel})`,
-                    amount: -valor
-                };
-
-                transactions.push(transaction);
-                saveTransactions();
-                renderTransactions();
-                updateSummary();
-
-                document.getElementById('abastecimento-valor').value = '';
-                tipoCombustivel = ''; // Resetar o tipo de combustível após o envio
-                document.getElementById('fuel-name').textContent = 'Nenhum';
-            }
-
-            function addManutencao(e) {
-                e.preventDefault();
-
-                const data = document.getElementById('manutencao-data').value;
-                const tipo = document.getElementById('manutencao-tipo').value;
-                const valor = parseFloat(document.getElementById('manutencao-valor').value);
-
-                if (!data || !tipo || isNaN(valor) || valor <= 0) {
-                    manutencaoError.classList.remove('hidden');
-                    return;
-                }
-
-                manutencaoError.classList.add('hidden');
-
-                const transaction = {
-                    id: Date.now(),
-                    date: data,
-                    type: 'manutencao',
-                    maintenanceType: tipo,
-                    details: `Manutenção: ${tipo}`,
-                    amount: -valor
-                };
-
-                transactions.push(transaction);
-                saveTransactions();
-                renderTransactions();
-                updateSummary();
-
-                document.getElementById('manutencao-tipo').value = '';
-                document.getElementById('manutencao-valor').value = '';
-            }
-
-            function renderTransactions() {
-                const filteredTransactions = filterTransactions();
-                const tbody = document.getElementById('transaction-history');
-                const noTransactions = document.getElementById('no-transactions');
-
-                tbody.innerHTML = '';
-
-                if (filteredTransactions.length === 0) {
-                    noTransactions.style.display = 'block';
-                    return;
-                }
-
-                noTransactions.style.display = 'none';
-
-                filteredTransactions.sort((a, b) => new Date(b.date) - new Date(a.date))
-                    .forEach(transaction => {
-                        const tr = document.createElement('tr');
-
-                        const formattedDate = formatDate(transaction.date);
-                        const formattedAmount = formatCurrency(Math.abs(transaction.amount));
-                        const isExpense = transaction.amount < 0;
-
-                        tr.innerHTML = `
-                            <td>${formattedDate}</td>
-                            <td>${transaction.details}</td>
-                            <td class="${isExpense ? 'text-red-600' : 'text-green-600'}">${isExpense ? '-' : ''}${formattedAmount}</td>
-                            <td>
-                                <button class="delete-btn p-1 text-red-600 hover:text-red-800" data-id="${transaction.id}">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </td>
-                        `;
-
-                        tbody.appendChild(tr);
-                    });
-
-                // Adicionar listeners aos botões de exclusão
-                document.querySelectorAll('.delete-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const id = parseInt(this.getAttribute('data-id'));
-                        deleteTransaction(id);
-                    });
-                });
-            }
-
-             function filterTransactions(filter = currentFilter, month = selectedMonth) {
-                let transactionsToFilter = [...transactions];
-
-                if (filter === 'day') {
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0);
-                    transactionsToFilter = transactionsToFilter.filter(transaction => {
-                        if (!transaction.date || !/^\d{4}-\d{2}-\d{2}$/.test(transaction.date)) return false;
-                        const [year, month, day] = transaction.date.split('-').map(Number);
-                        const transactionDate = new Date(year, month - 1, day);
-                        return transactionDate.getTime() === today.getTime();
-                    });
-                } else if (filter === 'week') {
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0);
-                    const firstDayOfWeek = new Date(today);
-                    const day = today.getDay() || 7;
-                    firstDayOfWeek.setDate(today.getDate() - day + 1);
-                    firstDayOfWeek.setHours(0, 0, 0, 0);
-
-                    transactionsToFilter = transactionsToFilter.filter(transaction => {
-                        if (!transaction.date || !/^\d{4}-\d{2}-\d{2}$/.test(transaction.date)) return false;
-                        const [year, month, day] = transaction.date.split('-').map(Number);
-                        const transactionDate = new Date(year, month - 1, day);
-                        return transactionDate >= firstDayOfWeek && transactionDate <= today;
-                    });
-                } else if (filter === 'month' && month !== null) {
-                     const filterYear = new Date().getFullYear(); // Assume current year for month filter
-                    transactionsToFilter = transactionsToFilter.filter(transaction => {
-                        if (!transaction.date || !/^\d{4}-\d{2}-\d{2}$/.test(transaction.date)) {
-                            return false;
-                        }
-                        const [year, transactionMonth, day] = transaction.date.split('-').map(Number);
-                         return transactionMonth === month && year === filterYear;
-                    });
-                } else if (filter === 'all') {
-                    transactionsToFilter = [...transactions];
-                }
-
-
-                return transactionsToFilter;
-            }
-
-
-            function updateSummary() {
-                // Calculate net profit for the current month for the dashboard display
-                const currentMonth = new Date().getMonth() + 1;
-                const currentMonthTransactions = filterTransactions('month', currentMonth);
-                 let totalGanhosMonth = 0;
-                 let totalCustosMonth = 0;
-
-                 currentMonthTransactions.forEach(transaction => {
-                     if (transaction.amount > 0) {
-                         totalGanhosMonth += transaction.amount;
-                     } else {
-                         totalCustosMonth += Math.abs(transaction.amount);
-                     }
-                 });
-                 const lucroLiquidoMonth = totalGanhosMonth - totalCustosMonth;
-                saldoAtualElement.textContent = formatCurrency(lucroLiquidoMonth);
-                 if (lucroLiquidoMonth > 0) {
-                    saldoAtualElement.classList.add('text-green-600');
-                    saldoAtualElement.classList.remove('text-red-600', 'text-gray-800');
-                } else if (lucroLiquidoMonth < 0) {
-                     saldoAtualElement.classList.add('text-red-600');
-                     saldoAtualElement.classList.remove('text-green-600', 'text-gray-800');
-                } else {
-                     saldoAtualElement.classList.add('text-gray-800');
-                     saldoAtualElement.classList.remove('text-green-600', 'text-red-600');
-                }
-
-
-                // Calculate summary based on the currently active filter for the main summary section
-                const filteredTransactions = filterTransactions();
-                let totalGanhosFiltered = 0;
-                let totalCustosFiltered = 0;
-                let ganho99Filtered = 0;
-                let ganhoUberFiltered = 0;
-                let custoManutencaoFiltered = 0;
-                let custoCombustivelFiltered = 0;
-
-                filteredTransactions.forEach(transaction => {
-                    if (transaction.amount > 0) {
-                        totalGanhosFiltered += transaction.amount;
-
-                        if (transaction.platform === '99') {
-                            ganho99Filtered += transaction.amount;
-                        } else if (transaction.platform === 'Uber') {
-                            ganhoUberFiltered += transaction.amount;
-                        }
-                    } else {
-                        totalCustosFiltered += Math.abs(transaction.amount);
-
-                        if (transaction.type === 'manutencao') {
-                            custoManutencaoFiltered += Math.abs(transaction.amount);
-                        } else if (transaction.type === 'abastecimento') {
-                            custoCombustivelFiltered += Math.abs(transaction.amount);
-                        }
-                    }
-                });
-
-                const lucroLiquidoFiltered = totalGanhosFiltered - totalCustosFiltered;
-
-                // Update the main summary section
-                document.getElementById('total-ganhos').textContent = formatCurrency(totalGanhosFiltered);
-                document.getElementById('total-custos').textContent = formatCurrency(totalCustosFiltered);
-                document.getElementById('lucro-liquido').textContent = formatCurrency(lucroLiquidoFiltered);
-
-
-                // Update the detailed report
-                document.getElementById('custo-manutencao').textContent = formatCurrency(custoManutencaoFiltered);
-                document.getElementById('custo-combustivel').textContent = formatCurrency(custoCombustivelFiltered);
-                document.getElementById('relatorio-total-custos').textContent = formatCurrency(totalCustosFiltered);
-                document.getElementById('ganho-99').textContent = formatCurrency(ganho99Filtered);
-                document.getElementById('ganho-uber').textContent = formatCurrency(ganhoUberFiltered);
-                document.getElementById('relatorio-total-ganhos').textContent = formatCurrency(totalGanhosFiltered);
-                document.getElementById('relatorio-lucro-liquido').textContent = formatCurrency(lucroLiquidoFiltered);
-
-
-                // Definir cores do lucro líquido no resumo principal
-                const lucroLiquidoElement = document.getElementById('lucro-liquido');
-                if (lucroLiquidoFiltered > 0) {
-                    lucroLiquidoElement.classList.add('text-green-800');
-                    lucroLiquidoElement.classList.remove('text-red-800');
-                } else if (lucroLiquidoFiltered < 0) {
-                    lucroLiquidoElement.classList.add('text-red-800');
-                    lucroLiquidoElement.classList.remove('text-green-800');
-                } else {
-                     lucroLiquidoElement.classList.remove('text-green-800', 'text-red-800');
-                }
-
-                 // Definir cores do lucro líquido no relatório detalhado
-                const relatorioLucroLiquidoElement = document.getElementById('relatorio-lucro-liquido');
-                if (lucroLiquidoFiltered > 0) {
-                    relatorioLucroLiquidoElement.classList.add('text-green-800');
-                    relatorioLucroLiquidoElement.classList.remove('text-red-800');
-                } else if (lucroLiquidoFiltered < 0) {
-                    relatorioLucroLiquidoElement.classList.add('text-red-800');
-                    relatorioLucroLiquidoElement.classList.remove('text-green-800');
-                } else {
-                    relatorioLucroLiquidoElement.classList.remove('text-green-800', 'text-red-800');
-                }
-            }
-
-            function deleteTransaction(id) {
-                if (confirm('Tem certeza que deseja excluir esta transação?')) {
-                    transactions = transactions.filter(t => t.id !== id);
-                    saveTransactions();
-                    renderTransactions();
-                    updateSummary();
-                }
-            }
-
-            function saveTransactions() {
-                localStorage.setItem('kwidPlus_transactions', JSON.stringify(transactions));
-            }
-
-            function exportBackup() {
-                const data = JSON.stringify(transactions);
-                const blob = new Blob([data], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-
-                a.href = url;
-                a.download = `kwid_plus_backup_${formatDate(new Date().toISOString().split('T')[0], true)}.json`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            }
-
-            function importBackup(e) {
-                const file = e.target.files[0];
-                if (!file) return;
-
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    try {
-                        const data = JSON.parse(event.target.result);
-
-                        if (Array.isArray(data)) {
-                            // Validar formato das transações
-                            const validTransactions = data.filter(t =>
-                                t.id && t.date && /^\d{4}-\d{2}-\d{2}$/.test(t.date) && t.type && t.amount
-                            );
-                            transactions = validTransactions;
-                            saveTransactions();
-                            renderTransactions();
-                            updateSummary();
-                            backupError.classList.add('hidden');
-                            alert('Backup importado com sucesso!');
-                        } else {
-                            throw new Error('Formato inválido');
-                        }
-                    } catch (error) {
-                        backupError.classList.remove('hidden');
-                    }
-                };
-                reader.readAsText(file);
-            }
-
-            function confirmClearData() {
-                if (confirm('Tem certeza que deseja limpar todos os dados? Esta ação não pode ser desfeita.')) {
-                    transactions = [];
-                    saveTransactions();
-                    renderTransactions();
-                    updateSummary();
-                    alert('Todos os dados foram excluídos com sucesso!');
-                }
-            }
-
-            function formatDate(dateString, forFilename = false) {
-                if (!dateString || !/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
-                    return 'Data inválida';
-                }
-                const [year, month, day] = dateString.split('-').map(Number);
-                const date = new Date(year, month - 1, day);
-
-                if (forFilename) {
-                    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-                }
-
-                return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
-            }
-
-            function formatCurrency(value) {
-                return `R$ ${value.toFixed(2)}`;
-            }
-
-            function escapeCsv(value) {
-                if (value === null || value === undefined) {
-                    return '';
-                }
-                // Convert to string and escape double quotes
-                const stringValue = String(value).replace(/"/g, '""');
-                // Enclose in double quotes if it contains comma, double quote, or newline
-                if (/[",\n]/.test(stringValue)) {
-                    return `"${stringValue}"`;
-                }
-                return stringValue;
-            }
-
-
-            function exportToExcel() {
-                const allTransactions = [...transactions]; // Get all transactions
-
-                if (allTransactions.length === 0) {
-                    alert('Nenhuma transação para exportar.');
-                    return;
-                }
-
-                // Define CSV headers
-                const headers = ["Data", "Tipo", "Detalhe", "Plataforma/Combustível/Manutenção Tipo", "Valor"];
-                let csvContent = headers.map(escapeCsv).join(";") + "\n"; // Use semicolon as separator
-
-                // Add transaction data
-                allTransactions.forEach(transaction => {
-                    const date = formatDate(transaction.date);
-                    const type = transaction.type;
-                    const details = transaction.details;
-                    let specificDetail = '';
-
-                    if (transaction.type === 'ganho') {
-                        specificDetail = transaction.platform || '';
-                    } else if (transaction.type === 'abastecimento') {
-                        specificDetail = transaction.fuelType || '';
-                    } else if (transaction.type === 'manutencao') {
-                        specificDetail = transaction.maintenanceType || '';
-                    }
-
-                    // Format the amount with comma as decimal separator and ensure it's a string
-                    const amount = transaction.amount.toFixed(2).replace('.', ',');
-
-                    csvContent += [
-                        escapeCsv(date),
-                        escapeCsv(type),
-                        escapeCsv(details),
-                        escapeCsv(specificDetail),
-                        escapeCsv(amount) // Escape the formatted amount string
-                    ].join(";") + "\n"; // Use semicolon as separator
-                });
-
-                // Create Blob and download link
-                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-
-                a.href = url;
-                a.download = `kwid_plus_transacoes_${formatDate(new Date().toISOString().split('T')[0], true)}.csv`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            }
-
-
-             // Set the initial filter to the current month and update the summary
-            const currentMonth = new Date().getMonth() + 1;
-            setFilter('month', currentMonth);
-             monthFilter.value = currentMonth.toString(); // Select the current month in the dropdown
-             monthFilter.classList.add('active'); // Add active class to the month filter
-
-             // Ensure "Todos" button is not active initially
-            document.querySelector('.filter-btn[data-filter="all"]').classList.remove('active');
-        });
-    </script>
-</body>
+    <script src="script.js"></script>
+  </body>
 </html>
