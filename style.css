@@ -1,11 +1,7 @@
 body {
-  padding-top: 8rem;
-}
-
-@media (min-width: 768px) {
-  body {
-    padding-top: 7rem;
-  }
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #fafafa;
+  color: #1a1a1a;
 }
 
 body[data-theme="dark"] {
