@@ -108,47 +108,31 @@ document.addEventListener("DOMContentLoaded", function () {
     }).showToast();
   }
 
-  function confirmToast(message, callback) {
-    const toast = Toastify({
-      text: message,
-      duration: -1,
-      close: true,
-      gravity: "top",
-      position: "center",
-      stopOnFocus: true,
-      style: { background: "linear-gradient(to right, #f97316, #b45309)" },
-      callback: () => {
-        toast.hideToast();
-      },
-      buttons: [
-        {
-          text: "Confirmar",
-          style: {
-            background: "#22c55e",
-            color: "white",
-            padding: "5px 10px",
-            borderRadius: "4px",
-          },
-          callback: () => {
-            callback(true);
-            toast.hideToast();
-          },
-        },
-        {
-          text: "Cancelar",
-          style: {
-            background: "#ef4444",
-            color: "white",
-            padding: "5px 10px",
-            borderRadius: "4px",
-          },
-          callback: () => {
-            callback(false);
-            toast.hideToast();
-          },
-        },
-      ],
-    }).showToast();
+  function showConfirmModal(message, callback) {
+    const modal = document.getElementById("confirm-modal");
+    const messageElement = document.getElementById("confirm-message");
+    const acceptButton = document.getElementById("confirm-accept");
+    const cancelButton = document.getElementById("confirm-cancel");
+
+    messageElement.textContent = message;
+    modal.classList.remove("hidden");
+
+    const handleAccept = () => {
+      modal.classList.add("hidden");
+      callback(true);
+      acceptButton.removeEventListener("click", handleAccept);
+      cancelButton.removeEventListener("click", handleCancel);
+    };
+
+    const handleCancel = () => {
+      modal.classList.add("hidden");
+      callback(false);
+      acceptButton.removeEventListener("click", handleAccept);
+      cancelButton.removeEventListener("click", handleCancel);
+    };
+
+    acceptButton.addEventListener("click", handleAccept);
+    cancelButton.addEventListener("click", handleCancel);
   }
 
   document
@@ -661,7 +645,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function deleteTransaction(id) {
-    confirmToast(
+    showConfirmModal(
       "Tem certeza que deseja excluir esta transação?",
       (confirmed) => {
         if (confirmed) {
@@ -742,7 +726,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function confirmClearData() {
-    confirmToast(
+    showConfirmModal(
       "Tem certeza que deseja limpar todos os dados? Esta ação não pode ser desfeita.",
       (confirmed) => {
         if (confirmed) {
