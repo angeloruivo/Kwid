@@ -1,38 +1,111 @@
 document.addEventListener("DOMContentLoaded", function () {
-  let transactions =
-    JSON.parse(localStorage.getItem("kwidPlus_transactions")) || [];
-  let currentFilter = "all";
+  // Constantes para tipos e filtros
+  const TRANSACTION_TYPES = {
+    GANHO: "ganho",
+    ABASTECIMENTO: "abastecimento",
+    MANUTENCAO: "manutencao",
+  };
+  const FILTER_TYPES = {
+    ALL: "all",
+    DAY: "day",
+    WEEK: "week",
+    MONTH: "month",
+  };
+
+  // Estado inicial
+  let transactions = [];
+  try {
+    const stored = localStorage.getItem("kwidPlus_transactions");
+    if (stored) {
+      transactions = JSON.parse(stored);
+      if (!Array.isArray(transactions)) transactions = [];
+    }
+  } catch (e) {
+    console.error("Erro ao carregar transações:", e);
+    transactions = [];
+  }
+  let currentFilter = FILTER_TYPES.ALL;
   let selectedMonth = null;
   let tipoCombustivel = "";
   let plataformaSelecionada = "Nenhuma";
 
-  const formGanho = document.getElementById("form-ganho");
-  const formAbastecimento = document.getElementById("form-abastecimento");
-  const formManutencao = document.getElementById("form-manutencao");
-  const advancedSection = document.getElementById("advanced-section");
-  const relatorioDetalhado = document.getElementById("relatorio-detalhado");
-  const monthFilter = document.getElementById("month-filter");
-  const saldoAtualElement = document.getElementById("saldo-atual");
-  const exportExcelButton = document.getElementById("btn-export-excel");
-  const toggleDarkModeBtn = document.getElementById("toggle-dark-mode");
+  // Cache de elementos DOM
+  const elements = {
+    formGanho: document.getElementById("form-ganho"),
+    formAbastecimento: document.getElementById("form-abastecimento"),
+    formManutencao: document.getElementById("form-manutencao"),
+    advancedSection: document.getElementById("advanced-section"),
+    relatorioDetalhado: document.getElementById("relatorio-detalhado"),
+    monthFilter: document.getElementById("month-filter"),
+    saldoAtualElement: document.getElementById("saldo-atual"),
+    exportExcelButton: document.getElementById("btn-export-excel"),
+    toggleDarkModeBtn: document.getElementById("toggle-dark-mode"),
+    ganhoError: document.getElementById("ganho-error"),
+    abastecimentoError: document.getElementById("abastecimento-error"),
+    manutencaoError: document.getElementById("manutencao-error"),
+    backupError: document.getElementById("backup-error"),
+    ganhoForm: document.getElementById("ganho-form"),
+    abastecimentoForm: document.getElementById("abastecimento-form"),
+    manutencaoForm: document.getElementById("manutencao-form"),
+    ganhoData: document.getElementById("ganho-data"),
+    abastecimentoData: document.getElementById("abastecimento-data"),
+    manutencaoData: document.getElementById("manutencao-data"),
+    transactionHistory: document.getElementById("transaction-history"),
+    noTransactions: document.getElementById("no-transactions"),
+  };
 
-  const ganhoError = document.getElementById("ganho-error");
-  const abastecimentoError = document.getElementById("abastecimento-error");
-  const manutencaoError = document.getElementById("manutencao-error");
-  const backupError = document.getElementById("backup-error");
+  // Verifica se todos os elementos DOM existem
+  for (const [key, value] of Object.entries(elements)) {
+    if (!value) {
+      console.error(`Elemento '${key}' não encontrado`);
+      return;
+    }
+  }
 
-  document
-    .getElementById("btn-ganho")
+  // Função debounce
+  function debounce(fn, ms) {
+    let timeout;
+    return function (...args) {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => fn.apply(this, args), ms);
+    };
+  }
+
+  // Funções de validação
+  function isValidDate(dateString) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(dateString)) return false;
+    const [year, month, day] = dateString.split("-").map(Number);
+    const date = new Date(year, month - 1, day);
+    return (
+      date.getFullYear() === year &&
+      date.getMonth() === month - 1 &&
+      date.getDate() === day
+    );
+  }
+
+  function isValidAmount(value) {
+    const num = parseFloat(value);
+    return !isNaN(num) && num > 0 && /^\d*\.?\d{0,2}$/.test(value);
+  }
+
+  function showError(element, message) {
+    element.textContent = message;
+    element.classList.remove("hidden");
+  }
+
+  // Event Listeners
+  elements.formGanho
+    .querySelector("#btn-ganho")
     .addEventListener("click", () => showTab("form-ganho"));
-  document
-    .getElementById("btn-abastecimento")
+  elements.formAbastecimento
+    .querySelector("#btn-abastecimento")
     .addEventListener("click", () => showTab("form-abastecimento"));
-  document
-    .getElementById("btn-manutencao")
+  elements.formManutencao
+    .querySelector("#btn-manutencao")
     .addEventListener("click", () => showTab("form-manutencao"));
 
-  document
-    .getElementById("btn-avancado")
+  elements.advancedSection
+    .querySelector("#btn-avancado")
     .addEventListener("click", toggleAdvancedSection);
 
   document.querySelectorAll(".filter-btn").forEach((button) => {
@@ -44,16 +117,16 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  monthFilter.addEventListener("change", function () {
+  elements.monthFilter.addEventListener("change", function () {
     const month = this.value;
     setFilter(
-      month === "all" ? "all" : "month",
+      month === "all" ? FILTER_TYPES.ALL : FILTER_TYPES.MONTH,
       month === "all" ? null : parseInt(month)
     );
   });
 
-  document
-    .getElementById("btn-ver-relatorio")
+  elements.relatorioDetalhado
+    .querySelector("#btn-ver-relatorio")
     .addEventListener("click", toggleRelatorioDetalhado);
 
   document.getElementById("btn-backup").addEventListener("click", exportBackup);
@@ -63,40 +136,41 @@ document.addEventListener("DOMContentLoaded", function () {
   document
     .getElementById("btn-limpar")
     .addEventListener("click", confirmClearData);
-  exportExcelButton.addEventListener("click", exportToExcel);
+  elements.exportExcelButton.addEventListener("click", exportToExcel);
 
+  // Tema
   if (localStorage.getItem("theme") === "dark") {
     document.body.setAttribute("data-theme", "dark");
-    toggleDarkModeBtn.innerHTML = '<i class="fas fa-sun"></i> Modo Claro';
+    elements.toggleDarkModeBtn.innerHTML =
+      '<i class="fas fa-sun"></i> Modo Claro';
   }
 
-  toggleDarkModeBtn.addEventListener("click", () => {
+  elements.toggleDarkModeBtn.addEventListener("click", () => {
     if (document.body.getAttribute("data-theme") === "dark") {
       document.body.removeAttribute("data-theme");
-      toggleDarkModeBtn.innerHTML = '<i class="fas fa-moon"></i> Modo Escuro';
+      elements.toggleDarkModeBtn.innerHTML =
+        '<i class="fas fa-moon"></i> Modo Escuro';
       localStorage.setItem("theme", "light");
     } else {
       document.body.setAttribute("data-theme", "dark");
-      toggleDarkModeBtn.innerHTML = '<i class="fas fa-sun"></i> Modo Claro';
+      elements.toggleDarkModeBtn.innerHTML =
+        '<i class="fas fa-sun"></i> Modo Claro';
       localStorage.setItem("theme", "dark");
     }
   });
 
-  document.getElementById("ganho-form").addEventListener("submit", addGanho);
-  document
-    .getElementById("abastecimento-form")
-    .addEventListener("submit", addAbastecimento);
-  document
-    .getElementById("manutencao-form")
-    .addEventListener("submit", addManutencao);
+  elements.ganhoForm.addEventListener("submit", addGanho);
+  elements.abastecimentoForm.addEventListener("submit", addAbastecimento);
+  elements.manutencaoForm.addEventListener("submit", addManutencao);
 
+  // Definir data atual
   const today = new Date();
   const formattedToday = `${today.getFullYear()}-${String(
     today.getMonth() + 1
   ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
-  document.getElementById("ganho-data").value = formattedToday;
-  document.getElementById("abastecimento-data").value = formattedToday;
-  document.getElementById("manutencao-data").value = formattedToday;
+  elements.ganhoData.value = formattedToday;
+  elements.abastecimentoData.value = formattedToday;
+  elements.manutencaoData.value = formattedToday;
 
   window.selectPlatform = function (platform) {
     plataformaSelecionada = platform;
@@ -125,8 +199,11 @@ document.addEventListener("DOMContentLoaded", function () {
       .classList.add("selected");
   };
 
-  renderTransactions();
-  updateSummary();
+  const debouncedRender = debounce(renderTransactions, 100);
+  const debouncedUpdate = debounce(updateSummary, 100);
+
+  debouncedRender();
+  debouncedUpdate();
 
   function showTab(tabId) {
     document.querySelectorAll(".tab-content").forEach((tab) => {
@@ -136,15 +213,16 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function toggleAdvancedSection() {
-    advancedSection.classList.toggle("show");
+    elements.advancedSection.classList.toggle("show");
   }
 
   function toggleRelatorioDetalhado() {
-    relatorioDetalhado.classList.toggle("hidden");
-    const btnText = relatorioDetalhado.classList.contains("hidden")
+    elements.relatorioDetalhado.classList.toggle("hidden");
+    const btnText = elements.relatorioDetalhado.classList.contains("hidden")
       ? '<i class="fas fa-chart-bar mr-1"></i>Ver Relatório Detalhado'
       : '<i class="fas fa-times mr-1"></i>Fechar Relatório';
-    document.getElementById("btn-ver-relatorio").innerHTML = btnText;
+    elements.relatorioDetalhado.querySelector("#btn-ver-relatorio").innerHTML =
+      btnText;
   }
 
   function setFilter(filter, month = null) {
@@ -162,52 +240,58 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    if (filter === "month" && selectedMonth !== null) {
-      monthFilter.classList.add("active");
+    if (filter === FILTER_TYPES.MONTH && selectedMonth !== null) {
+      elements.monthFilter.classList.add("active");
     } else {
-      monthFilter.classList.remove("active");
+      elements.monthFilter.classList.remove("active");
     }
-    if (filter !== "month") {
-      monthFilter.classList.remove("active");
+    if (filter !== FILTER_TYPES.MONTH) {
+      elements.monthFilter.classList.remove("active");
     }
 
-    renderTransactions();
-    updateSummary();
+    debouncedRender();
+    debouncedUpdate();
   }
 
   function addGanho(e) {
     e.preventDefault();
 
-    const data = document.getElementById("ganho-data").value;
-    const valor = parseFloat(document.getElementById("ganho-valor").value);
+    const data = elements.ganhoData.value;
+    const valor = elements.ganhoForm.querySelector("#ganho-valor").value;
 
-    if (
-      !data ||
-      plataformaSelecionada === "Nenhuma" ||
-      isNaN(valor) ||
-      valor <= 0
-    ) {
-      ganhoError.classList.remove("hidden");
+    if (!isValidDate(data)) {
+      showError(elements.ganhoError, "Por favor, informe uma data válida.");
+      return;
+    }
+    if (plataformaSelecionada === "Nenhuma") {
+      showError(elements.ganhoError, "Por favor, selecione uma plataforma.");
+      return;
+    }
+    if (!isValidAmount(valor)) {
+      showError(
+        elements.ganhoError,
+        "Por favor, informe um valor numérico válido maior que zero."
+      );
       return;
     }
 
-    ganhoError.classList.add("hidden");
+    elements.ganhoError.classList.add("hidden");
 
     const transaction = {
       id: Date.now(),
       date: data,
-      type: "ganho",
+      type: TRANSACTION_TYPES.GANHO,
       platform: plataformaSelecionada,
       details: `Ganho (${plataformaSelecionada})`,
-      amount: valor,
+      amount: parseFloat(valor),
     };
 
     transactions.push(transaction);
     saveTransactions();
-    renderTransactions();
-    updateSummary();
+    debouncedRender();
+    debouncedUpdate();
 
-    document.getElementById("ganho-valor").value = "";
+    elements.ganhoForm.querySelector("#ganho-valor").value = "";
     plataformaSelecionada = "Nenhuma";
     document.getElementById("platform-name").textContent =
       plataformaSelecionada;
@@ -216,33 +300,50 @@ document.addEventListener("DOMContentLoaded", function () {
   function addAbastecimento(e) {
     e.preventDefault();
 
-    const data = document.getElementById("abastecimento-data").value;
-    const valor = parseFloat(
-      document.getElementById("abastecimento-valor").value
-    );
+    const data = elements.abastecimentoData.value;
+    const valor = elements.abastecimentoForm.querySelector(
+      "#abastecimento-valor"
+    ).value;
 
-    if (!data || !tipoCombustivel || isNaN(valor) || valor <= 0) {
-      abastecimentoError.classList.remove("hidden");
+    if (!isValidDate(data)) {
+      showError(
+        elements.abastecimentoError,
+        "Por favor, informe uma data válida."
+      );
+      return;
+    }
+    if (!tipoCombustivel) {
+      showError(
+        elements.abastecimentoError,
+        "Por favor, selecione um tipo de combustível."
+      );
+      return;
+    }
+    if (!isValidAmount(valor)) {
+      showError(
+        elements.abastecimentoError,
+        "Por favor, informe um valor numérico válido maior que zero."
+      );
       return;
     }
 
-    abastecimentoError.classList.add("hidden");
+    elements.abastecimentoError.classList.add("hidden");
 
     const transaction = {
       id: Date.now(),
       date: data,
-      type: "abastecimento",
+      type: TRANSACTION_TYPES.ABASTECIMENTO,
       fuelType: tipoCombustivel,
       details: `Abastecimento (${tipoCombustivel})`,
-      amount: -valor,
+      amount: -parseFloat(valor),
     };
 
     transactions.push(transaction);
     saveTransactions();
-    renderTransactions();
-    updateSummary();
+    debouncedRender();
+    debouncedUpdate();
 
-    document.getElementById("abastecimento-valor").value = "";
+    elements.abastecimentoForm.querySelector("#abastecimento-valor").value = "";
     tipoCombustivel = "";
     document.getElementById("fuel-name").textContent = "Nenhum";
   }
@@ -250,48 +351,64 @@ document.addEventListener("DOMContentLoaded", function () {
   function addManutencao(e) {
     e.preventDefault();
 
-    const data = document.getElementById("manutencao-data").value;
-    const tipo = document.getElementById("manutencao-tipo").value;
-    const valor = parseFloat(document.getElementById("manutencao-valor").value);
+    const data = elements.manutencaoData.value;
+    const tipo =
+      elements.manutencaoForm.querySelector("#manutencao-tipo").value;
+    const valor =
+      elements.manutencaoForm.querySelector("#manutencao-valor").value;
 
-    if (!data || !tipo || isNaN(valor) || valor <= 0) {
-      manutencaoError.classList.remove("hidden");
+    if (!isValidDate(data)) {
+      showError(
+        elements.manutencaoError,
+        "Por favor, informe uma data válida."
+      );
+      return;
+    }
+    if (!tipo) {
+      showError(
+        elements.manutencaoError,
+        "Por favor, informe o tipo de manutenção."
+      );
+      return;
+    }
+    if (!isValidAmount(valor)) {
+      showError(
+        elements.manutencaoError,
+        "Por favor, informe um valor numérico válido maior que zero."
+      );
       return;
     }
 
-    manutencaoError.classList.add("hidden");
+    elements.manutencaoError.classList.add("hidden");
 
     const transaction = {
       id: Date.now(),
       date: data,
-      type: "manutencao",
+      type: TRANSACTION_TYPES.MANUTENCAO,
       maintenanceType: tipo,
       details: `Manutenção: ${tipo}`,
-      amount: -valor,
+      amount: -parseFloat(valor),
     };
 
     transactions.push(transaction);
     saveTransactions();
-    renderTransactions();
-    updateSummary();
+    debouncedRender();
+    debouncedUpdate();
 
-    document.getElementById("manutencao-tipo").value = "";
-    document.getElementById("manutencao-valor").value = "";
+    elements.manutencaoForm.querySelector("#manutencao-tipo").value = "";
+    elements.manutencaoForm.querySelector("#manutencao-valor").value = "";
   }
 
   function renderTransactions() {
     const filteredTransactions = filterTransactions();
-    const tbody = document.getElementById("transaction-history");
-    const noTransactions = document.getElementById("no-transactions");
-
-    tbody.innerHTML = "";
+    elements.transactionHistory.innerHTML = "";
 
     if (filteredTransactions.length === 0) {
-      noTransactions.style.display = "block";
+      elements.noTransactions.style.display = "block";
       return;
     }
 
-    noTransactions.style.display = "none";
+    elements.noTransactions.style.display = "none";
 
     filteredTransactions
       .sort((a, b) => new Date(b.date) - new Date(a.date))
@@ -311,13 +428,13 @@ document.addEventListener("DOMContentLoaded", function () {
           <td>
             <button class="delete-btn p-1 text-red-600 hover:text-red-800" data-id="${
               transaction.id
-            }">
+            }" aria-label="Excluir transação">
               <i class="fas fa-trash"></i>
             </button>
           </td>
         `;
 
-        tbody.appendChild(tr);
+        elements.transactionHistory.appendChild(tr);
       });
 
     document.querySelectorAll(".delete-btn").forEach((btn) => {
@@ -331,17 +448,20 @@ document.addEventListener("DOMContentLoaded", function () {
   function filterTransactions(filter = currentFilter, month = selectedMonth) {
     let transactionsToFilter = [...transactions];
 
-    if (filter === "day") {
+    if (filter === FILTER_TYPES.DAY) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       transactionsToFilter = transactionsToFilter.filter((transaction) => {
-        if (!transaction.date || !/^\d{4}-\d{2}-\d{2}$/.test(transaction.date))
-          return false;
+        if (!transaction.date || !isValidDate(transaction.date)) return false;
         const [year, month, day] = transaction.date.split("-").map(Number);
         const transactionDate = new Date(year, month - 1, day);
-        return transactionDate.getTime() === today.getTime();
+        return (
+          transactionDate.getFullYear() === today.getFullYear() &&
+          transactionDate.getMonth() === today.getMonth() &&
+          transactionDate.getDate() === today.getDate()
+        );
       });
-    } else if (filter === "week") {
+    } else if (filter === FILTER_TYPES.WEEK) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const firstDayOfWeek = new Date(today);
@@ -350,27 +470,21 @@ document.addEventListener("DOMContentLoaded", function () {
       firstDayOfWeek.setHours(0, 0, 0, 0);
 
       transactionsToFilter = transactionsToFilter.filter((transaction) => {
-        if (!transaction.date || !/^\d{4}-\d{2}-\d{2}$/.test(transaction.date))
-          return false;
+        if (!transaction.date || !isValidDate(transaction.date)) return false;
         const [year, month, day] = transaction.date.split("-").map(Number);
         const transactionDate = new Date(year, month - 1, day);
         return transactionDate >= firstDayOfWeek && transactionDate <= today;
       });
-    } else if (filter === "month" && month !== null) {
+    } else if (filter === FILTER_TYPES.MONTH && month !== null) {
       const filterYear = new Date().getFullYear();
       transactionsToFilter = transactionsToFilter.filter((transaction) => {
-        if (
-          !transaction.date ||
-          !/^\d{4}-\d{2}-\d{2}$/.test(transaction.date)
-        ) {
-          return false;
-        }
-        const [year, transactionMonth, day] = transaction.date
+        if (!transaction.date || !isValidDate(transaction.date)) return false;
+        const [year, transactionMonth] = transaction.date
           .split("-")
           .map(Number);
         return transactionMonth === month && year === filterYear;
       });
-    } else if (filter === "all") {
+    } else if (filter === FILTER_TYPES.ALL) {
       transactionsToFilter = [...transactions];
     }
 
@@ -379,7 +493,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function updateSummary() {
     const currentMonth = new Date().getMonth() + 1;
-    const currentMonthTransactions = filterTransactions("month", currentMonth);
+    const currentMonthTransactions = filterTransactions(
+      FILTER_TYPES.MONTH,
+      currentMonth
+    );
     let totalGanhosMonth = 0;
     let totalCustosMonth = 0;
 
@@ -391,16 +508,25 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
     const lucroLiquidoMonth = totalGanhosMonth - totalCustosMonth;
-    saldoAtualElement.textContent = formatCurrency(lucroLiquidoMonth);
+    elements.saldoAtualElement.textContent = formatCurrency(lucroLiquidoMonth);
     if (lucroLiquidoMonth > 0) {
-      saldoAtualElement.classList.add("text-green-600");
-      saldoAtualElement.classList.remove("text-red-600", "text-gray-800");
+      elements.saldoAtualElement.classList.add("text-green-600");
+      elements.saldoAtualElement.classList.remove(
+        "text-red-600",
+        "text-gray-800"
+      );
     } else if (lucroLiquidoMonth < 0) {
-      saldoAtualElement.classList.add("text-red-600");
-      saldoAtualElement.classList.remove("text-green-600", "text-gray-800");
+      elements.saldoAtualElement.classList.add("text-red-600");
+      elements.saldoAtualElement.classList.remove(
+        "text-green-600",
+        "text-gray-800"
+      );
     } else {
-      saldoAtualElement.classList.add("text-gray-800");
-      saldoAtualElement.classList.remove("text-green-600", "text-red-600");
+      elements.saldoAtualElement.classList.add("text-gray-800");
+      elements.saldoAtualElement.classList.remove(
+        "text-green-600",
+        "text-red-600"
+      );
     }
 
     const filteredTransactions = filterTransactions();
@@ -414,7 +540,6 @@ document.addEventListener("DOMContentLoaded", function () {
     filteredTransactions.forEach((transaction) => {
       if (transaction.amount > 0) {
         totalGanhosFiltered += transaction.amount;
-
         if (transaction.platform === "99") {
           ganho99Filtered += transaction.amount;
         } else if (transaction.platform === "Uber") {
@@ -422,10 +547,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       } else {
         totalCustosFiltered += Math.abs(transaction.amount);
-
-        if (transaction.type === "manutencao") {
+        if (transaction.type === TRANSACTION_TYPES.MANUTENCAO) {
           custoManutencaoFiltered += Math.abs(transaction.amount);
-        } else if (transaction.type === "abastecimento") {
+        } else if (transaction.type === TRANSACTION_TYPES.ABASTECIMENTO) {
           custoCombustivelFiltered += Math.abs(transaction.amount);
         }
       }
@@ -439,7 +563,6 @@ document.addEventListener("DOMContentLoaded", function () {
       formatCurrency(totalCustosFiltered);
     document.getElementById("lucro-liquido").textContent =
       formatCurrency(lucroLiquidoFiltered);
-
     document.getElementById("custo-manutencao").textContent = formatCurrency(
       custoManutencaoFiltered
     );
@@ -489,13 +612,20 @@ document.addEventListener("DOMContentLoaded", function () {
     if (confirm("Tem certeza que deseja excluir esta transação?")) {
       transactions = transactions.filter((t) => t.id !== id);
       saveTransactions();
-      renderTransactions();
-      updateSummary();
+      debouncedRender();
+      debouncedUpdate();
     }
   }
 
   function saveTransactions() {
-    localStorage.setItem("kwidPlus_transactions", JSON.stringify(transactions));
+    try {
+      localStorage.setItem(
+        "kwidPlus_transactions",
+        JSON.stringify(transactions)
+      );
+    } catch (e) {
+      console.error("Erro ao salvar transações:", e);
+    }
   }
 
   function exportBackup() {
@@ -529,21 +659,24 @@ document.addEventListener("DOMContentLoaded", function () {
             (t) =>
               t.id &&
               t.date &&
-              /^\d{4}-\d{2}-\d{2}$/.test(t.date) &&
+              isValidDate(t.date) &&
               t.type &&
-              t.amount
+              typeof t.amount === "number"
           );
           transactions = validTransactions;
           saveTransactions();
-          renderTransactions();
-          updateSummary();
-          backupError.classList.add("hidden");
+          debouncedRender();
+          debouncedUpdate();
+          elements.backupError.classList.add("hidden");
           alert("Backup importado com sucesso!");
         } else {
           throw new Error("Formato inválido");
         }
       } catch (error) {
-        backupError.classList.remove("hidden");
+        showError(
+          elements.backupError,
+          "Erro ao importar backup: formato inválido."
+        );
       }
     };
     reader.readAsText(file);
@@ -557,14 +690,14 @@ document.addEventListener("DOMContentLoaded", function () {
     ) {
       transactions = [];
       saveTransactions();
-      renderTransactions();
-      updateSummary();
+      debouncedRender();
+      debouncedUpdate();
       alert("Todos os dados foram excluídos com sucesso!");
     }
   }
 
   function formatDate(dateString, forFilename = false) {
-    if (!dateString || !/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+    if (!dateString || !isValidDate(dateString)) {
       return "Data inválida";
     }
     const [year, month, day] = dateString.split("-").map(Number);
@@ -584,7 +717,10 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function formatCurrency(value) {
-    return `R$ ${value.toFixed(2)}`;
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(value);
   }
 
   function escapeCsv(value) {
@@ -621,11 +757,11 @@ document.addEventListener("DOMContentLoaded", function () {
       const details = transaction.details;
       let specificDetail = "";
 
-      if (transaction.type === "ganho") {
+      if (transaction.type === TRANSACTION_TYPES.GANHO) {
         specificDetail = transaction.platform || "";
-      } else if (transaction.type === "abastecimento") {
+      } else if (transaction.type === TRANSACTION_TYPES.ABASTECIMENTO) {
         specificDetail = transaction.fuelType || "";
-      } else if (transaction.type === "manutencao") {
+      } else if (transaction.type === TRANSACTION_TYPES.MANUTENCAO) {
         specificDetail = transaction.maintenanceType || "";
       }
 
@@ -657,9 +793,9 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   const currentMonth = new Date().getMonth() + 1;
-  setFilter("month", currentMonth);
-  monthFilter.value = currentMonth.toString();
-  monthFilter.classList.add("active");
+  setFilter(FILTER_TYPES.MONTH, currentMonth);
+  elements.monthFilter.value = currentMonth.toString();
+  elements.monthFilter.classList.add("active");
 
   document
     .querySelector('.filter-btn[data-filter="all"]')
