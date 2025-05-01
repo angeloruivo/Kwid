@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
+  const DEBUG = true;
+
   const TRANSACTION_TYPES = {
     GANHO: "ganho",
     ABASTECIMENTO: "abastecimento",
@@ -27,7 +29,6 @@ document.addEventListener("DOMContentLoaded", function () {
   let tipoCombustivel = "";
   let plataformaSelecionada = "Nenhuma";
 
-  // Cache de elementos DOM
   const elements = {
     formGanho: document.getElementById("form-ganho"),
     formAbastecimento: document.getElementById("form-abastecimento"),
@@ -52,7 +53,6 @@ document.addEventListener("DOMContentLoaded", function () {
     noTransactions: document.getElementById("no-transactions"),
   };
 
-  // Verifica se todos os elementos DOM existem
   for (const [key, value] of Object.entries(elements)) {
     if (!value) {
       console.error(`Elemento '${key}' não encontrado`);
@@ -60,6 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  // Função debounce, não mexe
   function debounce(fn, ms) {
     let timeout;
     return function (...args) {
@@ -129,9 +130,11 @@ document.addEventListener("DOMContentLoaded", function () {
   document
     .getElementById("btn-limpar")
     .addEventListener("click", confirmClearData);
-  elements.exportExcelButton.addEventListener("click", exportToExcel);
+  elements.exportExcelButton.addEventListener("click", () => {
+    if (DEBUG) console.log("Botão Exportar para Excel clicado");
+    exportToExcel();
+  });
 
-  // Tema
   if (localStorage.getItem("theme") === "dark") {
     document.body.setAttribute("data-theme", "dark");
     elements.toggleDarkModeBtn.innerHTML =
@@ -719,9 +722,12 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function exportToExcel() {
+    if (DEBUG) console.log("Iniciando exportação para Excel");
+
     if (typeof XLSX === "undefined") {
+      console.error("Biblioteca SheetJS não carregada");
       alert(
-        "Erro: Biblioteca SheetJS não carregada. Verifique a inclusão do script."
+        "Erro: Não foi possível exportar. A biblioteca SheetJS não foi carregada corretamente. Verifique sua conexão com a internet ou tente novamente."
       );
       return;
     }
@@ -729,61 +735,72 @@ document.addEventListener("DOMContentLoaded", function () {
     const allTransactions = [...transactions];
 
     if (allTransactions.length === 0) {
+      if (DEBUG) console.log("Nenhuma transação para exportar");
       alert("Nenhuma transação para exportar.");
       return;
     }
 
-    const headers = [
-      "Data",
-      "Tipo",
-      "Detalhe",
-      "Plataforma/Combustível/Manutenção Tipo",
-      "Valor",
-    ];
-    const data = [headers];
+    try {
+      const headers = [
+        "Data",
+        "Tipo",
+        "Detalhe",
+        "Plataforma/Combustível/Manutenção Tipo",
+        "Valor",
+      ];
+      const data = [headers];
 
-    allTransactions.forEach((transaction) => {
-      const date = formatDate(transaction.date, false, true);
-      const type = transaction.type;
-      const details = transaction.details;
-      let specificDetail = "";
+      allTransactions.forEach((transaction) => {
+        const date = formatDate(transaction.date, false, true);
+        const type = transaction.type;
+        const details = transaction.details;
+        let specificDetail = "";
 
-      if (transaction.type === TRANSACTION_TYPES.GANHO) {
-        specificDetail = transaction.platform || "";
-      } else if (transaction.type === TRANSACTION_TYPES.ABASTECIMENTO) {
-        specificDetail = transaction.fuelType || "";
-      } else if (transaction.type === TRANSACTION_TYPES.MANUTENCAO) {
-        specificDetail = transaction.maintenanceType || "";
+        if (transaction.type === TRANSACTION_TYPES.GANHO) {
+          specificDetail = transaction.platform || "";
+        } else if (transaction.type === TRANSACTION_TYPES.ABASTECIMENTO) {
+          specificDetail = transaction.fuelType || "";
+        } else if (transaction.type === TRANSACTION_TYPES.MANUTENCAO) {
+          specificDetail = transaction.maintenanceType || "";
+        }
+
+        const amount = transaction.amount;
+
+        data.push([date, type, details, specificDetail, amount]);
+      });
+
+      const ws = XLSX.utils.aoa_to_sheet(data);
+
+      ws["!cols"] = [
+        { wch: 15 },
+        { wch: 15 },
+        { wch: 30 },
+        { wch: 30 },
+        { wch: 15 },
+      ];
+
+      for (let i = 1; i < data.length; i++) {
+        const cellRef = XLSX.utils.encode_cell({ r: i, c: 4 });
+        ws[cellRef].z = '"R$" #,##0.00';
       }
 
-      const amount = transaction.amount;
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Transações");
 
-      data.push([date, type, details, specificDetail, amount]);
-    });
+      const fileName = `kwid_plus_transacoes_${formatDate(
+        new Date().toISOString().split("T")[0],
+        true
+      )}.xlsx`;
+      if (DEBUG) console.log(`Exportando arquivo: ${fileName}`);
+      XLSX.write(wb, fileName);
 
-    const ws = XLSX.utils.aoa_to_sheet(data);
-
-    ws["!cols"] = [
-      { wch: 15 },
-      { wch: 15 },
-      { wch: 30 },
-      { wch: 30 },
-      { wch: 15 },
-    ];
-
-    for (let i = 1; i < data.length; i++) {
-      const cellRef = XLSX.utils.encode_cell({ r: i, c: 4 });
-      ws[cellRef].z = '"R$" #,##0.00';
+      if (DEBUG) console.log("Exportação concluída com sucesso");
+    } catch (error) {
+      console.error("Erro ao exportar para Excel:", error);
+      alert(
+        "Erro ao exportar para Excel. Verifique o console para mais detalhes ou tente novamente."
+      );
     }
-
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Transações");
-
-    const fileName = `kwid_plus_transacoes_${formatDate(
-      new Date().toISOString().split("T")[0],
-      true
-    )}.xlsx`;
-    XLSX.write(wb, fileName);
   }
 
   const currentMonth = new Date().getMonth() + 1;
