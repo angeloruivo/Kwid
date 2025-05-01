@@ -32,7 +32,7 @@ body[data-theme="dark"] .text-gray-800 {
 }
 
 .bg-blue-50 {
-  background-color: #66b0ff;
+  background-color: #26c6da;
 }
 
 body[data-theme="dark"] .bg-red-50 {
@@ -44,7 +44,7 @@ body[data-theme="dark"] .bg-green-50 {
 }
 
 body[data-theme="dark"] .bg-blue-50 {
-  background-color: #8abfff;
+  background-color: #4dd0e1;
 }
 
 .text-red-700 {
@@ -56,7 +56,7 @@ body[data-theme="dark"] .bg-blue-50 {
 }
 
 .text-blue-700 {
-  color: #1976d2;
+  color: #006064;
 }
 
 body[data-theme="dark"] .text-red-700,
@@ -75,7 +75,7 @@ body[data-theme="dark"] .text-blue-700 {
 }
 
 .text-blue-800 {
-  color: #0d47a1;
+  color: #006064;
 }
 
 body[data-theme="dark"] .text-red-800,
@@ -123,11 +123,11 @@ body[data-theme="dark"] .modern-button i {
 }
 
 .modern-button.bg-green-600 {
-  background: linear-gradient(to right, #4a90e2, #1e88e5);
+  background: linear-gradient(to right, #26c6da, #00acc1);
 }
 
 .modern-button.bg-gray-600 {
-  background: linear-gradient(to right, #66b0ff, #42a5f5);
+  background: linear-gradient(to right, #f4a261, #ff8a65);
 }
 
 body[data-theme="dark"] #btn-ganho {
@@ -139,11 +139,11 @@ body[data-theme="dark"] #btn-abastecimento {
 }
 
 body[data-theme="dark"] #btn-manutencao {
-  background: linear-gradient(to right, #6ab0ff, #42a5f5);
+  background: linear-gradient(to right, #4dd0e1, #26c6da);
 }
 
 body[data-theme="dark"] #btn-avancado {
-  background: linear-gradient(to right, #8abfff, #66b0ff);
+  background: linear-gradient(to right, #ffb74d, #f4a261);
 }
 
 body[data-theme="dark"] #btn-avancado i {
@@ -297,7 +297,7 @@ body[data-theme="dark"] td {
 }
 
 .modern-button.bg-teal-600 {
-  background: linear-gradient(to right, #4a90e2, #1e88e5);
+  background: linear-gradient(to right, #26c6da, #00acc1);
 }
 
 .modern-button:hover {
