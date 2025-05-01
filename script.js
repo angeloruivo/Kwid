@@ -13,7 +13,27 @@ document.addEventListener("DOMContentLoaded", function () {
   let deferredPrompt;
   const installButton = document.getElementById("install-button");
 
+  function checkIfPWAInstalled() {
+    if (localStorage.getItem("pwaInstalled") === "true") {
+      installButton.classList.add("hidden");
+      return;
+    }
+    if ("getInstalledRelatedApps" in navigator) {
+      navigator.getInstalledRelatedApps().then((relatedApps) => {
+        if (relatedApps.length > 0) {
+          installButton.classList.add("hidden");
+          localStorage.setItem("pwaInstalled", "true");
+        }
+      });
+    }
+  }
+
+  checkIfPWAInstalled();
+
   window.addEventListener("beforeinstallprompt", (e) => {
+    if (localStorage.getItem("pwaInstalled") === "true") {
+      return;
+    }
     e.preventDefault();
     deferredPrompt = e;
     installButton.classList.remove("hidden");
@@ -34,6 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
   window.addEventListener("appinstalled", () => {
     console.log("PWA foi instalada");
     installButton.classList.add("hidden");
+    localStorage.setItem("pwaInstalled", "true");
   });
 
   const DEBUG = true;
