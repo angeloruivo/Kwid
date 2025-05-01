@@ -519,7 +519,6 @@ body[data-theme="dark"] .saldo-destaque span {
 .custom-file-upload:active {
   transform: scale(0.98);
 }
-
 body[data-theme="dark"] .custom-file-upload {
   background: linear-gradient(to right, #6ab0ff, #42a5f5);
   color: #f5f5f5;
