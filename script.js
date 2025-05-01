@@ -13,18 +13,26 @@ document.addEventListener("DOMContentLoaded", function () {
   let deferredPrompt;
   const installButton = document.getElementById("install-button");
 
-  if (localStorage.getItem("pwaInstalled") === "true") {
+  function isPWAInstalled() {
+    return (
+      localStorage.getItem("pwaInstalled") === "true" ||
+      window.matchMedia("(display-mode: standalone)").matches ||
+      window.navigator.standalone === true
+    );
+  }
+
+  if (isPWAInstalled()) {
     installButton.classList.add("hidden");
   }
 
   setTimeout(() => {
-    if (!deferredPrompt && localStorage.getItem("pwaInstalled") !== "true") {
+    if (!deferredPrompt && !isPWAInstalled()) {
       installButton.classList.add("hidden");
     }
   }, 2000);
 
   window.addEventListener("beforeinstallprompt", (e) => {
-    if (localStorage.getItem("pwaInstalled") === "true") {
+    if (isPWAInstalled()) {
       return;
     }
     e.preventDefault();
