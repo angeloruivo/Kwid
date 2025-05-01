@@ -1,7 +1,7 @@
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f8fafc;
-  color: #1e293b;
+  background-color: #f5f6f5;
+  color: #010101;
 }
 
 body[data-theme="dark"] {
@@ -24,15 +24,15 @@ body[data-theme="dark"] .text-gray-800 {
 }
 
 .bg-red-50 {
-  background-color: #f4a8b0;
+  background-color: #a78bfa;
 }
 
 .bg-green-50 {
-  background-color: #a5b4fc;
+  background-color: #715af0;
 }
 
 .bg-blue-50 {
-  background-color: #a5b4fc;
+  background-color: #715af0;
 }
 
 body[data-theme="dark"] .bg-red-50 {
@@ -48,15 +48,15 @@ body[data-theme="dark"] .bg-blue-50 {
 }
 
 .text-red-700 {
-  color: #be185d;
+  color: #4c1d95;
 }
 
 .text-green-700 {
-  color: #4338ca;
+  color: #4c1d95;
 }
 
 .text-blue-700 {
-  color: #4338ca;
+  color: #4c1d95;
 }
 
 body[data-theme="dark"] .text-red-700,
@@ -67,15 +67,15 @@ body[data-theme="dark"] .text-blue-700 {
 }
 
 .text-red-800 {
-  color: #be185d;
+  color: #4c1d95;
 }
 
 .text-green-800 {
-  color: #4338ca;
+  color: #4c1d95;
 }
 
 .text-blue-800 {
-  color: #4338ca;
+  color: #4c1d95;
 }
 
 body[data-theme="dark"] .text-red-800,
@@ -102,7 +102,7 @@ body[data-theme="dark"] .border-gray-200 {
 }
 
 .modern-button {
-  color: #ffffff;
+  color: #fffffe;
 }
 
 body[data-theme="dark"] .modern-button {
@@ -115,19 +115,19 @@ body[data-theme="dark"] .modern-button i {
 }
 
 .modern-button.bg-indigo-600 {
-  background: linear-gradient(to right, #a5b4fc, #818cf8);
+  background: linear-gradient(to right, #715af0, #5b21b6);
 }
 
 .modern-button.bg-blue-600 {
-  background: linear-gradient(to right, #f4a8b0, #f472b6);
+  background: linear-gradient(to right, #a78bfa, #7c3aed);
 }
 
 .modern-button.bg-green-600 {
-  background: linear-gradient(to right, #a5b4fc, #818cf8);
+  background: linear-gradient(to right, #715af0, #5b21b6);
 }
 
 .modern-button.bg-gray-600 {
-  background: linear-gradient(to right, #a5b4fc, #818cf8);
+  background: linear-gradient(to right, #715af0, #5b21b6);
 }
 
 body[data-theme="dark"] #btn-ganho {
@@ -151,13 +151,13 @@ body[data-theme="dark"] #btn-avancado i {
 }
 
 .filter-btn {
-  background-color: #e2e8f0;
-  color: #1e293b;
+  background-color: #72757e;
+  color: #fffffe;
 }
 
 .filter-btn.active {
-  background-color: #a5b4fc;
-  color: #1e293b;
+  background-color: #715af0;
+  color: #fffffe;
 }
 
 body[data-theme="dark"] .filter-btn {
@@ -171,15 +171,15 @@ body[data-theme="dark"] .filter-btn.active {
 }
 
 #month-filter {
-  background-color: #e2e8f0;
-  color: #1e293b;
-  border-color: #e2e8f0;
+  background-color: #72757e;
+  color: #fffffe;
+  border-color: #72757e;
 }
 
 #month-filter.active {
-  background-color: #a5b4fc;
-  color: #1e293b;
-  border-color: #a5b4fc;
+  background-color: #715af0;
+  color: #fffffe;
+  border-color: #715af0;
 }
 
 body[data-theme="dark"] #month-filter {
@@ -297,7 +297,7 @@ body[data-theme="dark"] td {
 }
 
 .modern-button.bg-teal-600 {
-  background: linear-gradient(to right, #047857, #0f766e);
+  background: linear-gradient(to right, #2cb67d, #059669);
 }
 
 .modern-button:hover {
@@ -336,8 +336,8 @@ body[data-theme="dark"] td {
 
 .fuel-btn.selected,
 .platform-btn.selected {
-  border: 2px solid #818cf8;
-  background-color: rgba(129, 140, 248, 0.1);
+  border: 2px solid #715af0;
+  background-color: rgba(113, 90, 240, 0.1);
 }
 
 .fuel-btn i,
@@ -362,8 +362,8 @@ body[data-theme="dark"] td {
 
 #month-filter:focus {
   outline: none;
-  border-color: #818cf8;
-  box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.2);
+  border-color: #715af0;
+  box-shadow: 0 0 0 3px rgba(113, 90, 240, 0.2);
 }
 
 @media print {
@@ -450,7 +450,7 @@ form button[type="submit"] {
 .saldo-destaque {
   font-size: 1rem;
   font-weight: bold;
-  color: #1e293b;
+  color: #010101;
 }
 
 @media (min-width: 641px) {
@@ -463,7 +463,7 @@ form button[type="submit"] {
   display: block;
   font-size: 0.75rem;
   font-weight: normal;
-  color: #4b5563;
+  color: #475d5b;
 }
 
 @media (min-width: 641px) {
