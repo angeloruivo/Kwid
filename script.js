@@ -1,4 +1,43 @@
 document.addEventListener("DOMContentLoaded", function () {
+  // Registrar o Service Worker
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker
+      .register("/sw.js")
+      .then((registration) => {
+        console.log("Service Worker registrado com sucesso:", registration);
+      })
+      .catch((error) => {
+        console.error("Falha ao registrar Service Worker:", error);
+      });
+  }
+
+  // Lógica para o botão de instalação
+  let deferredPrompt;
+  const installButton = document.getElementById("install-button");
+
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installButton.classList.remove("hidden");
+    installButton.addEventListener("click", () => {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === "accepted") {
+          console.log("Usuário aceitou instalar a PWA");
+        } else {
+          console.log("Usuário recusou instalar a PWA");
+        }
+        deferredPrompt = null;
+        installButton.classList.add("hidden");
+      });
+    });
+  });
+
+  window.addEventListener("appinstalled", () => {
+    console.log("PWA foi instalada");
+    installButton.classList.add("hidden");
+  });
+
   const DEBUG = true;
 
   const TRANSACTION_TYPES = {
@@ -831,7 +870,7 @@ document.addEventListener("DOMContentLoaded", function () {
       ];
 
       for (let i = 1; i < data.length; i++) {
-        const cellRef = XLSX.utils.encode_cell({ r: i, c: 4 });
+        const cellRef = XLSX.utils.ensure_cell({ r: i, c: 4 });
         ws[cellRef].z = '"R$" #,##0.00';
       }
 

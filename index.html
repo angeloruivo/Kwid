@@ -12,7 +12,11 @@
       href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css"
       rel="stylesheet"
     />
-    <link rel="shortcut icon" href="Image.png" type="image/x-icon" />
+    <link
+      rel="shortcut icon"
+      href="/icons/icon-192x192.png"
+      type="image/x-icon"
+    />
     <link rel="stylesheet" href="style.css" />
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <link
@@ -20,17 +24,23 @@
       href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
     />
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Kwid+" />
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
   </head>
   <body class="px-2 py-4 max-w-6xl mx-auto">
     <header class="mb-4">
       <div class="grid grid-cols-2 items-center mb-4 gap-2">
         <h1 class="text-2xl font-bold text-gray-800">Kwid+</h1>
-        <button
-          id="toggle-dark-mode"
-          class="modern-button bg-gray-600 justify-self-end"
-        >
-          <i class="fas fa-moon"></i> Modo Escuro
-        </button>
+        <div class="justify-self-end flex space-x-2">
+          <button id="toggle-dark-mode" class="modern-button bg-gray-600">
+            <i class="fas fa-moon"></i> Modo Escuro
+          </button>
+          <button id="install-button" class="modern-button bg-blue-600 hidden">
+            <i class="fas fa-download"></i> Instalar App
+          </button>
+        </div>
       </div>
       <div class="bg-white rounded-lg shadow-md p-3">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
