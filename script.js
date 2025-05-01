@@ -787,12 +787,13 @@ document.addEventListener("DOMContentLoaded", function () {
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, "Transações");
 
+      // Exportar o arquivo com opções explícitas
       const fileName = `kwid_plus_transacoes_${formatDate(
         new Date().toISOString().split("T")[0],
         true
       )}.xlsx`;
       if (DEBUG) console.log(`Exportando arquivo: ${fileName}`);
-      XLSX.write(wb, fileName);
+      XLSX.write(wb, { bookType: "xlsx", type: "binary" }, fileName);
 
       if (DEBUG) console.log("Exportação concluída com sucesso");
     } catch (error) {
