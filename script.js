@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // Register Service Worker
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker
       .register("/sw.js")
@@ -8,116 +7,8 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .catch((error) => {
         console.error("Falha ao registrar Service Worker:", error);
-        console.warn(
-          "PWA installation may not work without a valid Service Worker."
-        );
       });
-  } else {
-    console.warn("Service Worker não suportado neste navegador.");
   }
-
-  // PWA Installation Logic
-  let deferredPrompt;
-  const installButton = document.getElementById("install-button");
-
-  // Check if running in standalone mode (already installed)
-  function isRunningStandalone() {
-    return (
-      window.matchMedia("(display-mode: standalone)").matches ||
-      window.navigator.standalone === true
-    );
-  }
-
-  // Check if PWA is marked as installed
-  function isPWAInstalled() {
-    return (
-      localStorage.getItem("pwa_installed") === "true" || isRunningStandalone()
-    );
-  }
-
-  // Validate PWA prerequisites
-  function checkPWAPrerequisites() {
-    if (
-      !window.location.protocol.startsWith("https") &&
-      window.location.hostname !== "localhost"
-    ) {
-      console.warn("PWA requer HTTPS ou localhost para instalação.");
-      return false;
-    }
-    if (!("serviceWorker" in navigator)) {
-      console.warn("Service Worker não suportado, PWA não pode ser instalada.");
-      return false;
-    }
-    // Note: We can't programmatically check manifest.json validity here, but ensure it's correct
-    return true;
-  }
-
-  // Initialize button state
-  if (!checkPWAPrerequisites() || isPWAInstalled()) {
-    console.log(
-      "PWA já instalada ou pré-requisitos não atendidos, escondendo botão."
-    );
-    installButton.classList.add("hidden");
-  } else {
-    console.log("Pré-requisitos atendidos, aguardando beforeinstallprompt.");
-  }
-
-  // Handle beforeinstallprompt event
-  window.addEventListener("beforeinstallprompt", (e) => {
-    console.log("Evento beforeinstallprompt disparado");
-    if (isPWAInstalled()) {
-      console.log("PWA já instalada, ignorando beforeinstallprompt");
-      return;
-    }
-    e.preventDefault();
-    deferredPrompt = e;
-    console.log("Mostrando botão de instalação");
-    installButton.classList.remove("hidden");
-
-    installButton.addEventListener(
-      "click",
-      () => {
-        console.log("Botão de instalação clicado");
-        if (!deferredPrompt) {
-          console.error("deferredPrompt não está definido");
-          showToast("Erro: Não foi possível iniciar a instalação.", "error");
-          return;
-        }
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then((choiceResult) => {
-          if (choiceResult.outcome === "accepted") {
-            console.log("Usuário aceitou instalar a PWA");
-            localStorage.setItem("pwa_installed", "true");
-            showToast("Instalação iniciada com sucesso!", "success");
-          } else {
-            console.log("Usuário recusou instalar a PWA");
-          }
-          deferredPrompt = null;
-          console.log("Escondendo botão após prompt");
-          installButton.classList.add("hidden");
-        });
-      },
-      { once: true }
-    );
-  });
-
-  // Handle appinstalled event
-  window.addEventListener("appinstalled", () => {
-    console.log("Evento appinstalled disparado, PWA instalada");
-    localStorage.setItem("pwa_installed", "true");
-    installButton.classList.add("hidden");
-    showToast("PWA instalada com sucesso!", "success");
-  });
-
-  // Debug: Log initial state
-  console.log("Initial state - isPWAInstalled:", isPWAInstalled());
-  console.log("Initial state - isRunningStandalone:", isRunningStandalone());
-  console.log(
-    "Initial state - pwa_installed in localStorage:",
-    localStorage.getItem("pwa_installed")
-  );
-  console.log("Initial state - Protocol:", window.location.protocol);
-  console.log("Initial state - Hostname:", window.location.hostname);
 
   const DEBUG = true;
 
