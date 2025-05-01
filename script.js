@@ -14,9 +14,13 @@ document.addEventListener("DOMContentLoaded", function () {
   const installButton = document.getElementById("install-button");
 
   function checkIfPWAInstalled() {
-    if (localStorage.getItem("pwaInstalled") === "true") {
+    if (
+      localStorage.getItem("pwaInstalled") === "true" ||
+      window.matchMedia("(display-mode: standalone)").matches
+    ) {
       installButton.classList.add("hidden");
-      return;
+      localStorage.setItem("pwaInstalled", "true");
+      return true;
     }
     if ("getInstalledRelatedApps" in navigator) {
       navigator.getInstalledRelatedApps().then((relatedApps) => {
@@ -26,29 +30,34 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
     }
+    return false;
   }
 
   checkIfPWAInstalled();
 
   window.addEventListener("beforeinstallprompt", (e) => {
-    if (localStorage.getItem("pwaInstalled") === "true") {
+    if (checkIfPWAInstalled()) {
       return;
     }
     e.preventDefault();
     deferredPrompt = e;
     installButton.classList.remove("hidden");
-    installButton.addEventListener("click", () => {
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then((choiceResult) => {
-        if (choiceResult.outcome === "accepted") {
-          console.log("Usuário aceitou instalar a PWA");
-        } else {
-          console.log("Usuário recusou instalar a PWA");
-        }
-        deferredPrompt = null;
-        installButton.classList.add("hidden");
-      });
-    });
+    installButton.addEventListener(
+      "click",
+      () => {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === "accepted") {
+            console.log("Usuário aceitou instalar a PWA");
+          } else {
+            console.log("Usuário recusou instalar a PWA");
+          }
+          deferredPrompt = null;
+          installButton.classList.add("hidden");
+        });
+      },
+      { once: true }
+    );
   });
 
   window.addEventListener("appinstalled", () => {
