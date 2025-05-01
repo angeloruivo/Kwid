@@ -13,26 +13,32 @@ document.addEventListener("DOMContentLoaded", function () {
   let deferredPrompt;
   const installButton = document.getElementById("install-button");
 
-  function isPWAInstalled() {
-    return (
-      localStorage.getItem("pwaInstalled") === "true" ||
-      window.matchMedia("(display-mode: standalone)").matches ||
-      window.navigator.standalone === true
-    );
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+    return null;
   }
 
-  if (isPWAInstalled()) {
+  function setCookie(name, value, days) {
+    const date = new Date();
+    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+    const expires = `expires=${date.toUTCString()}`;
+    document.cookie = `${name}=${value};${expires};path=/;SameSite=Strict`;
+  }
+
+  if (getCookie("pwa_installed") === "true") {
     installButton.classList.add("hidden");
   }
 
   setTimeout(() => {
-    if (!deferredPrompt && !isPWAInstalled()) {
+    if (!deferredPrompt && getCookie("pwa_installed") !== "true") {
       installButton.classList.add("hidden");
     }
   }, 2000);
 
   window.addEventListener("beforeinstallprompt", (e) => {
-    if (isPWAInstalled()) {
+    if (getCookie("pwa_installed") === "true") {
       return;
     }
     e.preventDefault();
@@ -45,7 +51,7 @@ document.addEventListener("DOMContentLoaded", function () {
         deferredPrompt.userChoice.then((choiceResult) => {
           if (choiceResult.outcome === "accepted") {
             console.log("Usuário aceitou instalar a PWA");
-            localStorage.setItem("pwaInstalled", "true");
+            setCookie("pwa_installed", "true", 365);
           } else {
             console.log("Usuário recusou instalar a PWA");
           }
@@ -60,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
   window.addEventListener("appinstalled", () => {
     console.log("PWA foi instalada");
     installButton.classList.add("hidden");
-    localStorage.setItem("pwaInstalled", "true");
+    setCookie("pwa_installed", "true", 365);
   });
 
   const DEBUG = true;
