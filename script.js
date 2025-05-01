@@ -94,19 +94,11 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Event Listeners
-  elements.formGanho
-    .querySelector("#btn-ganho")
-    .addEventListener("click", () => showTab("form-ganho"));
-  elements.formAbastecimento
-    .querySelector("#btn-abastecimento")
-    .addEventListener("click", () => showTab("form-abastecimento"));
-  elements.formManutencao
-    .querySelector("#btn-manutencao")
-    .addEventListener("click", () => showTab("form-manutencao"));
-
-  elements.advancedSection
-    .querySelector("#btn-avancado")
-    .addEventListener("click", toggleAdvancedSection);
+  document.getElementById("btn-ganho").addEventListener("click", () => showTab("form-ganho"));
+  document.getElementById("btn-abastecimento").addEventListener("click", () => showTab("form-abastecimento"));
+  document.getElementById("btn-manutencao").addEventListener("click", () => showTab("form-manutencao"));
+  document.getElementById("btn-avancado").addEventListener("click", toggleAdvancedSection);
+  document.getElementById("btn-ver-relatorio").addEventListener("click", toggleRelatorioDetalhado);
 
   document.querySelectorAll(".filter-btn").forEach((button) => {
     if (button.tagName === "BUTTON") {
@@ -125,36 +117,25 @@ document.addEventListener("DOMContentLoaded", function () {
     );
   });
 
-  elements.relatorioDetalhado
-    .querySelector("#btn-ver-relatorio")
-    .addEventListener("click", toggleRelatorioDetalhado);
-
   document.getElementById("btn-backup").addEventListener("click", exportBackup);
-  document
-    .getElementById("import-backup")
-    .addEventListener("change", importBackup);
-  document
-    .getElementById("btn-limpar")
-    .addEventListener("click", confirmClearData);
+  document.getElementById("import-backup").addEventListener("change", importBackup);
+  document.getElementById("btn-limpar").addEventListener("click", confirmClearData);
   elements.exportExcelButton.addEventListener("click", exportToExcel);
 
   // Tema
   if (localStorage.getItem("theme") === "dark") {
     document.body.setAttribute("data-theme", "dark");
-    elements.toggleDarkModeBtn.innerHTML =
-      '<i class="fas fa-sun"></i> Modo Claro';
+    elements.toggleDarkModeBtn.innerHTML = '<i class="fas fa-sun"></i> Modo Claro';
   }
 
   elements.toggleDarkModeBtn.addEventListener("click", () => {
     if (document.body.getAttribute("data-theme") === "dark") {
       document.body.removeAttribute("data-theme");
-      elements.toggleDarkModeBtn.innerHTML =
-        '<i class="fas fa-moon"></i> Modo Escuro';
+      elements.toggleDarkModeBtn.innerHTML = '<i class="fas fa-moon"></i> Modo Escuro';
       localStorage.setItem("theme", "light");
     } else {
       document.body.setAttribute("data-theme", "dark");
-      elements.toggleDarkModeBtn.innerHTML =
-        '<i class="fas fa-sun"></i> Modo Claro';
+      elements.toggleDarkModeBtn.innerHTML = '<i class="fas fa-sun"></i> Modo Claro';
       localStorage.setItem("theme", "dark");
     }
   });
@@ -165,25 +146,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Definir data atual
   const today = new Date();
-  const formattedToday = `${today.getFullYear()}-${String(
-    today.getMonth() + 1
-  ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+  const formattedToday = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
   elements.ganhoData.value = formattedToday;
   elements.abastecimentoData.value = formattedToday;
   elements.manutencaoData.value = formattedToday;
 
   window.selectPlatform = function (platform) {
     plataformaSelecionada = platform;
-    document.getElementById("platform-name").textContent =
-      plataformaSelecionada;
+    document.getElementById("platform-name").textContent = plataformaSelecionada;
 
     document.querySelectorAll("#form-ganho button").forEach((btn) => {
       btn.classList.remove("selected");
     });
 
-    document
-      .getElementById(`btn-ganho-${platform.toLowerCase()}`)
-      .classList.add("selected");
+    document.getElementById(`btn-ganho-${platform.toLowerCase()}`).classList.add("selected");
   };
 
   window.selectFuel = function (fuel) {
@@ -194,9 +170,7 @@ document.addEventListener("DOMContentLoaded", function () {
       btn.classList.remove("selected");
     });
 
-    document
-      .getElementById(`btn-${fuel.toLowerCase()}`)
-      .classList.add("selected");
+    document.getElementById(`btn-${fuel.toLowerCase()}`).classList.add("selected");
   };
 
   const debouncedRender = debounce(renderTransactions, 100);
@@ -221,8 +195,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const btnText = elements.relatorioDetalhado.classList.contains("hidden")
       ? '<i class="fas fa-chart-bar mr-1"></i>Ver Relatório Detalhado'
       : '<i class="fas fa-times mr-1"></i>Fechar Relatório';
-    elements.relatorioDetalhado.querySelector("#btn-ver-relatorio").innerHTML =
-      btnText;
+    document.getElementById("btn-ver-relatorio").innerHTML = btnText;
   }
 
   function setFilter(filter, month = null) {
@@ -230,10 +203,7 @@ document.addEventListener("DOMContentLoaded", function () {
     selectedMonth = month;
 
     document.querySelectorAll(".filter-btn").forEach((btn) => {
-      if (
-        btn.tagName === "BUTTON" &&
-        btn.getAttribute("data-filter") === filter
-      ) {
+      if (btn.tagName === "BUTTON" && btn.getAttribute("data-filter") === filter) {
         btn.classList.add("active");
       } else if (btn.tagName === "BUTTON") {
         btn.classList.remove("active");
@@ -243,9 +213,6 @@ document.addEventListener("DOMContentLoaded", function () {
     if (filter === FILTER_TYPES.MONTH && selectedMonth !== null) {
       elements.monthFilter.classList.add("active");
     } else {
-      elements.monthFilter.classList.remove("active");
-    }
-    if (filter !== FILTER_TYPES.MONTH) {
       elements.monthFilter.classList.remove("active");
     }
 
@@ -268,10 +235,7 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
     if (!isValidAmount(valor)) {
-      showError(
-        elements.ganhoError,
-        "Por favor, informe um valor numérico válido maior que zero."
-      );
+      showError(elements.ganhoError, "Por favor, informe um valor numérico válido maior que zero.");
       return;
     }
 
@@ -293,37 +257,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
     elements.ganhoForm.querySelector("#ganho-valor").value = "";
     plataformaSelecionada = "Nenhuma";
-    document.getElementById("platform-name").textContent =
-      plataformaSelecionada;
+    document.getElementById("platform-name").textContent = plataformaSelecionada;
   }
 
   function addAbastecimento(e) {
     e.preventDefault();
 
     const data = elements.abastecimentoData.value;
-    const valor = elements.abastecimentoForm.querySelector(
-      "#abastecimento-valor"
-    ).value;
+    const valor = elements.abastecimentoForm.querySelector("#abastecimento-valor").value;
 
     if (!isValidDate(data)) {
-      showError(
-        elements.abastecimentoError,
-        "Por favor, informe uma data válida."
-      );
+      showError(elements.abastecimentoError, "Por favor, informe uma data válida.");
       return;
     }
     if (!tipoCombustivel) {
-      showError(
-        elements.abastecimentoError,
-        "Por favor, selecione um tipo de combustível."
-      );
+      showError(elements.abastecimentoError, "Por favor, selecione um tipo de combustível.");
       return;
     }
     if (!isValidAmount(valor)) {
-      showError(
-        elements.abastecimentoError,
-        "Por favor, informe um valor numérico válido maior que zero."
-      );
+      showError(elements.abastecimentoError, "Por favor, informe um valor numérico válido maior que zero.");
       return;
     }
 
@@ -352,30 +304,19 @@ document.addEventListener("DOMContentLoaded", function () {
     e.preventDefault();
 
     const data = elements.manutencaoData.value;
-    const tipo =
-      elements.manutencaoForm.querySelector("#manutencao-tipo").value;
-    const valor =
-      elements.manutencaoForm.querySelector("#manutencao-valor").value;
+    const tipo = elements.manutencaoForm.querySelector("#manutencao-tipo").value;
+    const valor = elements.manutencaoForm.querySelector("#manutencao-valor").value;
 
     if (!isValidDate(data)) {
-      showError(
-        elements.manutencaoError,
-        "Por favor, informe uma data válida."
-      );
+      showError(elements.manutencaoError, "Por favor, informe uma data válida.");
       return;
     }
     if (!tipo) {
-      showError(
-        elements.manutencaoError,
-        "Por favor, informe o tipo de manutenção."
-      );
+      showError(elements.manutencaoError, "Por favor, informe o tipo de manutenção.");
       return;
     }
     if (!isValidAmount(valor)) {
-      showError(
-        elements.manutencaoError,
-        "Por favor, informe um valor numérico válido maior que zero."
-      );
+      showError(elements.manutencaoError, "Por favor, informe um valor numérico válido maior que zero.");
       return;
     }
 
@@ -422,13 +363,9 @@ document.addEventListener("DOMContentLoaded", function () {
         tr.innerHTML = `
           <td>${formattedDate}</td>
           <td>${transaction.details}</td>
-          <td class="${isExpense ? "text-red-600" : "text-green-600"}">${
-          isExpense ? "-" : ""
-        }${formattedAmount}</td>
+          <td class="${isExpense ? "text-red-600" : "text-green-600"}">${isExpense ? "-" : ""}${formattedAmount}</td>
           <td>
-            <button class="delete-btn p-1 text-red-600 hover:text-red-800" data-id="${
-              transaction.id
-            }" aria-label="Excluir transação">
+            <button class="delete-btn p-1 text-red-600 hover:text-red-800" data-id="${transaction.id}" aria-label="Excluir transação">
               <i class="fas fa-trash"></i>
             </button>
           </td>
@@ -469,7 +406,7 @@ document.addEventListener("DOMContentLoaded", function () {
       firstDayOfWeek.setDate(today.getDate() - day + 1);
       firstDayOfWeek.setHours(0, 0, 0, 0);
 
-      transactionsToFilter = transactionsToFilter.filter((transaction) => {
+      transactions flasksToFilter = transactionsToFilter.filter((transaction) => {
         if (!transaction.date || !isValidDate(transaction.date)) return false;
         const [year, month, day] = transaction.date.split("-").map(Number);
         const transactionDate = new Date(year, month - 1, day);
@@ -479,9 +416,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const filterYear = new Date().getFullYear();
       transactionsToFilter = transactionsToFilter.filter((transaction) => {
         if (!transaction.date || !isValidDate(transaction.date)) return false;
-        const [year, transactionMonth] = transaction.date
-          .split("-")
-          .map(Number);
+        const [year, transactionMonth] = transaction.date.split("-").map(Number);
         return transactionMonth === month && year === filterYear;
       });
     } else if (filter === FILTER_TYPES.ALL) {
@@ -493,10 +428,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function updateSummary() {
     const currentMonth = new Date().getMonth() + 1;
-    const currentMonthTransactions = filterTransactions(
-      FILTER_TYPES.MONTH,
-      currentMonth
-    );
+    const currentMonthTransactions = filterTransactions(FILTER_TYPES.MONTH, currentMonth);
     let totalGanhosMonth = 0;
     let totalCustosMonth = 0;
 
@@ -511,22 +443,13 @@ document.addEventListener("DOMContentLoaded", function () {
     elements.saldoAtualElement.textContent = formatCurrency(lucroLiquidoMonth);
     if (lucroLiquidoMonth > 0) {
       elements.saldoAtualElement.classList.add("text-green-600");
-      elements.saldoAtualElement.classList.remove(
-        "text-red-600",
-        "text-gray-800"
-      );
+      elements.saldoAtualElement.classList.remove("text-red-600", "text-gray-800");
     } else if (lucroLiquidoMonth < 0) {
       elements.saldoAtualElement.classList.add("text-red-600");
-      elements.saldoAtualElement.classList.remove(
-        "text-green-600",
-        "text-gray-800"
-      );
+      elements.saldoAtualElement.classList.remove("text-green-600", "text-gray-800");
     } else {
       elements.saldoAtualElement.classList.add("text-gray-800");
-      elements.saldoAtualElement.classList.remove(
-        "text-green-600",
-        "text-red-600"
-      );
+      elements.saldoAtualElement.classList.remove("text-green-600", "text-red-600");
     }
 
     const filteredTransactions = filterTransactions();
@@ -557,28 +480,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const lucroLiquidoFiltered = totalGanhosFiltered - totalCustosFiltered;
 
-    document.getElementById("total-ganhos").textContent =
-      formatCurrency(totalGanhosFiltered);
-    document.getElementById("total-custos").textContent =
-      formatCurrency(totalCustosFiltered);
-    document.getElementById("lucro-liquido").textContent =
-      formatCurrency(lucroLiquidoFiltered);
-    document.getElementById("custo-manutencao").textContent = formatCurrency(
-      custoManutencaoFiltered
-    );
-    document.getElementById("custo-combustivel").textContent = formatCurrency(
-      custoCombustivelFiltered
-    );
-    document.getElementById("relatorio-total-custos").textContent =
-      formatCurrency(totalCustosFiltered);
-    document.getElementById("ganho-99").textContent =
-      formatCurrency(ganho99Filtered);
-    document.getElementById("ganho-uber").textContent =
-      formatCurrency(ganhoUberFiltered);
-    document.getElementById("relatorio-total-ganhos").textContent =
-      formatCurrency(totalGanhosFiltered);
-    document.getElementById("relatorio-lucro-liquido").textContent =
-      formatCurrency(lucroLiquidoFiltered);
+    document.getElementById("total-ganhos").textContent = formatCurrency(totalGanhosFiltered);
+    document.getElementById("total-custos").textContent = formatCurrency(totalCustosFiltered);
+    document.getElementById("lucro-liquido").textContent = formatCurrency(lucroLiquidoFiltered);
+    document.getElementById("custo-manutencao").textContent = formatCurrency(custoManutencaoFiltered);
+    document.getElementById("custo-combustivel").textContent = formatCurrency(custoCombustivelFiltered);
+    document.getElementById("relatorio-total-custos").textContent = formatCurrency(totalCustosFiltered);
+    document.getElementById("ganho-99").textContent = formatCurrency(ganho99Filtered);
+    document.getElementById("ganho-uber").textContent = formatCurrency(ganhoUberFiltered);
+    document.getElementById("relatorio-total-ganhos").textContent = formatCurrency(totalGanhosFiltered);
+    document.getElementById("relatorio-lucro-liquido").textContent = formatCurrency(lucroLiquidoFiltered);
 
     const lucroLiquidoElement = document.getElementById("lucro-liquido");
     if (lucroLiquidoFiltered > 0) {
@@ -591,9 +502,7 @@ document.addEventListener("DOMContentLoaded", function () {
       lucroLiquidoElement.classList.remove("text-green-800", "text-red-800");
     }
 
-    const relatorioLucroLiquidoElement = document.getElementById(
-      "relatorio-lucro-liquido"
-    );
+    const relatorioLucroLiquidoElement = document.getElementById("relatorio-lucro-liquido");
     if (lucroLiquidoFiltered > 0) {
       relatorioLucroLiquidoElement.classList.add("text-green-800");
       relatorioLucroLiquidoElement.classList.remove("text-red-800");
@@ -601,10 +510,7 @@ document.addEventListener("DOMContentLoaded", function () {
       relatorioLucroLiquidoElement.classList.add("text-red-800");
       relatorioLucroLiquidoElement.classList.remove("text-green-800");
     } else {
-      relatorioLucroLiquidoElement.classList.remove(
-        "text-green-800",
-        "text-red-800"
-      );
+      relatorioLucroLiquidoElement.classList.remove("text-green-800", "text-red-800");
     }
   }
 
@@ -619,10 +525,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function saveTransactions() {
     try {
-      localStorage.setItem(
-        "kwidPlus_transactions",
-        JSON.stringify(transactions)
-      );
+      localStorage.setItem("kwidPlus_transactions", JSON.stringify(transactions));
     } catch (e) {
       console.error("Erro ao salvar transações:", e);
     }
@@ -635,10 +538,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const a = document.createElement("a");
 
     a.href = url;
-    a.download = `kwid_plus_backup_${formatDate(
-      new Date().toISOString().split("T")[0],
-      true
-    )}.json`;
+    a.download = `kwid_plus_backup_${formatDate(new Date().toISOString().split("T")[0], true)}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -656,12 +556,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (Array.isArray(data)) {
           const validTransactions = data.filter(
-            (t) =>
-              t.id &&
-              t.date &&
-              isValidDate(t.date) &&
-              t.type &&
-              typeof t.amount === "number"
+            (t) => t.id && t.date && isValidDate(t.date) && t.type && typeof t.amount === "number"
           );
           transactions = validTransactions;
           saveTransactions();
@@ -673,21 +568,14 @@ document.addEventListener("DOMContentLoaded", function () {
           throw new Error("Formato inválido");
         }
       } catch (error) {
-        showError(
-          elements.backupError,
-          "Erro ao importar backup: formato inválido."
-        );
+        showError(elements.backupError, "Erro ao importar backup: formato inválido.");
       }
     };
     reader.readAsText(file);
   }
 
   function confirmClearData() {
-    if (
-      confirm(
-        "Tem certeza que deseja limpar todos os dados? Esta ação não pode ser desfeita."
-      )
-    ) {
+    if (confirm("Tem certeza que deseja limpar todos os dados? Esta ação não pode ser desfeita.")) {
       transactions = [];
       saveTransactions();
       debouncedRender();
@@ -704,23 +592,14 @@ document.addEventListener("DOMContentLoaded", function () {
     const date = new Date(year, month - 1, day);
 
     if (forFilename) {
-      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
-        2,
-        "0"
-      )}-${String(date.getDate()).padStart(2, "0")}`;
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
     }
 
-    return `${String(date.getDate()).padStart(
-      2,
-      "0"
-    )}/${String(date.getMonth() + 1).padStart(2, "0")}/${date.getFullYear()}`;
+    return `${String(date.getDate()).padStart(2, "0")}/${String(date.getMonth() + 1).padStart(2, "0")}/${date.getFullYear()}`;
   }
 
   function formatCurrency(value) {
-    return new Intl.NumberFormat("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    }).format(value);
+    return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
   }
 
   function escapeCsv(value) {
@@ -742,13 +621,7 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    const headers = [
-      "Data",
-      "Tipo",
-      "Detalhe",
-      "Plataforma/Combustível/Manutenção Tipo",
-      "Valor",
-    ];
+    const headers = ["Data", "Tipo", "Detalhe", "Plataforma/Combustível/Manutenção Tipo", "Valor"];
     let csvContent = headers.map(escapeCsv).join(";") + "\n";
 
     allTransactions.forEach((transaction) => {
@@ -767,14 +640,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const amount = transaction.amount.toFixed(2).replace(".", ",");
 
-      csvContent +=
-        [
-          escapeCsv(date),
-          escapeCsv(type),
-          escapeCsv(details),
-          escapeCsv(specificDetail),
-          escapeCsv(amount),
-        ].join(";") + "\n";
+      csvContent += [
+        escapeCsv(date),
+        escapeCsv(type),
+        escapeCsv(details),
+        escapeCsv(specificDetail),
+        escapeCsv(amount),
+      ].join(";") + "\n";
     });
 
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
@@ -782,10 +654,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const a = document.createElement("a");
 
     a.href = url;
-    a.download = `kwid_plus_transacoes_${formatDate(
-      new Date().toISOString().split("T")[0],
-      true
-    )}.csv`;
+    a.download = `kwid_plus_transacoes_${formatDate(new Date().toISOString().split("T")[0], true)}.csv`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -796,8 +665,4 @@ document.addEventListener("DOMContentLoaded", function () {
   setFilter(FILTER_TYPES.MONTH, currentMonth);
   elements.monthFilter.value = currentMonth.toString();
   elements.monthFilter.classList.add("active");
-
-  document
-    .querySelector('.filter-btn[data-filter="all"]')
-    .classList.remove("active");
 });
