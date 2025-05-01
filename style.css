@@ -529,3 +529,6 @@ body[data-theme="dark"] label[for="ganho-valor"],
 body[data-theme="dark"] label[for="abastecimento-valor"] {
   color: #f5f5f5;
 }
+body[data-theme="dark"] label.text-xs.font-medium.text-gray-700 {
+  color: #f5f5f5;
+}
