@@ -60,7 +60,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Função debounce, não mexe
   function debounce(fn, ms) {
     let timeout;
     return function (...args) {
@@ -88,6 +87,68 @@ document.addEventListener("DOMContentLoaded", function () {
   function showError(element, message) {
     element.textContent = message;
     element.classList.remove("hidden");
+  }
+
+  function showToast(message, type = "info") {
+    let background;
+    if (type === "error")
+      background = "linear-gradient(to right, #ef4444, #b91c1c)";
+    else if (type === "success")
+      background = "linear-gradient(to right, #22c55e, #15803d)";
+    else background = "linear-gradient(to right, #3b82f6, #1e40af)";
+
+    Toastify({
+      text: message,
+      duration: type === "error" ? 5000 : 3000,
+      close: true,
+      gravity: "top",
+      position: "right",
+      stopOnFocus: true,
+      style: { background },
+    }).showToast();
+  }
+
+  function confirmToast(message, callback) {
+    const toast = Toastify({
+      text: message,
+      duration: -1,
+      close: true,
+      gravity: "top",
+      position: "center",
+      stopOnFocus: true,
+      style: { background: "linear-gradient(to right, #f97316, #b45309)" },
+      callback: () => {
+        toast.hideToast();
+      },
+      buttons: [
+        {
+          text: "Confirmar",
+          style: {
+            background: "#22c55e",
+            color: "white",
+            padding: "5px 10px",
+            borderRadius: "4px",
+          },
+          callback: () => {
+            callback(true);
+            toast.hideToast();
+          },
+        },
+        {
+          text: "Cancelar",
+          style: {
+            background: "#ef4444",
+            color: "white",
+            padding: "5px 10px",
+            borderRadius: "4px",
+          },
+          callback: () => {
+            callback(false);
+            toast.hideToast();
+          },
+        },
+      ],
+    }).showToast();
   }
 
   document
@@ -600,12 +661,18 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function deleteTransaction(id) {
-    if (confirm("Tem certeza que deseja excluir esta transação?")) {
-      transactions = transactions.filter((t) => t.id !== id);
-      saveTransactions();
-      debouncedRender();
-      debouncedUpdate();
-    }
+    confirmToast(
+      "Tem certeza que deseja excluir esta transação?",
+      (confirmed) => {
+        if (confirmed) {
+          transactions = transactions.filter((t) => t.id !== id);
+          saveTransactions();
+          debouncedRender();
+          debouncedUpdate();
+          showToast("Transação excluída com sucesso!", "success");
+        }
+      }
+    );
   }
 
   function saveTransactions() {
@@ -634,6 +701,7 @@ document.addEventListener("DOMContentLoaded", function () {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    showToast("Backup exportado com sucesso!", "success");
   }
 
   function importBackup(e) {
@@ -659,7 +727,7 @@ document.addEventListener("DOMContentLoaded", function () {
           debouncedRender();
           debouncedUpdate();
           elements.backupError.classList.add("hidden");
-          alert("Backup importado com sucesso!");
+          showToast("Backup importado com sucesso!", "success");
         } else {
           throw new Error("Formato inválido");
         }
@@ -674,17 +742,18 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function confirmClearData() {
-    if (
-      confirm(
-        "Tem certeza que deseja limpar todos os dados? Esta ação não pode ser desfeita."
-      )
-    ) {
-      transactions = [];
-      saveTransactions();
-      debouncedRender();
-      debouncedUpdate();
-      alert("Todos os dados foram excluídos com sucesso!");
-    }
+    confirmToast(
+      "Tem certeza que deseja limpar todos os dados? Esta ação não pode ser desfeita.",
+      (confirmed) => {
+        if (confirmed) {
+          transactions = [];
+          saveTransactions();
+          debouncedRender();
+          debouncedUpdate();
+          showToast("Todos os dados foram excluídos com sucesso!", "success");
+        }
+      }
+    );
   }
 
   function formatDate(dateString, forFilename = false, forExcel = false) {
@@ -724,8 +793,9 @@ document.addEventListener("DOMContentLoaded", function () {
   function exportToExcel() {
     if (typeof XLSX === "undefined") {
       console.error("Biblioteca SheetJS não carregada");
-      alert(
-        "Erro: Não foi possível exportar. A biblioteca SheetJS não foi carregada corretamente. Verifique sua conexão com a internet ou tente novamente."
+      showToast(
+        "Erro: Não foi possível exportar. A biblioteca SheetJS não foi carregada corretamente. Verifique sua conexão com a internet ou tente novamente.",
+        "error"
       );
       return;
     }
@@ -733,12 +803,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const allTransactions = [...transactions];
 
     if (allTransactions.length === 0) {
-      alert("Nenhuma transação para exportar.");
+      showToast("Nenhuma transação para exportar.", "error");
       return;
     }
 
     try {
-      // Preparar dados para a planilha
       const headers = [
         "Data",
         "Tipo",
@@ -749,7 +818,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const data = [headers];
 
       allTransactions.forEach((transaction) => {
-        const date = formatDate(transaction.date, false, true); // Formato YYYY-MM-DD para Excel
+        const date = formatDate(transaction.date, false, true);
         const type = transaction.type;
         const details = transaction.details;
         let specificDetail = "";
@@ -767,32 +836,26 @@ document.addEventListener("DOMContentLoaded", function () {
         data.push([date, type, details, specificDetail, amount]);
       });
 
-      // Criar planilha
       const ws = XLSX.utils.aoa_to_sheet(data);
 
-      // Definir larguras das colunas
       ws["!cols"] = [
-        { wch: 15 }, // Data
-        { wch: 15 }, // Tipo
-        { wch: 30 }, // Detalhe
-        { wch: 30 }, // Plataforma/Combustível/Manutenção Tipo
-        { wch: 15 }, // Valor
+        { wch: 15 },
+        { wch: 15 },
+        { wch: 30 },
+        { wch: 30 },
+        { wch: 15 },
       ];
 
-      // Aplicar formatação às células
       for (let i = 1; i < data.length; i++) {
-        const cellRef = XLSX.utils.encode_cell({ r: i, c: 4 }); // Coluna "Valor" (índice 4)
-        ws[cellRef].z = '"R$" #,##0.00'; // Formato de moeda brasileira
+        const cellRef = XLSX.utils.encode_cell({ r: i, c: 4 });
+        ws[cellRef].z = '"R$" #,##0.00';
       }
 
-      // Criar workbook e adicionar a planilha
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, "Transações");
 
-      // Gerar buffer binário
       const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
 
-      // Criar blob e link de download
       const blob = new Blob([wbout], { type: "application/octet-stream" });
       const fileName = `kwid_plus_transacoes_${formatDate(
         new Date().toISOString().split("T")[0],
@@ -806,10 +869,12 @@ document.addEventListener("DOMContentLoaded", function () {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
+      showToast("Exportação para Excel concluída com sucesso!", "success");
     } catch (error) {
       console.error("Erro ao exportar para Excel:", error);
-      alert(
-        "Erro ao exportar para Excel. Verifique o console para mais detalhes ou tente novamente."
+      showToast(
+        "Erro ao exportar para Excel. Verifique o console para mais detalhes ou tente novamente.",
+        "error"
       );
     }
   }
