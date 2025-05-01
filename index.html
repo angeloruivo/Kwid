@@ -21,7 +21,7 @@
         <h1 class="text-2xl font-bold text-gray-800">Kwid+</h1>
         <button
           id="toggle-dark-mode"
-          class="modern-button bg-gray-600 text-xs px-2 py-1 justify-self-end"
+          class="modern-button bg-gray-600 justify-self-end"
         >
           <i class="fas fa-moon"></i> Modo Escuro
         </button>
@@ -285,20 +285,10 @@
     <section class="bg-white rounded-lg shadow-md p-4 mb-4">
       <div class="flex flex-col mb-3">
         <h2 class="text-lg font-semibold mb-2">Resumo Financeiro</h2>
-        <div class="flex flex-col md:flex-row md:justify-center gap-1">
-          <button
-            data-filter="day"
-            class="filter-btn px-2 py-1 text-xs bg-gray-200 rounded-md hover:bg-gray-300"
-          >
-            Dia
-          </button>
-          <button
-            data-filter="week"
-            class="filter-btn px-2 py-1 text-xs bg-gray-200 rounded-md hover:bg-gray-300"
-          >
-            Semana
-          </button>
-          <select id="month-filter" class="filter-btn text-xs">
+        <div class="flex flex-wrap justify-center gap-2">
+          <button data-filter="day" class="filter-btn">Dia</button>
+          <button data-filter="week" class="filter-btn">Semana</button>
+          <select id="month-filter" class="filter-btn">
             <option value="all">Mês</option>
             <option value="1">Janeiro</option>
             <option value="2">Fevereiro</option>
@@ -313,12 +303,7 @@
             <option value="11">Novembro</option>
             <option value="12">Dezembro</option>
           </select>
-          <button
-            data-filter="all"
-            class="filter-btn active px-2 py-1 text-xs bg-gray-200 rounded-md hover:bg-gray-300"
-          >
-            Todos
-          </button>
+          <button data-filter="all" class="filter-btn active">Todos</button>
         </div>
       </div>
       <div class="grid grid-cols-1 gap-3">
