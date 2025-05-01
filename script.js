@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let tipoCombustivel = "";
   let plataformaSelecionada = "Nenhuma";
 
+  // Cache de elementos DOM
   const elements = {
     formGanho: document.getElementById("form-ganho"),
     formAbastecimento: document.getElementById("form-abastecimento"),
@@ -51,6 +52,7 @@ document.addEventListener("DOMContentLoaded", function () {
     noTransactions: document.getElementById("no-transactions"),
   };
 
+  // Verifica se todos os elementos DOM existem
   for (const [key, value] of Object.entries(elements)) {
     if (!value) {
       console.error(`Elemento '${key}' não encontrado`);
@@ -129,6 +131,7 @@ document.addEventListener("DOMContentLoaded", function () {
     .addEventListener("click", confirmClearData);
   elements.exportExcelButton.addEventListener("click", exportToExcel);
 
+  // Tema
   if (localStorage.getItem("theme") === "dark") {
     document.body.setAttribute("data-theme", "dark");
     elements.toggleDarkModeBtn.innerHTML =
@@ -681,12 +684,19 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  function formatDate(dateString, forFilename = false) {
+  function formatDate(dateString, forFilename = false, forExcel = false) {
     if (!dateString || !isValidDate(dateString)) {
       return "Data inválida";
     }
     const [year, month, day] = dateString.split("-").map(Number);
     const date = new Date(year, month - 1, day);
+
+    if (forExcel) {
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+        2,
+        "0"
+      )}-${String(date.getDate()).padStart(2, "0")}`;
+    }
 
     if (forFilename) {
       return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
@@ -708,18 +718,14 @@ document.addEventListener("DOMContentLoaded", function () {
     }).format(value);
   }
 
-  function escapeCsv(value) {
-    if (value === null || value === undefined) {
-      return "";
-    }
-    const stringValue = String(value).replace(/"/g, '""');
-    if (/[",\n]/.test(stringValue)) {
-      return `"${stringValue}"`;
-    }
-    return stringValue;
-  }
-
   function exportToExcel() {
+    if (typeof XLSX === "undefined") {
+      alert(
+        "Erro: Biblioteca SheetJS não carregada. Verifique a inclusão do script."
+      );
+      return;
+    }
+
     const allTransactions = [...transactions];
 
     if (allTransactions.length === 0) {
@@ -734,10 +740,10 @@ document.addEventListener("DOMContentLoaded", function () {
       "Plataforma/Combustível/Manutenção Tipo",
       "Valor",
     ];
-    let csvContent = headers.map(escapeCsv).join(";") + "\n";
+    const data = [headers];
 
     allTransactions.forEach((transaction) => {
-      const date = formatDate(transaction.date);
+      const date = formatDate(transaction.date, false, true);
       const type = transaction.type;
       const details = transaction.details;
       let specificDetail = "";
@@ -750,31 +756,34 @@ document.addEventListener("DOMContentLoaded", function () {
         specificDetail = transaction.maintenanceType || "";
       }
 
-      const amount = transaction.amount.toFixed(2).replace(".", ",");
+      const amount = transaction.amount;
 
-      csvContent +=
-        [
-          escapeCsv(date),
-          escapeCsv(type),
-          escapeCsv(details),
-          escapeCsv(specificDetail),
-          escapeCsv(amount),
-        ].join(";") + "\n";
+      data.push([date, type, details, specificDetail, amount]);
     });
 
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const ws = XLSX.utils.aoa_to_sheet(data);
 
-    a.href = url;
-    a.download = `kwid_plus_transacoes_${formatDate(
+    ws["!cols"] = [
+      { wch: 15 },
+      { wch: 15 },
+      { wch: 30 },
+      { wch: 30 },
+      { wch: 15 },
+    ];
+
+    for (let i = 1; i < data.length; i++) {
+      const cellRef = XLSX.utils.encode_cell({ r: i, c: 4 });
+      ws[cellRef].z = '"R$" #,##0.00';
+    }
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Transações");
+
+    const fileName = `kwid_plus_transacoes_${formatDate(
       new Date().toISOString().split("T")[0],
       true
-    )}.csv`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    )}.xlsx`;
+    XLSX.write(wb, fileName);
   }
 
   const currentMonth = new Date().getMonth() + 1;
