@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // Registrar o Service Worker
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker
       .register("/sw.js")
@@ -11,7 +10,6 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
-  // Lógica para o botão de instalação
   let deferredPrompt;
   const installButton = document.getElementById("install-button");
 
@@ -870,8 +868,11 @@ document.addEventListener("DOMContentLoaded", function () {
       ];
 
       for (let i = 1; i < data.length; i++) {
-        const cellRef = XLSX.utils.ensure_cell({ r: i, c: 4 });
-        ws[cellRef].z = '"R$" #,##0.00';
+        const cellAddress = `E${i + 1}`;
+        if (!ws[cellAddress]) {
+          ws[cellAddress] = { v: data[i][4] };
+        }
+        ws[cellAddress].z = '"R$" #,##0.00';
       }
 
       const wb = XLSX.utils.book_new();
