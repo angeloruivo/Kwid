@@ -399,7 +399,7 @@ body[data-theme="dark"] #month-filter:focus {
 }
 
 body[data-theme="dark"] .form-field label {
-  color: #b0b0b0;
+  color: #f5f5f5;
 }
 
 .form-field input[type="date"],
@@ -522,8 +522,5 @@ body[data-theme="dark"] .saldo-destaque span {
 
 body[data-theme="dark"] .custom-file-upload {
   background: linear-gradient(to right, #6ab0ff, #42a5f5);
-  color: #f5f5f5;
-}
-body[data-theme="dark"] .form-field label {
   color: #f5f5f5;
 }
