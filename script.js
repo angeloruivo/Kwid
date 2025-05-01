@@ -142,8 +142,8 @@ document.addEventListener("DOMContentLoaded", function () {
   function toggleRelatorioDetalhado() {
     relatorioDetalhado.classList.toggle("hidden");
     const btnText = relatorioDetalhado.classList.contains("hidden")
-      ? '<i class="fas fa-chart-bar mr-2"></i>Ver Relatório Detalhado'
-      : '<i class="fas fa-times mr-2"></i>Fechar Relatório';
+      ? '<i class="fas fa-chart-bar mr-1"></i>Ver Relatório Detalhado'
+      : '<i class="fas fa-times mr-1"></i>Fechar Relatório';
     document.getElementById("btn-ver-relatorio").innerHTML = btnText;
   }
 

@@ -74,6 +74,10 @@ body[data-theme="dark"] .modern-button i {
   color: #ffffff;
 }
 
+body[data-theme="dark"] #btn-avancado {
+  background: linear-gradient(to right, #5a67d8, #4c51bf);
+}
+
 body[data-theme="dark"] #btn-avancado i {
   color: #ffffff;
 }
@@ -125,28 +129,28 @@ table {
 
 th,
 td {
-  padding: 8px 12px;
+  padding: 6px 8px;
   text-align: left;
   border-bottom: 1px solid #e2e8f0;
 }
 
 @media (max-width: 640px) {
   table {
-    font-size: 0.85rem;
+    font-size: 0.75rem;
   }
   th,
   td {
-    padding: 0.5rem;
+    padding: 4px 6px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 100px;
+    max-width: 80px;
   }
 }
 
 .filter-btn {
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.75rem;
 }
 
 .filter-btn.active {
@@ -159,19 +163,19 @@ td {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  min-width: 100px;
+  gap: 0.4rem;
+  min-width: 80px;
   text-align: center;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  border-radius: 0.75rem;
+  border-radius: 0.5rem;
   color: white;
   transition: filter 0.2s ease, transform 0.2s ease;
 }
 
 @media (max-width: 640px) {
   .modern-button {
-    min-width: 80px;
+    min-width: 70px;
   }
 }
 
@@ -210,16 +214,16 @@ td {
 }
 
 .modern-button i {
-  font-size: 1rem;
+  font-size: 0.875rem;
 }
 
 .fuel-btn,
 .platform-btn {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.875rem;
-  border-radius: 0.5rem;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  border-radius: 0.4rem;
   transition: background-color 0.2s ease, transform 0.1s;
 }
 
@@ -236,13 +240,13 @@ td {
 
 .fuel-btn i,
 .platform-btn i {
-  font-size: 1rem;
+  font-size: 0.875rem;
 }
 
 #month-filter {
-  padding: 0.5rem;
-  font-size: 0.9rem;
-  border-radius: 0.375rem;
+  padding: 0.4rem;
+  font-size: 0.75rem;
+  border-radius: 0.3rem;
   border: 1px solid #e2e8f0;
   background-color: #f7fafc;
   cursor: pointer;
@@ -270,27 +274,27 @@ td {
 }
 
 .form-field {
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 .form-field label {
   display: block;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-weight: 500;
   color: #374151;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.2rem;
 }
 
 .form-field input[type="date"],
 .form-field input[type="number"],
 .form-field input[type="text"] {
-  padding: 0.5rem 0.75rem;
-  font-size: 0.875rem;
-  border-radius: 0.375rem;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.75rem;
+  border-radius: 0.3rem;
   border: 1px solid #d1d5db;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
   transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-  height: 2.5rem;
+  height: 2rem;
 }
 
 .form-field input[type="date"]:focus,
@@ -312,28 +316,27 @@ td {
 }
 
 form button[type="submit"] {
-  padding: 0.75rem 1.5rem;
+  padding: 0.6rem 1.2rem;
 }
 
 @media (max-width: 640px) {
   .bg-red-50 p,
   .bg-green-50 p,
   .bg-blue-50 p {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     color: #000;
   }
 }
 
 .saldo-destaque {
-  flex-grow: 1;
-  font-size: 1.25rem;
+  font-size: 1rem;
   font-weight: bold;
   color: #1f2937;
 }
 
 .saldo-destaque span {
   display: block;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-weight: normal;
   color: #4b5563;
 }
