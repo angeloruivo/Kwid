@@ -27,29 +27,17 @@
         </button>
       </div>
       <div class="bg-white rounded-lg shadow-md p-3">
-        <div class="grid grid-cols-2 gap-2">
-          <button
-            id="btn-ganho"
-            class="modern-button bg-indigo-600 text-xs px-2 py-1"
-          >
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+          <button id="btn-ganho" class="modern-button bg-indigo-600">
             <i class="fas fa-plus-circle"></i> Ganho
           </button>
-          <button
-            id="btn-abastecimento"
-            class="modern-button bg-blue-600 text-xs px-2 py-1"
-          >
+          <button id="btn-abastecimento" class="modern-button bg-blue-600">
             <i class="fas fa-gas-pump"></i> Abastecimento
           </button>
-          <button
-            id="btn-manutencao"
-            class="modern-button bg-green-600 text-xs px-2 py-1"
-          >
+          <button id="btn-manutencao" class="modern-button bg-green-600">
             <i class="fas fa-wrench"></i> Manutenção
           </button>
-          <button
-            id="btn-avancado"
-            class="modern-button bg-gray-600 text-xs px-2 py-1"
-          >
+          <button id="btn-avancado" class="modern-button bg-gray-600">
             <i class="fas fa-cog"></i>
           </button>
         </div>
@@ -297,7 +285,7 @@
     <section class="bg-white rounded-lg shadow-md p-4 mb-4">
       <div class="flex flex-col mb-3">
         <h2 class="text-lg font-semibold mb-2">Resumo Financeiro</h2>
-        <div class="flex flex-col gap-1">
+        <div class="flex flex-col md:flex-row md:justify-center gap-1">
           <button
             data-filter="day"
             class="filter-btn px-2 py-1 text-xs bg-gray-200 rounded-md hover:bg-gray-300"
@@ -334,19 +322,19 @@
         </div>
       </div>
       <div class="grid grid-cols-1 gap-3">
-        <div class="bg-red-50 p-3 rounded-lg border border-red-200">
+        <div class="bg-red-50 p-3 rounded-lg">
           <h3 class="text-sm font-medium text-red-700">Total de Custos</h3>
           <p class="text-lg font-bold text-red-800" id="total-custos">
             R$ 0.00
           </p>
         </div>
-        <div class="bg-green-50 p-3 rounded-lg border border-green-200">
+        <div class="bg-green-50 p-3 rounded-lg">
           <h3 class="text-sm font-medium text-green-700">Total de Ganhos</h3>
           <p class="text-lg font-bold text-green-800" id="total-ganhos">
             R$ 0.00
           </p>
         </div>
-        <div class="bg-blue-50 p-3 rounded-lg border border-blue-200">
+        <div class="bg-blue-50 p-3 rounded-lg">
           <h3 class="text-sm font-medium text-blue-700">Lucro Líquido</h3>
           <p class="text-lg font-bold text-blue-800" id="lucro-liquido">
             R$ 0.00

@@ -5,7 +5,7 @@ body {
 }
 
 body[data-theme="dark"] {
-  background-color: #1f2937;
+  background-color: #2d3748;
   color: #e5e7eb;
 }
 
@@ -16,7 +16,7 @@ body[data-theme="dark"] h3 {
 }
 
 body[data-theme="dark"] .bg-white {
-  background-color: #374151;
+  background-color: #4a5568;
 }
 
 body[data-theme="dark"] .text-gray-800 {
@@ -24,15 +24,15 @@ body[data-theme="dark"] .text-gray-800 {
 }
 
 body[data-theme="dark"] .bg-red-50 {
-  background-color: #c2410c;
+  background-color: #f4a261;
 }
 
 body[data-theme="dark"] .bg-green-50 {
-  background-color: #15803d;
+  background-color: #95d5b2;
 }
 
 body[data-theme="dark"] .bg-blue-50 {
-  background-color: #1d4ed8;
+  background-color: #a3bffa;
 }
 
 body[data-theme="dark"] .text-red-700,
@@ -74,8 +74,20 @@ body[data-theme="dark"] .modern-button i {
   color: #ffffff;
 }
 
+body[data-theme="dark"] #btn-ganho {
+  background: linear-gradient(to right, #95d5b2, #74c69d);
+}
+
+body[data-theme="dark"] #btn-abastecimento {
+  background: linear-gradient(to right, #f4a261, #e89c54);
+}
+
+body[data-theme="dark"] #btn-manutencao {
+  background: linear-gradient(to right, #b7e4c7, #9adbb3);
+}
+
 body[data-theme="dark"] #btn-avancado {
-  background: linear-gradient(to right, #5a67d8, #4c51bf);
+  background: linear-gradient(to right, #a3bffa, #8ab7f8);
 }
 
 body[data-theme="dark"] #btn-avancado i {
@@ -88,7 +100,7 @@ body[data-theme="dark"] .filter-btn {
 }
 
 body[data-theme="dark"] .filter-btn.active {
-  background-color: #5a67d8;
+  background-color: #a3bffa;
   color: #ffffff;
 }
 
@@ -99,9 +111,9 @@ body[data-theme="dark"] #month-filter {
 }
 
 body[data-theme="dark"] #month-filter.active {
-  background-color: #5a67d8;
+  background-color: #a3bffa;
   color: #ffffff;
-  border-color: #5a67d8;
+  border-color: #a3bffa;
 }
 
 body[data-theme="dark"] .saldo-destaque {
@@ -163,6 +175,13 @@ td {
   font-size: 0.75rem;
 }
 
+@media (min-width: 641px) {
+  .filter-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+}
+
 .filter-btn.active {
   background-color: #4f46e5;
   color: white;
@@ -181,6 +200,14 @@ td {
   border-radius: 0.5rem;
   color: white;
   transition: filter 0.2s ease, transform 0.2s ease;
+}
+
+@media (min-width: 641px) {
+  .modern-button {
+    min-width: 120px;
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+  }
 }
 
 @media (max-width: 640px) {
@@ -227,6 +254,12 @@ td {
   font-size: 0.875rem;
 }
 
+@media (min-width: 641px) {
+  .modern-button i {
+    font-size: 1rem;
+  }
+}
+
 .fuel-btn,
 .platform-btn {
   display: flex;
@@ -260,6 +293,13 @@ td {
   border: 1px solid #e2e8f0;
   background-color: #f7fafc;
   cursor: pointer;
+}
+
+@media (min-width: 641px) {
+  #month-filter {
+    padding: 0.5rem;
+    font-size: 0.875rem;
+  }
 }
 
 #month-filter.active {
@@ -350,9 +390,21 @@ form button[type="submit"] {
   color: #1f2937;
 }
 
+@media (min-width: 641px) {
+  .saldo-destaque {
+    font-size: 1.25rem;
+  }
+}
+
 .saldo-destaque span {
   display: block;
   font-size: 0.75rem;
   font-weight: normal;
   color: #4b5563;
+}
+
+@media (min-width: 641px) {
+  .saldo-destaque span {
+    font-size: 0.875rem;
+  }
 }
